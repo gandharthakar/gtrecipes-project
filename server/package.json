@@ -1,0 +1,38 @@
+{
+  "name": "gtrecipes-server",
+  "version": "1.0.0",
+  "description": "GT Recipes is the project built with MERN Stack. In this project you can create recipes of your choice and showcase you talent.",
+  "keywords": [
+    "MERN",
+    "ReactJS",
+    "JavaScript",
+    "MongoDB",
+    "Exoress JS",
+    "GraphQL"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/gandharthakar/gtrecipes-project.git"
+  },
+  "author": "Gandhar Thakar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gandharthakar/gtrecipes-project/issues"
+  },
+  "homepage": "https://github.com/gandharthakar/gtrecipes-project#readme",
+  "dependencies": {
+    "apollo-server-express": "^3.13.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "graphql": "^16.8.1",
+    "mongoose": "^8.1.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "nodemon": "^3.0.3"
+  }
+}
