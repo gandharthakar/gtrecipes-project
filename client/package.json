@@ -1,0 +1,63 @@
+{
+  "name": "gtrecipes-server",
+  "version": "1.0.0",
+  "description": "GT Recipes is the project built with MERN Stack. In this project you can create recipes of your choice and showcase you talent.",
+  "keywords": [
+    "MERN",
+    "ReactJS",
+    "JavaScript",
+    "MongoDB",
+    "Exoress JS",
+    "GraphQL"
+  ],
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/gandharthakar/gtrecipes-project.git"
+  },
+  "author": "Gandhar Thakar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gandharthakar/gtrecipes-project/issues"
+  },
+  "homepage": "https://github.com/gandharthakar/gtrecipes-project#readme",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.8.10",
+    "@reduxjs/toolkit": "^2.0.1",
+    "axios": "^1.6.5",
+    "graphql": "^16.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.0.1",
+    "react-redux": "^9.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@types/react-router": "^5.1.20",
+    "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "postcss": "^8.4.33",
+    "react-router": "^6.21.2",
+    "react-router-dom": "^6.21.2",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  },
+  "browserslist": [
+    "last 100 versions"
+  ]
+}
