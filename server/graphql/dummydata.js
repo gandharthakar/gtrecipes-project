@@ -48,3 +48,5 @@ module.exports = {
 // https://stackoverflow.com/questions/50021669/why-am-i-getting-a-cannot-return-null-for-non-nullable-field-error-when-doing
 
 // https://www.linkedin.com/pulse/resolving-nested-queries-graphql-using-apollo-server-saransh-kataria
+
+// https://www.makeuseof.com/redirect-user-after-login-react/

@@ -1,4 +1,6 @@
+const createGQLUserModel = require('../mongodb/models/gql-test');
 const { my_recipes, users } = require('./dummydata');
+const { gql_mdb_conn } = require("../mongodb/db");
 
 const resolvers = {
     Query: {
@@ -10,6 +12,22 @@ const resolvers = {
         RecipeWithUser: (parent, args) => {
             let recp = my_recipes.find((rec) => rec.id == args.id);
             return recp;
+        }
+    },
+    Mutation: {
+        createGqlUser: async (parent, {name, email, profile_picture}) => {
+            gql_mdb_conn();
+            let payload = {
+                user_name: name,
+                user_email: email,
+                user_profile_picture: profile_picture
+            };
+            await createGQLUserModel.collection.insertOne(payload);
+            return {
+                name,
+                email,
+                profile_picture
+            };
         }
     },
     RecipeWithUser: {
