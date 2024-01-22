@@ -6,8 +6,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+    .site-container {
+        @apply twgtr-max-w-[1440px] twgtr-mx-auto twgtr-w-full;
+    }
+}
+
 @layer components {
     .site-header .active {
+        @apply twgtr-text-theme-color-4;
+    }
+    .twgtr-dark .site-header .active {
+        @apply twgtr-text-theme-color-4;
+    }
+    .site-footer .active {
+        @apply twgtr-text-theme-color-4;
+    }
+    .twgtr-dark .site-footer .active {
         @apply twgtr-text-theme-color-4;
     }
 }

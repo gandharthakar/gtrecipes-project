@@ -1,8 +1,12 @@
+import SiteBreadcrumb from "../../components/website/SiteBreadcrumb";
 
 function About() {
 	return (
 		<>
-			<h1 className="twgtr-text-2xl twgtr-font-bold">About</h1>
+			<SiteBreadcrumb page_name="About Us" />
+			<div className="twgtr-bg-slate-100 dark:twgtr-bg-slate-800" style={{height: '600px'}}>
+
+			</div>
 		</>
 	)
 }

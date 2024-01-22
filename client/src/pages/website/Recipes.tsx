@@ -1,8 +1,12 @@
+import SiteBreadcrumb from "../../components/website/SiteBreadcrumb";
 
 const Recipes = () => {
 	return (
 		<>
-			<h1 className="twgtr-text-2xl twgtr-font-bold">All Recipes</h1>
+			<SiteBreadcrumb page_name="All Recipes" />
+			<div className="twgtr-bg-slate-100 dark:twgtr-bg-slate-800" style={{height: '600px'}}>
+
+			</div>
 		</>
 	)
 }

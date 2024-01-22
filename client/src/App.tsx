@@ -1,12 +1,13 @@
 import { Outlet } from 'react-router-dom';
-import Header from './components/website/Header';
+import SiteHeader from './components/website/SiteHeader';
+import SiteFooter from './components/website/SiteFooter';
 
 function App() {
 	return (
 		<>
-			<Header />
+			<SiteHeader />
 			<Outlet />
-			<h1 className="twgtr-text-2xl twgtr-font-bold">footer</h1>
+			<SiteFooter />
 		</>
 	)
 }

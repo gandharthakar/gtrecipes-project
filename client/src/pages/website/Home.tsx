@@ -2,7 +2,7 @@
 function Home() {
 	return (
 		<>
-			<div className="twgtr-bg-zinc-100 dark:twgtr-bg-zinc-800" style={{height: '600px'}}>
+			<div className="twgtr-bg-slate-100 dark:twgtr-bg-slate-800" style={{height: '600px'}}>
 
 			</div>
 		</>

@@ -18,6 +18,10 @@ export default {
       fontFamily: {
         open_sans: ['Open Sans', 'sans-serif'],
         ubuntu: ['Ubuntu', 'sans-serif'],
+      },
+      gridTemplateColumns: {
+        'contact-desktop': '550px 1fr',
+        'contact-tablet': '450px 1fr',
       }
     },
   },

@@ -10,9 +10,12 @@ const ThemeModeSwitch = () => {
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
 
     useEffect(() => {
-        const detectMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // Automatically Check and Set Dark Mode.
+        // const detectMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-        if(detectMode) {
+        // Manually Toggle and Save Dark Mode.
+        const checkDM = JSON.parse(localStorage.getItem('site-dark-mode') || '');
+        if(checkDM) {
             dispatch(set_dark_mode());
         } else {
             dispatch(unset_dark_mode());
