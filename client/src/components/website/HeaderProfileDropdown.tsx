@@ -5,7 +5,7 @@ import { FaPowerOff } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 
 const HeaderProfileDropdown = () => {
-    const [login, setLogin] = useState(false);
+    const [login, setLogin] = useState(true);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
 
     return (
@@ -19,7 +19,7 @@ const HeaderProfileDropdown = () => {
                                 <span>GT</span>
                             </div>
                         </button>
-                        <div className={`twgtr-absolute twgtr-right-0 twgtr-py-1 twgtr-z-10 twgtr-mt-[2px] twgtr-w-[180px] twgtr-origin-top-right twgtr-rounded-md twgtr-bg-white twgtr-shadow-lg twgtr-ring-1 twgtr-ring-black twgtr-ring-opacity-5 twgtr-focus:outline-none twgtr-font-open_sans dark:twgtr-bg-slate-700 ${showProfileMenu ? 'twgtr-block' : 'twgtr-hidden'}`}>
+                        <div className={`twgtr-absolute twgtr-right-0 twgtr-py-1 twgtr-z-10 twgtr-border twgtr-border-solid twgtr-border-slate-300 dark:twgtr-border-slate-500 twgtr-mt-[2px] twgtr-w-[180px] twgtr-origin-top-right twgtr-rounded-md twgtr-bg-white twgtr-shadow-lg twgtr-ring-1 twgtr-ring-black twgtr-ring-opacity-5 twgtr-focus:outline-none twgtr-font-open_sans dark:twgtr-bg-slate-700 ${showProfileMenu ? 'twgtr-block' : 'twgtr-hidden'}`}>
                             <div className="py-1">
                                 <NavLink to="/user-profile" title="Profile" className="twgtr-text-gray-700 twgtr-block twgtr-px-4 twgtr-py-2 twgtr-text-md hover:twgtr-bg-slate-100 dark:twgtr-text-slate-200 dark:hover:twgtr-bg-slate-900">
                                     <div className="twgtr-flex twgtr-items-center twgtr-gap-x-3 ">

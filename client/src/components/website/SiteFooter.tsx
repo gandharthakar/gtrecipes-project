@@ -3,7 +3,7 @@ import { FaFacebook } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaWhatsapp } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
-import ThemeModeSwitchFooter from "./themeModeSwitchFooter";
+import ThemeModeSwitchFooter from "./ThemeModeSwitchFooter";
 
 const SiteFooter = () => {
 
@@ -13,7 +13,7 @@ const SiteFooter = () => {
 
     return (
         <footer className="twgtr-font-ubuntu site-footer">
-            <div className="twgtr-transition-all twgtr-bg-white twgtr-border-t twgtr-border-solid twgtr-px-4 twgtr-py-5 md:twgtr-py-10 twgtr-border-slate-300 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-500">
+            <div className="twgtr-transition-all twgtr-bg-white twgtr-border-t twgtr-border-solid twgtr-px-4 twgtr-py-5 md:twgtr-py-10 twgtr-border-slate-300 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-600">
                 <div className="site-container">
                     <div className="twgtr-grid twgtr-grid-cols-none md:twgtr-grid-cols-2 lg:twgtr-grid-cols-3">
                         <div className="twgtr-py-1">
@@ -40,9 +40,14 @@ const SiteFooter = () => {
                                                 About
                                             </NavLink>
                                         </li>
-                                        <li>
+                                        <li className="twgtr-pb-1">
                                             <NavLink to="/contact" title="Contact" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
                                                 Contact
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/faqs" title="FAQs" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
+                                                FAQs
                                             </NavLink>
                                         </li>
                                     </ul>
@@ -108,18 +113,18 @@ const SiteFooter = () => {
                             <div>
                                 <div className="twgtr-py-2">
                                     <h4 className="twgtr-transition-all twgtr-font-semibold twgtr-text-theme-color-4 twgtr-text-[18px] md:twgtr-text-[20px]">
-                                        Other Links
+                                        Legal
                                     </h4>
                                 </div>
                                 <div>
                                     <ul>
                                         <li className="twgtr-pb-1">
-                                            <NavLink to="/site-terms" title="Terms & Services" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
+                                            <NavLink to="/terms" title="Terms & Services" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
                                                 Terms & Services
                                             </NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/site-privacy" title="Privacy Policy" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
+                                            <NavLink to="/privacy" title="Privacy Policy" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
                                                 Privacy Policy
                                             </NavLink>
                                         </li>

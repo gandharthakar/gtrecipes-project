@@ -15,7 +15,7 @@ const SiteHeader = () => {
 
 	return (
 		<>
-			<div className="twgtr-transition-all twgtr-relative twgtr-border-b twgtr-border-slate-300 twgtr-border-solid twgtr-px-4 twgtr-bg-white dark:twgtr-bg-slate-900 dark:twgtr-border-slate-500">
+			<div className="twgtr-transition-all twgtr-relative twgtr-border-b twgtr-border-slate-300 twgtr-border-solid twgtr-px-4 twgtr-bg-white dark:twgtr-bg-slate-900 dark:twgtr-border-slate-600">
 				<header className="twgtr-flex twgtr-items-center twgtr-gap-x-4">
 					<div className="twgtr-mr-auto">
 						<NavLink to="/" title="Home">

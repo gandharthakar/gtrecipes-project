@@ -24,7 +24,7 @@ const ThemeModeSwitchFooter = () => {
 						<div className="twgtr-flex twgtr-items-center twgtr-gap-x-2">
 							<MdLightMode size={25} />
 							<div>
-								Light Mode
+								Light
 							</div>
 						</div>
 					</button>
@@ -35,7 +35,7 @@ const ThemeModeSwitchFooter = () => {
 						<div className="twgtr-flex twgtr-items-center twgtr-gap-x-2">
 							<MdOutlineDarkMode size={25} />
 							<div>
-								Dark Mode
+								Dark
 							</div>
 						</div>
 					</button>

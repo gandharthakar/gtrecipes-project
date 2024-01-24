@@ -8,7 +8,7 @@ const SiteBreadcrumb= (props:any) => {
         <>
             <div className="twgtr-transition-all twgtr-py-6 lg:twgtr-py-12 twgtr-px-4 dark:twgtr-bg-slate-700">
                 <div className="twgtr-max-w-[1440px] twgtr-mx-auto twgtr-w-full">
-                    <h1 className="twgtr-transition-all twgtr-text-[25px] lg:twgtr-text-[35px] twgtr-font-open_sans twgtr-text-theme-color-1 twgtr-font-medium dark:twgtr-text-slate-200">
+                    <h1 className="twgtr-transition-all twgtr-text-[20px] lg:twgtr-text-[35px] twgtr-font-open_sans twgtr-text-theme-color-1 twgtr-font-medium dark:twgtr-text-slate-200">
                         {page_name}
                     </h1>
                     <ul className="twgtr-flex twgtr-flex-wrap twgtr-items-center twgtr-font-ubuntu">

@@ -7,6 +7,9 @@ import About from "../pages/website/About";
 import Contact from "../pages/website/Contact";
 import Home from "../pages/website/Home";
 import Recipes from "../pages/website/Recipes";
+import Privacy from "../pages/website/Privacy";
+import Terms from "../pages/website/Terms";
+import FAQs from "../pages/website/FAQs";
 
 const WebRoutes = createBrowserRouter([
     {
@@ -28,6 +31,18 @@ const WebRoutes = createBrowserRouter([
             {
                 path: "/contact",
                 element: <Contact />
+            },
+            {
+                path: "/terms",
+                element: <Terms />
+            },
+            {
+                path: "/privacy",
+                element: <Privacy />
+            },
+            {
+                path: "/faqs",
+                element: <FAQs />
             }
         ]
     },
