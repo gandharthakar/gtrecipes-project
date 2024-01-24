@@ -11,6 +11,7 @@ export default {
       colors: {
         'theme-color-1': "#0B3954",
         "theme-color-2": "#087E8B",
+        'theme-color-2-hover-dark': "#076c77",
         "theme-color-3": "#BFD7EA",
         "theme-color-4": "#FF5A5F",
         "theme-color-5": "#C81D25"

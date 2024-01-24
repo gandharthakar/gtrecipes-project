@@ -17,7 +17,7 @@ const SiteFooter = () => {
                 <div className="site-container">
                     <div className="twgtr-grid twgtr-grid-cols-none md:twgtr-grid-cols-2 lg:twgtr-grid-cols-3">
                         <div className="twgtr-py-1">
-                            <div>
+                            <div className="twgtr-py-2">
                                 <div className="twgtr-py-2">
                                     <h4 className="twgtr-transition-all twgtr-font-semibold twgtr-text-theme-color-4 twgtr-text-[18px] md:twgtr-text-[20px]">
                                         Site Links
@@ -40,22 +40,15 @@ const SiteFooter = () => {
                                                 About
                                             </NavLink>
                                         </li>
-                                        <li className="twgtr-pb-1">
+                                        <li>
                                             <NavLink to="/contact" title="Contact" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
                                                 Contact
-                                            </NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/faqs" title="FAQs" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
-                                                FAQs
                                             </NavLink>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-                        <div className="twgtr-py-1">
-                            <div className="twgtr-py-2">
+                            <div>
                                 <div className="twgtr-py-2">
                                     <h4 className="twgtr-transition-all twgtr-font-semibold twgtr-text-theme-color-4 twgtr-text-[18px] md:twgtr-text-[20px]">
                                         Company Address
@@ -65,6 +58,34 @@ const SiteFooter = () => {
                                     <h5 className="twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium dark:twgtr-text-slate-400">
                                         515 Post Oak Blvd, Ste 200, Houston, TX 77027
                                     </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="twgtr-py-1">
+                            <div className="twgtr-py-2">
+                                <div className="twgtr-py-2">
+                                    <h4 className="twgtr-transition-all twgtr-font-semibold twgtr-text-theme-color-4 twgtr-text-[18px] md:twgtr-text-[20px]">
+                                        Other Links
+                                    </h4>
+                                </div>
+                                <div>
+                                    <ul>
+                                        <li className="twgtr-pb-1">
+                                            <NavLink to="/login" title="Login" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
+                                                Login
+                                            </NavLink>
+                                        </li>
+                                        <li className="twgtr-pb-1">
+                                            <NavLink to="/register" title="Register" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
+                                                Register
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/faqs" title="FAQs" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
+                                                FAQs
+                                            </NavLink>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                             <div>

@@ -5,7 +5,7 @@ import { FaPowerOff } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 
 const HeaderProfileDropdown = () => {
-    const [login, setLogin] = useState(true);
+    const [login, setLogin] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
 
     return (

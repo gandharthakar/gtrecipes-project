@@ -10,6 +10,8 @@ import Recipes from "../pages/website/Recipes";
 import Privacy from "../pages/website/Privacy";
 import Terms from "../pages/website/Terms";
 import FAQs from "../pages/website/FAQs";
+import Login from "../pages/website/Login";
+import Register from "../pages/website/Register";
 
 const WebRoutes = createBrowserRouter([
     {
@@ -45,6 +47,14 @@ const WebRoutes = createBrowserRouter([
                 element: <FAQs />
             }
         ]
+    },
+    {
+        path: "/login",
+        element: <Login />
+    },
+    {
+        path: "/register",
+        element: <Register />
     },
     {
         path: "gql-upload",
