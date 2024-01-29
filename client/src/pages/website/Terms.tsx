@@ -5,7 +5,7 @@ import SiteConstants from "../../constants/SiteConstants";
 const Terms = () => {
 	return (
 		<>
-			<SiteBreadcrumb page_name="Terms & Services" />
+			<SiteBreadcrumb page_name="Terms" page_title="Terms & Services" />
 			<div className="twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
 				<div className="site-container">
 					<div className="twgtr-flex twgtr-flex-col lg:twgtr-flex-row twgtr-gap-4">

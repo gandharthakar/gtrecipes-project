@@ -7,9 +7,9 @@ const SiteLogo = () => {
         <>
             {
                 ThemeMode ? 
-                (<img src="logo-dark.svg" width={180} alt="logo" className="twgtr-w-[130px] md:twgtr-w-[180px]" />) 
+                (<img src="/logo-dark.svg" width={180} alt="logo" className="twgtr-w-[130px] md:twgtr-w-[180px]" />) 
                 : 
-                (<img src="logo.svg" width={180} alt="logo" className="twgtr-w-[130px] md:twgtr-w-[180px]" />)
+                (<img src="/logo.svg" width={180} alt="logo" className="twgtr-w-[130px] md:twgtr-w-[180px]" />)
             }
         </>
     )

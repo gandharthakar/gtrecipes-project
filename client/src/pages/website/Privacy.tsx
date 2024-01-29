@@ -5,7 +5,7 @@ import SiteConstants from "../../constants/SiteConstants";
 const Privacy = () => {
 	return (
 		<>
-			<SiteBreadcrumb page_name="Privacy Policy" />
+			<SiteBreadcrumb page_name="Privacy" page_title="Privacy Policy" />
 			<div className="twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
 				<div className="site-container">
 					<div className="twgtr-flex twgtr-flex-col lg:twgtr-flex-row twgtr-gap-4">

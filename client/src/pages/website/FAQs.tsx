@@ -12,8 +12,8 @@ const FAQs = () => {
 
 	return (
 		<>
-			<SiteBreadcrumb page_name="FAQs" />
-			<div className="twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
+			<SiteBreadcrumb page_name="FAQs" page_title="FAQs" />
+			<div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
 				<div className="site-container">
 					<div className="twgtr-max-w-[1124px] twgtr-mx-auto">
 						<div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full twgtr-border twgtr-border-solid twgtr-px-4 twgtr-py-3 lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">

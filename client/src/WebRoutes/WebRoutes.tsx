@@ -12,6 +12,9 @@ import Terms from "../pages/website/Terms";
 import FAQs from "../pages/website/FAQs";
 import Login from "../pages/website/Login";
 import Register from "../pages/website/Register";
+import UserProfile from "../pages/website/user-area/UserProfile";
+import UserProfileCat from "../pages/website/user-area/UserProfileCat";
+import CreateRecipe from "../pages/website/user-area/CreateRecipe";
 
 const WebRoutes = createBrowserRouter([
     {
@@ -45,6 +48,18 @@ const WebRoutes = createBrowserRouter([
             {
                 path: "/faqs",
                 element: <FAQs />
+            },
+            {
+                path: "/user-area/profile/:id",
+                element: <UserProfile />
+            },
+            {
+                path: "/user-area/categories/:id",
+                element: <UserProfileCat />
+            },
+            {
+                path: "/create-recipe/:id",
+                element: <CreateRecipe />
             }
         ]
     },
@@ -60,6 +75,6 @@ const WebRoutes = createBrowserRouter([
         path: "gql-upload",
         element: <GQLFileUploadDemo />
     }
-]);
+], { basename: '/' });
 
 export default WebRoutes;

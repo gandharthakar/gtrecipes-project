@@ -50,3 +50,5 @@ module.exports = {
 // https://www.linkedin.com/pulse/resolving-nested-queries-graphql-using-apollo-server-saransh-kataria
 
 // https://www.makeuseof.com/redirect-user-after-login-react/
+
+// https://stackoverflow.com/questions/74148094/how-to-store-action-payload-in-redux-toolkit

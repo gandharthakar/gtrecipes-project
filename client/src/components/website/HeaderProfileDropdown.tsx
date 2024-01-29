@@ -15,8 +15,8 @@ const HeaderProfileDropdown = () => {
                 (
                     <div className="twgtr-relative">
                         <button type="button" title="Profile" className="twgtr-transition-all twgtr-px-2 twgtr-py-2" onClick={() => setShowProfileMenu(!showProfileMenu)}>
-                            <div className="twgtr-w-[40px] twgtr-h-[40px] twgtr-bg-slate-200 twgtr-text-theme-color-5 twgtr-rounded-full twgtr-flex twgtr-items-center twgtr-justify-center twgtr-font-semibold twgtr-font-open_sans">
-                                <span>GT</span>
+                            <div className="twgtr-w-[40px] twgtr-h-[40px] twgtr-uppercase twgtr-bg-slate-200 twgtr-text-theme-color-5 twgtr-rounded-full twgtr-flex twgtr-items-center twgtr-justify-center twgtr-font-semibold twgtr-font-open_sans">
+                                <span>Jp</span>
                             </div>
                         </button>
                         <div className={`twgtr-absolute twgtr-right-0 twgtr-py-1 twgtr-z-10 twgtr-border twgtr-border-solid twgtr-border-slate-300 dark:twgtr-border-slate-500 twgtr-mt-[2px] twgtr-w-[180px] twgtr-origin-top-right twgtr-rounded-md twgtr-bg-white twgtr-shadow-lg twgtr-ring-1 twgtr-ring-black twgtr-ring-opacity-5 twgtr-focus:outline-none twgtr-font-open_sans dark:twgtr-bg-slate-700 ${showProfileMenu ? 'twgtr-block' : 'twgtr-hidden'}`}>

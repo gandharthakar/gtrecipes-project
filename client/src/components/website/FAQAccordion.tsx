@@ -11,8 +11,8 @@ const FAQAccordion = (props:any) => {
 		<>
 			<div className="site-acc-item twgtr-transition-all twgtr-overflow-hidden twgtr-border-b twgtr-border-solid twgtr-border-slate-500">
 				<button type="button" className={`twgtr-transition-all twgtr-block twgtr-w-full twgtr-py-5 twgtr-px-4 hover:twgtr-bg-slate-100 hover:twgtr-text-theme-color-4 dark:hover:twgtr-bg-slate-500 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-3 ${is_open ? 'active' : ''}`} onClick={onClick}>
-					<div className="twgtr-transition-all twgtr-flex twgtr-items-start twgtr-gap-x-4 twgtr-justify-between">
-						<h4 className="twgtr-transition-all twgtr-text-[16px] md:twgtr-text-[18px] twgtr-font-open_sans twgtr-font-bold twgtr-text-left">
+					<div className="twgtr-flex twgtr-items-start twgtr-gap-x-4 twgtr-justify-between">
+						<h4 className="twgtr-text-[16px] md:twgtr-text-[18px] twgtr-font-open_sans twgtr-font-bold twgtr-text-left">
 							{ques_text}
 						</h4>
 						{

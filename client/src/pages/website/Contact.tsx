@@ -7,7 +7,7 @@ function Contact() {
 	
 	return (
 		<>
-			<SiteBreadcrumb page_name="Contact Us" />
+			<SiteBreadcrumb page_name="Contact" page_title="Contact Us" />
 
 			<div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-min-h-0 lg:twgtr-min-h-[680px] twgtr-py-10 twgtr-px-4 twgtr-flex twgtr-items-center twgtr-justify-center dark:twgtr-bg-slate-800">
 				<div className="site-container">

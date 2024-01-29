@@ -22,6 +22,9 @@
     .terms-privacy-content h4 {
         @apply twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[22px] last:twgtr-mb-0 twgtr-pt-2 twgtr-mb-2 dark:twgtr-text-slate-300;
     }
+    /* .site-joedit-adj .jodit-container {
+        @apply !twgtr-min-h-[500px]
+    } */
 }
 
 @layer components {
