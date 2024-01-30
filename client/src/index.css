@@ -6,6 +6,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
 @layer utilities {
     .site-container {
         @apply twgtr-max-w-[1440px] twgtr-mx-auto twgtr-w-full;
@@ -25,6 +33,9 @@
     /* .site-joedit-adj .jodit-container {
         @apply !twgtr-min-h-[500px]
     } */
+    .site-form-error {
+        @apply twgtr-transition-all twgtr-block twgtr-mt-1 twgtr-font-ubuntu twgtr-text-[12px] md:twgtr-text-[14px] twgtr-text-red-600 dark:twgtr-text-red-300;
+    }
 }
 
 @layer components {

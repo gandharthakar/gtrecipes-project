@@ -52,3 +52,5 @@ module.exports = {
 // https://www.makeuseof.com/redirect-user-after-login-react/
 
 // https://stackoverflow.com/questions/74148094/how-to-store-action-payload-in-redux-toolkit
+
+// https://articles.wesionary.team/react-hook-form-schema-validation-using-zod-80d406e22cd8

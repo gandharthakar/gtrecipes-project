@@ -6,6 +6,10 @@ import { useState } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
+import { MdOutlineCategory } from "react-icons/md";
+import CategoryCard from "../../../components/website/CategoryCard";
+import { useParams } from "react-router-dom";
+import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
 
 /* Encode string to slug */
 function convertToSlug( str:string ) {
@@ -23,6 +27,19 @@ function convertToSlug( str:string ) {
 }
 
 const UserProfileCat = () => {
+    let { id } = useParams();
+    const sideBarLinks = [
+        {
+            id: 1,
+            page_name: "All Recipes",
+            page_slug: `/user-area/profile/${id}`
+        },
+        {
+            id: 2,
+            page_name: "Categories",
+            page_slug: `/user-area/categories/${id}`
+        },
+    ];
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const [showModal, setShowModal] = useState(false);
     const [createCat, setCreateCat] = useState('');
@@ -47,10 +64,11 @@ const UserProfileCat = () => {
         if(createCat == '') {
             toast.error("Required fields is empty.", toastDefOpts);
             data = {};
-        }
-        data = {
-            category_name: createCat,
-            category_slug: createCatSlug
+        } else {
+            data = {
+                category_name: createCat,
+                category_slug: createCatSlug
+            }
         }
         console.log(data);
     }
@@ -84,7 +102,7 @@ const UserProfileCat = () => {
                                 to="#" 
                                 title="+ New Category" 
                                 className="twgtr-transition-all twgtr-inline-block twgtr-border-2 twgtr-font-open_sans twgtr-font-bold twgtr-text-sm twgtr-border-theme-color-2 twgtr-py-[7px] twgtr-px-3 twgtr-text-theme-color-2 hover:twgtr-bg-theme-color-2 hover:twgtr-text-slate-200 md:twgtr-text-base md:twgtr-px-5 dark:twgtr-border-theme-color-4 dark:twgtr-text-theme-color-4 dark:hover:twgtr-bg-theme-color-4 dark:hover:twgtr-text-slate-200"
-                                onClick={(e) => setShowModal(true)}
+                                onClick={() => setShowModal(true)}
                             >
                                 <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[10px]">
                                     <PiPlusBold size={15} />
@@ -106,14 +124,14 @@ const UserProfileCat = () => {
                     <div className="twgtr-transition-all twgtr-bg-white dark:twgtr-bg-slate-700">
                         <div className="twgtr-p-[20px]">
                             <div className="twgtr-pb-4">
-                                <label htmlFor="catnam" className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[16px] md:twgtr-text-[18px] twgtr-text-theme-color-1 dark:twgtr-text-slate-200">
+                                <label htmlFor="catnam" className="twgtr-transition-all twgtr-inline-block after:twgtr-content-['*'] after:twgtr-ml-0.5 after:twgtr-text-theme-color-4 twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-1 dark:twgtr-text-slate-200">
                                     Category Name
                                 </label>
                                 <input 
                                     type="text" 
                                     name="category_name" 
                                     id="catnam"
-                                    className="twgtr-transition-all twgtr-w-full twgtr-px-4 twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[18px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                    className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
                                     placeholder="Eg. Cakes And Pastries" 
                                     autoComplete="off"
                                     onChange={handleCreateCatModalInputChange}
@@ -121,14 +139,14 @@ const UserProfileCat = () => {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="catslg" className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[16px] md:twgtr-text-[18px] twgtr-text-theme-color-1 dark:twgtr-text-slate-200">
+                                <label htmlFor="catslg" className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-1 dark:twgtr-text-slate-200">
                                     Category Slug
                                 </label>
                                 <input 
                                     type="text" 
                                     name="category_slug" 
                                     id="catslg"
-                                    className="twgtr-transition-all twgtr-w-full twgtr-px-4 twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[18px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 read-only:twgtr-bg-slate-100 read-only:focus:twgtr-border-slate-400 dark:read-only:twgtr-bg-slate-500" 
+                                    className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 read-only:twgtr-bg-slate-100 read-only:focus:twgtr-border-slate-400 dark:read-only:twgtr-bg-slate-500" 
                                     placeholder="Eg. cakes-and-pastries" 
                                     autoComplete="off"
                                     readOnly
@@ -138,10 +156,10 @@ const UserProfileCat = () => {
                         </div>
                         <div className="twgtr-transition-all twgtr-border-t twgtr-border-slate-300 twgtr-border-solid dark:twgtr-border-slate-500">
                             <div className="twgtr-px-[20px] twgtr-py-[10px] twgtr-flex twgtr-gap-x-4 twgtr-gap-y-3 twgtr-flex-wrap twgtr-items-center twgtr-justify-end">
-                                <button type="button" title="Close" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-4 twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-2 twgtr-text-theme-color-2 hover:twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[18px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2 hover:twgtr-border-theme-color-2 dark:twgtr-border-slate-300 dark:twgtr-text-slate-300 dark:hover:twgtr-bg-slate-300 dark:hover:twgtr-text-slate-700" onClick={(e) => setShowModal(false)}>
+                                <button type="button" title="Close" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-2 twgtr-text-theme-color-2 hover:twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2 hover:twgtr-border-theme-color-2 dark:twgtr-border-slate-300 dark:twgtr-text-slate-300 dark:hover:twgtr-bg-slate-300 dark:hover:twgtr-text-slate-700" onClick={() => setShowModal(false)}>
                                     Close
                                 </button>
-                                <button type="submit" title="Close" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-4 twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 hover:twgtr-bg-theme-color-4-hover-dark twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[18px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-border-theme-color-4-hover-dark">
+                                <button type="submit" title="Create" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 hover:twgtr-bg-theme-color-4-hover-dark twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-border-theme-color-4-hover-dark">
                                     Create
                                 </button>
                             </div>
@@ -154,23 +172,30 @@ const UserProfileCat = () => {
                     <div className="twgtr-flex twgtr-flex-col lg:twgtr-flex-row twgtr-gap-4">
 						<div className="twgtr-min-w-0 lg:twgtr-min-w-[250px] 2xl:twgtr-min-w-[300px]">
 							<div className="lg:twgtr-sticky lg:twgtr-top-[15px]">
-								<ul className="ssdl-nav twgtr-flex twgtr-flex-row lg:twgtr-flex-col twgtr-gap-x-8 twgtr-flex-nowrap twgtr-overflow-x-auto">
-                                    <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
-                                        <NavLink to="/user-area/profile/1" title="Recipes" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
-                                            All Recipes
-                                        </NavLink>
-                                    </li>
-                                    <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
-                                        <NavLink to="/user-area/categories/1" title="Categories" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
-                                            Categories
-                                        </NavLink>
-                                    </li>
-                                </ul>
+                                <SideBarLeftLinks nav_links_data={sideBarLinks} />
 							</div>
 						</div>
 
                         <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-250px)] 2xl:twgtr-w-[calc(100%-300px)] twgtr-border twgtr-border-solid twgtr-px-4 twgtr-py-3 lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">
-                            
+                            {/* No Category Found */}
+                            <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
+                                <MdOutlineCategory size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
+                                <div className="twgtr-pt-2 md:twgtr-pt-4">
+                                    <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
+                                        No Categories Found
+                                    </h6>
+                                </div>
+                                <div className="twgtr-pt-1">
+                                    <NavLink to="#" title="+ Add New" className="twgtr-transition-all twgtr-font-open_sans twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-4" onClick={() => setShowModal(true)}>
+                                        + Add New
+                                    </NavLink>
+                                </div>
+                            </div>
+
+                            <div className="">
+                                <CategoryCard user_id={1} category_id={1} category_name={"Cookies"} category_slug={"cookies"} />
+                                <CategoryCard user_id={1} category_id={2} category_name={"Cakes"} category_slug={"cakes"} />
+                            </div>
                         </div>
                     </div>
                 </div>
