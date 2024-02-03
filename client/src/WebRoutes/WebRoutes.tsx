@@ -19,6 +19,7 @@ import GeneralSettings from "../pages/website/user-area/settings/GeneralSettings
 import ProfilePictureSettings from "../pages/website/user-area/settings/ProfilePictureSettings";
 import PasswordSettings from "../pages/website/user-area/settings/PasswordSettings";
 import DeleteAccountSettings from "../pages/website/user-area/settings/DeleteAccountSettings";
+import ViewSingleRecipe from "../pages/website/ViewSingleRecipe";
 
 const WebRoutes = createBrowserRouter([
     {
@@ -80,7 +81,11 @@ const WebRoutes = createBrowserRouter([
             {
                 path: "/user-area/settings/delete-account/:id",
                 element: <DeleteAccountSettings />
-            }
+            },
+            {
+                path: "/view-recipe/:id",
+                element: <ViewSingleRecipe />
+            },
         ]
     },
     {

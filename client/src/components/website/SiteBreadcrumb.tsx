@@ -24,8 +24,8 @@ const SiteBreadcrumb= (props:any) => {
                             rest_pages ? (
                                 rest_pages?.map((item:any) => {
                                     return (
-                                        <>
-                                            <li key={item.id}>
+                                        <div key={item.id} className="twgtr-flex twgtr-flex-wrap twgtr-items-center">
+                                            <li>
                                                 <NavLink to={item.page_slug} title={item.page_name} className="twgtr-transition-all twgtr-text-sm lg:twgtr-text-lg twgtr-px-2 twgtr-py-1 twgtr-rounded-md hover:twgtr-bg-theme-color-3 hover:twgtr-shadow-md dark:twgtr-text-slate-200 dark:hover:twgtr-bg-theme-color-2">
                                                     {item.page_name}
                                                 </NavLink>
@@ -33,7 +33,7 @@ const SiteBreadcrumb= (props:any) => {
                                             <li className="twgtr-px-2">
                                                 <TfiAngleRight size={20} className="twgtr-text-slate-800 dark:twgtr-text-slate-200" />
                                             </li>
-                                        </>
+                                        </div>
                                     )
                                 })
                             ) 

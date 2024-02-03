@@ -12,6 +12,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
 import { useNavigate } from 'react-router';
+import { HiOutlinePlus } from "react-icons/hi";
+import { RiDeleteBin6Line } from "react-icons/ri";
+
 
 let checkDTheme = localStorage.getItem('site-dark-mode');
 let thm = false;
@@ -33,16 +36,15 @@ function makeid(length:any) {
 	}
 	return result;
 }
-
 function getDateTimeString() {
     const now = new Date();
-    const day = now.getDate();
-    const month = now.toLocaleString('default', { month: 'short' })[0].toUpperCase() // Extract first letter and capitalize with [0]
-        + now.toLocaleString('default', { month: 'short' }).slice(1); // Append remaining lowercase letters with slice(1)
+    const day = now.getDate().toString().padStart(2, '0'); // Zero pad day
+    const month = now.toLocaleString('default', { month: 'short' })[0].toUpperCase() + 
+                now.toLocaleString('default', { month: 'short' }).slice(1);
     const year = now.getFullYear();
-    const hour = now.getHours();
-    const minute = now.getMinutes();
-    const second = now.getSeconds();
+    const hour = now.getHours().toString().padStart(2, '0'); // Zero pad hour
+    const minute = now.getMinutes().toString().padStart(2, '0'); // Zero pad minute
+    const second = now.getSeconds().toString().padStart(2, '0'); // Zero pad second
 
     return `${day} ${month} ${year}, ${hour}:${minute}:${second}`;
 }
@@ -53,6 +55,7 @@ const CreateRecipe = () => {
     const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';
 
     const [recipeTitle, setRecipeTitle] = useState<string>('');
+    const [recipeSummary, setRecipeSummary] = useState<string>('');
     const [editorContent, setEditorContent] = useState<string>();
     const [featuredImage, setFeaturedImage] = useState<string>(defaultFeImgPath);
     const [category, setCategory] = useState([
@@ -91,6 +94,29 @@ const CreateRecipe = () => {
     ];
     const [fileExt, setFileExt] = useState('');
 
+    interface Recing {
+        recipe_ingredient: string
+    }
+
+    const [recins, setRecins] = useState<Recing[]>([{recipe_ingredient: ''}]);
+
+    const handleAddInput = () => {
+        setRecins([...recins, {recipe_ingredient: ''}]);
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index:number) => {
+        let value = event.target.value;
+        let onChangeValue = [...recins];
+        onChangeValue[index].recipe_ingredient = value;
+        setRecins(onChangeValue);
+    };
+
+    const handleDeleteInput = (index:number) => {
+        const newArray = [...recins];
+        newArray.splice(index, 1);
+        setRecins(newArray);
+    };
+
     const handleFeImgChange = (e:any) => {
         const file = e.target.files[0];
         if(!file) return
@@ -128,14 +154,19 @@ const CreateRecipe = () => {
         }
 
         let data = {};
+        let ingradients: string[] = [];
+        recins.map((item) => ingradients.push(item.recipe_ingredient));
+        console.log(ingradients);
 
-        if(recipeTitle == '' || editorContent == undefined) {
+        if(recipeTitle == '' || editorContent == undefined || recipeSummary == '') {
             toast.error("Required fields is empty.", toastDefOpts);
             data = {};
         } else {
             data = {
                 recipe_title: recipeTitle,
+                recipe_summary: recipeSummary,
                 recipe_content: editorContent,
+                recipe_ingradients: ingradients,
                 recipe_featured_image: newFileName,
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : ['uncategorized'],
                 recipe_author: "Author Name",
@@ -189,6 +220,28 @@ const CreateRecipe = () => {
 									/>
                                 </div>
                                 <div className="twgtr-pb-4">
+                                    <label htmlFor="recsum" className="twgtr-transition-all twgtr-inline-block after:twgtr-content-['*'] after:twgtr-ml-0.5 after:twgtr-text-theme-color-4 twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
+                                        Recipe Summary
+                                    </label>
+                                    {/* <input 
+										type="text" 
+										name="recipe_summary" 
+                                        id="recsum"
+										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+										autoComplete="off"
+                                        onChange={(e) => setRecipeSummary(e.target.value)}
+                                        value={recipeSummary}
+									/> */}
+                                    <textarea 
+                                        name="recipe_summary" 
+                                        id="recsum" 
+                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                        rows={5} 
+                                        value={recipeSummary} 
+                                        onChange={(e) => setRecipeSummary(e.target.value)}
+                                        autoComplete="off"></textarea>
+                                </div>
+                                <div className="twgtr-pb-4">
                                     <label className="twgtr-transition-all twgtr-inline-block after:twgtr-content-['*'] after:twgtr-ml-0.5 after:twgtr-text-theme-color-4 twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
                                         Recipe Description
                                     </label>
@@ -200,6 +253,40 @@ const CreateRecipe = () => {
                                         />
                                     </div>
                                     {/* {editorContent} */}
+                                </div>
+                                <div className="twgtr-pb-4">
+                                    <label className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
+                                        Recipe Ingredients.
+                                    </label>
+                                    {
+                                        recins.map((items, index) => (
+                                            <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[15px] twgtr-pb-4 last:twgtr-pb-0" key={index}>
+                                                <div className="twgtr-flex-1">
+                                                    <input 
+                                                        type="text" 
+                                                        name="recipe_ingredient" 
+                                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                                        placeholder="Eg. 1kg of Water" 
+                                                        autoComplete="off"
+                                                        value={items.recipe_ingredient}
+                                                        onChange={(event) => handleChange(event, index)}
+                                                    />
+                                                </div>
+                                                <div className="twgtr-flex twgtr-gap-x-[15px]">
+                                                    {index === recins.length - 1 && (
+                                                        <button type="button" title="Add Ingredient" onClick={() => handleAddInput()}>
+                                                            <HiOutlinePlus size={20} className="twgtr-transition-all twgtr-w-[15px] twgtr-h-[15px] md:twgtr-w-[20px] md:twgtr-h-[20px] twgtr-text-theme-color-1 dark:twgtr-text-theme-color-3" />
+                                                        </button>
+                                                    )}
+                                                    {recins.length > 1 && (
+                                                        <button type="button" title="Remove Ingredient" onClick={() => handleDeleteInput(0)}>
+                                                            <RiDeleteBin6Line size={20} className="twgtr-transition-all twgtr-w-[15px] twgtr-h-[15px] md:twgtr-w-[20px] md:twgtr-h-[20px] twgtr-text-red-600 dark:twgtr-text-red-400" />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                             </div>
                             <div className="twgtr-transition-all twgtr-w-full lg:twgtr-w-[30%] twgtr-bg-white twgtr-border twgtr-border-solid twgtr-border-slate-200 twgtr-px-4 twgtr-py-6 dark:twgtr-bg-slate-700 dark:twgtr-border-slate-600">
