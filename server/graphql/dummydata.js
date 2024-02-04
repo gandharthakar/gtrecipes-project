@@ -44,13 +44,3 @@ module.exports = {
     my_recipes,
     users
 }
-
-// https://stackoverflow.com/questions/50021669/why-am-i-getting-a-cannot-return-null-for-non-nullable-field-error-when-doing
-
-// https://www.linkedin.com/pulse/resolving-nested-queries-graphql-using-apollo-server-saransh-kataria
-
-// https://www.makeuseof.com/redirect-user-after-login-react/
-
-// https://stackoverflow.com/questions/74148094/how-to-store-action-payload-in-redux-toolkit
-
-// https://articles.wesionary.team/react-hook-form-schema-validation-using-zod-80d406e22cd8

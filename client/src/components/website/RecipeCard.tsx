@@ -35,8 +35,10 @@ const RecipeCard = (props:any) => {
                             </ul>
                         </div>
                         <div className="twgtr-px-[15px] md:twgtr-px-[20px] twgtr-pt-3 twgtr-pb-1">
-                            <NavLink to={`/view-recipe/${recipe_id}`} title={recipe_title} className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[20px] md:twgtr-text-[25px] twgtr-font-semibold twgtr-text-theme-color-1 dark:twgtr-text-slate-200">
-                                <h5>{recipe_title}</h5>
+                            <NavLink to={`/view-recipe/${recipe_id}`} title={recipe_title} className="twgtr-font-ubuntu twgtr-text-[20px] md:twgtr-text-[25px] twgtr-font-semibold">
+                                <h5 className="twgtr-transition-all twgtr-text-theme-color-1 dark:twgtr-text-slate-200">
+                                    {recipe_title}
+                                </h5>
                             </NavLink>
                         </div>
                         {
