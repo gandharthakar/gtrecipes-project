@@ -1,15 +1,18 @@
 import SiteBreadcrumb from "../../../components/website/SiteBreadcrumb";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { PiPlusBold } from "react-icons/pi";
 import SiteModal from "../../../components/website/SiteModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
 import { MdOutlineCategory } from "react-icons/md";
 import CategoryCard from "../../../components/website/CategoryCard";
-import { useParams } from "react-router-dom";
 import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
+import { useDispatch } from "react-redux";
+import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
+import Cookies from "universal-cookie";
+import { gql, useQuery } from "@apollo/client";
 
 /* Encode string to slug */
 function convertToSlug( str:string ) {
@@ -25,6 +28,15 @@ function convertToSlug( str:string ) {
     str = str.replace(/\s+/g, '-');   
     return str;
 }
+
+const GET_USER_DETAILS = gql`
+    query getUserPhotoAndName($id: ID!) {
+        getUserPhotoAndName(id: $id) {
+            user_name,
+            user_photo
+        }
+    }
+`;
 
 const UserProfileCat = () => {
     let { id } = useParams();
@@ -44,6 +56,57 @@ const UserProfileCat = () => {
     const [showModal, setShowModal] = useState(false);
     const [createCat, setCreateCat] = useState('');
     const [createCatSlug, setCreateCatSlug] = useState('');
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [userName, setUserName] = useState('Jp');
+    const [uname, setUname] = useState('John Paul');
+    const [profilePhoto, setProfilePhoto] = useState('');
+
+    const cookies = new Cookies();
+    const authUser = cookies.get("gjtrewcipets_auth_user");
+    const authUserID = cookies.get("gjtrewcipets_auth_user_id");
+    if(authUser) {
+        useQuery(GET_USER_DETAILS, {
+            variables: { id: authUserID },
+            onCompleted: data => {
+                // Set Profile Photo.
+                let upp = data.getUserPhotoAndName.user_photo;
+                if(upp !== '') {
+                    setProfilePhoto(upp);
+                } else {
+                    setProfilePhoto('');
+                }
+
+                // Set User Name.
+                let unm = data.getUserPhotoAndName.user_name;
+                setUname(unm);
+                let spltar = unm.split(" ");
+                if(spltar.length === 1) {
+                    let slcnam = spltar[0].split();
+                    if(slcnam.length === 1) {
+                        setUserName(slcnam);
+                    } else {
+                        if(slcnam < 3) {
+                            let c1 = slcnam.charAt(0);
+                            let c2 = slcnam.charAt(1);
+                            setUserName(c1 + c2);
+                        }
+                    }
+                } else {
+                    if(spltar.length < 3) {
+                        let w1 = spltar[0];
+                        let w2 = spltar[1];
+                        let fwc1 = w1.charAt(0);
+                        let fwc2 = w2.charAt(0);
+                        setUserName(fwc1+fwc2);
+                    }
+                }
+            }
+        });
+    }
+
+
     // console.log(convertToSlug("Cakes And Pastries"));
     const handleCreateCatModalInputChange = (e:any) => {
         const value = e.target.value;
@@ -72,6 +135,29 @@ const UserProfileCat = () => {
         }
         console.log(data);
     }
+
+    useEffect(() => {
+        const cookies = new Cookies();
+        const authUserID = cookies.get("gjtrewcipets_auth_user_id");
+        if(id !== authUserID) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+
+        if(authUserID !== id) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+    }, []);
+
     return (
         <>
             <ToastContainer />
@@ -80,18 +166,28 @@ const UserProfileCat = () => {
                 <div className="site-container">
                     <div className="twgtr-flex md:twgtr-items-center twgtr-flex-col md:twgtr-flex-row md:twgtr-flex-wrap md:twgtr-justify-between twgtr-gap-x-[10px] twgtr-gap-y-[15px] md:twgtr-gap-x-[20px]">
                         <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[10px] md:twgtr-gap-x-[20px]">
-                            <div className="twgtr-transition-all twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[80px] md:twgtr-h-[80px] twgtr-rounded-full twgtr-flex twgtr-items-center twgtr-justify-center twgtr-bg-slate-200 dark:twgtr-bg-slate-800">
-                                <div className="twgtr-transition-all twgtr-font-ubuntu twgtr-font-bold twgtr-text-slate-500 twgtr-uppercase twgtr-text-[20px] md:twgtr-text-[30px] dark:twgtr-text-slate-200">
-                                    Jp
+                            <div className="twgtr-transition-all twgtr-relative twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[80px] md:twgtr-h-[80px] twgtr-rounded-full twgtr-flex twgtr-items-center twgtr-justify-center twgtr-bg-slate-200 dark:twgtr-bg-slate-800">
+                                <div className="twgtr-transition-all twgtr-relative twgtr-z-[3] twgtr-font-ubuntu twgtr-font-bold twgtr-text-slate-500 twgtr-uppercase twgtr-text-[20px] md:twgtr-text-[30px] dark:twgtr-text-slate-200">
+                                    {userName}
                                 </div>
+                                {
+                                    profilePhoto !== '' ? 
+                                    (
+                                        <>
+                                            <img src={`http://localhost:48256/uploads/${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} />
+                                        </>
+                                    ) 
+                                    : 
+                                    ('')
+                                }
                             </div>
                             <div>
                                 <h1 className="twgtr-transition-all twgtr-font-open_sans twgtr-text-[20px] md:twgtr-text-[25px] twgtr-font-medium twgtr-text-slate-600 dark:twgtr-text-slate-200">
-                                    John Paul
+                                    {uname}
                                 </h1>
                                 <div className="twgtr-pt-1">
                                     <h2 className="twgtr-transition-all twgtr-font-open_sans twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-slate-600 dark:twgtr-text-slate-300">
-                                        <span className="twgtr-font-bold">10</span> Recipes . <span className="twgtr-font-bold">5</span> Categories
+                                        <span className="twgtr-font-bold">0</span> Recipes . <span className="twgtr-font-bold">0</span> Categories
                                     </h2>
                                 </div>
                             </div>

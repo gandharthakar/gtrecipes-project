@@ -8,7 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from "../../redux-service/ReduxStore";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+// import { useState } from "react";
 import RecipeCard from "../../components/website/RecipeCard";
 
 const ViewSingleRecipe = () => {
@@ -22,7 +22,8 @@ const ViewSingleRecipe = () => {
     ];
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     let share_uri = window.location.origin + "/view-recipe/" + id;
-    const [recipeTitle, setRecipeTitle] = useState('This is title for this recipe box This is title for this recipe box');
+    // const [recipeTitle, setRecipeTitle] = useState('This is title for this recipe box This is title for this recipe box');
+    let recipeTitle = 'This is title for this recipe box This is title for this recipe box';
 
     const copyURI = () => {
         const toastDefOpts = {

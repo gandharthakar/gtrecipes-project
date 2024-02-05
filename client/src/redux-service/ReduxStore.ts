@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import SiteThemeModeReducer from "./website/SiteThemeModeReducer";
+import userLoginReducer from "./website/auth/UserLoginReducer";
 
 const ReduxStore = configureStore({ 
     reducer: {
-        site_theme_mode: SiteThemeModeReducer
+        site_theme_mode: SiteThemeModeReducer,
+        user_login: userLoginReducer
     }
 });
 

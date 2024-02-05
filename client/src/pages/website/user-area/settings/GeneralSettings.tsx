@@ -1,13 +1,16 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import SideBarLeftLinks from "../../../../components/website/SideBarLeftLinks";
 import SiteBreadcrumb from "../../../../components/website/SiteBreadcrumb";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux-service/ReduxStore";
 import { toast, ToastContainer } from 'react-toastify';
+import Cookies from "universal-cookie";
 import "react-toastify/dist/ReactToastify.css";
+import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
+import { useEffect } from "react";
 
 const GeneralSettings = () => {
     let { id } = useParams();
@@ -34,7 +37,8 @@ const GeneralSettings = () => {
         },
     ];
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const validationSchema = z.object({
         userFullName: z.string({
             required_error: "Please enter Full Name",
@@ -75,6 +79,28 @@ const GeneralSettings = () => {
         toast.success("Settings Saved Success!", toastDefOpts);
         console.log(data);
     }
+
+    useEffect(() => {
+        const cookies = new Cookies();
+        const authUserID = cookies.get("gjtrewcipets_auth_user_id");
+        if(id !== authUserID) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+
+        if(authUserID !== id) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+    }, []);
 
     return (
         <>

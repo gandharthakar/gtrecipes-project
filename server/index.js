@@ -5,6 +5,7 @@ const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./graphql/rootschema');
 const multer = require("multer");
 const path = require("path");
+const { gtrecipes_mdb } = require("./mongodb/db");
 
 const port = process.env.SERVER_PORT || 48256;
 
@@ -23,11 +24,14 @@ const fileUpload = multer({
 
 async function startApolloServer(typeDefs, resolvers){
     
+    gtrecipes_mdb();
+
     // const server = new ApolloServer({typeDefs, resolvers, csrfPrevention: true})
     const server = new ApolloServer({typeDefs, resolvers})
     const app = express();
     app.use(cors());
     app.use(express.json());
+    app.use('/uploads', express.static(path.join(__dirname, './public/uploads')));
     await server.start();
     server.applyMiddleware({app, path: '/graphql'});
 

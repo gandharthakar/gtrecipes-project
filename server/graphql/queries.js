@@ -2,42 +2,38 @@ const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
 
-    type Query {
-        recipes: [RecipeType]
-        recipe(id: ID!): RecipeType
-        RecipeWithUser(id: ID!): RecipeWithUser
+    type RegisterUser {
+        full_name: String!
+        email: String!
+        password: String!
+        confirm_password: String!
     }
 
-    type GQLUser {
-        name: String!
-        email: String!
-        profile_picture: String!
+    type RegStatus {
+        message: String!
+        success: Boolean!
+    }
+
+    type LogStatus {
+        user_id: String!
+        token: String!
+        message: String!
+        success: Boolean!
+    }
+
+    type UserProfileNameAndPhoto {
+        user_id: ID!
+        user_name: String!
+        user_photo: String
+    }
+
+    type Query {
+        getUserPhotoAndName(id: ID!): UserProfileNameAndPhoto
     }
 
     type Mutation {
-        createGqlUser(name: String!, email: String!, profile_picture: String!): GQLUser!
-    }
-
-    type RecipeType {
-        id: ID!,
-        recipe_title: String,
-        recipe_content: String,
-        userid: String
-    }
-
-    type User {
-        id: ID!,
-        name: String,
-        email: String,
-        isAdmin: Boolean
-    }
-
-    type RecipeWithUser {
-        id: ID!,
-        recipe_title: String,
-        recipe_content: String,
-        userid: String
-        user: [User]
+        registerNewUser(full_name: String!, email: String!, password: String!, confirm_password: String!): RegStatus!
+        loginUser(email: String!, password: String!): LogStatus!
     }
 `;
 
