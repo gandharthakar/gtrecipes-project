@@ -6,21 +6,27 @@ const { typeDefs, resolvers } = require('./graphql/rootschema');
 const multer = require("multer");
 const path = require("path");
 const { gtrecipes_mdb } = require("./mongodb/db");
+const fs = require("fs");
 
 const port = process.env.SERVER_PORT || 48256;
 
-const multStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/uploads')
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname + path.extname(file.originalname))
-    }
-});
+function uploadFileWithDest(dest) {
+    const multStorage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, 'public/uploads/'+ dest);
+        },
+        filename: (req, file, cb) => {
+            // cb(null, file.originalname + path.extname(file.originalname));
+            cb(null, file.originalname);
+        }
+    });
 
-const fileUpload = multer({
-    storage: multStorage
-});
+    const fileUpload = multer({
+        storage: multStorage
+    }).single('file');
+
+    return fileUpload;
+}
 
 async function startApolloServer(typeDefs, resolvers){
     
@@ -35,9 +41,41 @@ async function startApolloServer(typeDefs, resolvers){
     await server.start();
     server.applyMiddleware({app, path: '/graphql'});
 
-    app.post('/site-uploads', fileUpload.single('file'), (req, res) => {
+    app.post('/site-uploads/:dest', (req, res) => {
         // console.log(req.file);
+        // console.log(req.params.dest);
+        let currUpload = uploadFileWithDest(req.params.dest);
+        currUpload(req,res,function(err){
+            if(err){
+                 res.json({error_code:1,err_desc:err});
+                 return;
+            }
+            res.json({error_code:0,err_desc:null, filename: req.file.filename});
+        });
         console.log("Requested File has been uploaded!");
+    });
+
+    app.post('/delete-uploads/:dest', (req, res) => {
+        // console.log(req.params.dest);
+        // console.log(req.body.fileName);
+        const filename = req.body.fileName;
+        const dest = req.params.dest;
+        const filePath = path.join(__dirname, './public/uploads/'+dest, filename);
+
+        // Check if file exists before deletion
+        fs.access(filePath, fs.constants.F_OK, (err) => {
+            if (err) {
+                return res.status(404).send('File not found');
+            }
+
+            // Delete the file
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    return res.status(500).send('Error deleting file');
+                }
+                res.send('File deleted successfully');
+            });
+        });
     });
     
     app.listen(port, () => { 

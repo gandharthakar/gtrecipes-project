@@ -1,16 +1,49 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SideBarLeftLinks from "../../../../components/website/SideBarLeftLinks";
 import SiteBreadcrumb from "../../../../components/website/SiteBreadcrumb";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RootState } from "../../../../redux-service/ReduxStore";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
+import Cookies from "universal-cookie";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import axios from "axios";
+
+function makeid(length:any) {
+	let result = '';
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	const charactersLength = characters.length;
+	let counter = 0;
+	while (counter < length) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		counter += 1;
+	}
+	return result;
+}
+
+const GET_USER_PROFILE_PHOTO = gql`
+    query getProfilePicture($id: ID!) {
+        getProfilePicture(id: $id) {
+            user_photo
+        }
+    }
+`;
+
+const UPDATE_USER_PROFILE_PHOTO = gql`
+    mutation updateProfilePicture($id: ID!, $user_photo: String) {
+        updateProfilePicture(id: $id, user_photo: $user_photo) {
+            message,
+            success
+        }
+    }
+`;
 
 const ProfilePictureSettings = () => {
     let { id } = useParams();
-    const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
+    
     const sideBarLinks = [
         {
             id: 1,
@@ -34,12 +67,45 @@ const ProfilePictureSettings = () => {
         },
     ];
 
+    const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
+    const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const defaultFeImgPath = 'https://placehold.co/500x500?text=Profile.';
     const [image, setImage] = useState<string>(defaultFeImgPath);
     const [profile, setProfile] = useState<string>('');
     const [fileext, setFileExt] = useState<string>('');
     const [filSize, setFileSize] = useState<boolean>(false);
     const [fileDimensions, setFileDimensions] = useState<boolean>(false);
+
+    // Get Profile Photo.
+    let {data} = useQuery(GET_USER_PROFILE_PHOTO, {
+        variables: {id: id},
+        onCompleted: fdata => {
+            // console.log(fdata);
+            if(fdata?.getProfilePicture.user_photo == '') {
+                setImage(defaultFeImgPath);
+            } else {
+                setImage(pp_path + fdata?.getProfilePicture.user_photo);
+            }
+        }
+    });
+
+    let [updProPic] = useMutation(UPDATE_USER_PROFILE_PHOTO, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            const toastDefOpts = {
+                autoClose: 3000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
+            if(fdata.updateProfilePicture.success) {
+                toast.success(fdata.updateProfilePicture.message, toastDefOpts);
+            } else {
+                toast.error(fdata.updateProfilePicture.message, toastDefOpts);
+            }
+        }
+    })
 
     const handleFileChange = (e:any) => {
         let file = e.target.files[0];
@@ -79,6 +145,26 @@ const ProfilePictureSettings = () => {
         setFileExt('');
         setFileSize(false);
         setFileDimensions(false);
+
+        if(data?.getProfilePicture.user_photo !== '') {
+            console.log('hey');
+            let fileName = data?.getProfilePicture.user_photo;
+            axios.post('http://localhost:48256/delete-uploads/site-user-profile-photos', {fileName})
+            .then(() => {
+                // console.log(res);
+                updProPic({
+                    variables: {
+                        id: id,
+                        user_photo: ''
+                    }
+                });
+                let ss = setTimeout(function(){
+                    window.location.reload();
+                    clearTimeout(ss);
+                }, 300);
+            })
+            .catch(err => console.log(err));
+        }
     }
 
     const handleSubmit = async (e:any) => {
@@ -105,12 +191,59 @@ const ProfilePictureSettings = () => {
                     if(!fileDimensions) {
                         toast.error("Image size is expected 500px x 500px. (square size)", toastDefOpts);
                     } else {
-                        toast.success("Changes Saved Successfully.", toastDefOpts);
+                        const newFileName = `${makeid(12)}-${Date.now()}.${fileext}`;
+                        const file = new File([profile], newFileName);
+
+                        updProPic({
+                            variables: {
+                                id: id,
+                                user_photo: newFileName
+                            }
+                        });
+
+                        const fData = new FormData();
+                        fData.append('file', file);
+                        axios.post('http://localhost:48256/site-uploads/site-user-profile-photos', fData)
+                        .then((res) => {
+                            // console.log(res);
+                            if(res.status === 200) {
+                                //toast.success("Photo Updated Successfully!", toastDefOpts);
+                                let ss = setTimeout(function(){
+                                    window.location.reload();
+                                    clearTimeout(ss);
+                                }, 300);
+                            } else {
+                                toast.error("Something Is Wrong!", toastDefOpts);
+                            }
+                        })
+                        .catch(err => console.log(err));
                     }
                 }
             }
         }
     }
+
+    useEffect(() => {
+        const cookies = new Cookies();
+        const authUserID = cookies.get("gjtrewcipets_auth_user_id");
+        if(id !== authUserID) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+
+        if(authUserID !== id) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+    }, []);
 
     return (
         <>

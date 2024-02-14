@@ -23,6 +23,44 @@ const resolvers = {
                 console.log(error.message);
             }
             return respdata;
+        },
+        getGeneralSettings: async (parent, args) => {
+            let respdata = {
+                user_name: '',
+                user_email: '',
+                ripp: 0,
+                cipp: 0
+            };
+            try {
+                const user = await SiteUserModel.findOne({_id: args.id});
+                if(user) {
+                    respdata = {
+                        user_name: user.user_full_name,
+                        user_email: user.user_email,
+                        ripp: user.user_recipe_items_per_page,
+                        cipp: user.user_categories_items_per_page
+                    };
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+            return respdata;
+        },
+        getProfilePicture: async (parent, args) => {
+            let respdata = {
+                user_photo: ''
+            };
+            try {
+                const user = await SiteUserModel.findOne({_id: args.id});
+                if(user) {
+                    respdata = {
+                        user_photo: user.user_profile_photo
+                    }
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+            return respdata;
         }
     },
     Mutation: {
@@ -140,6 +178,135 @@ const resolvers = {
                     user_name: '',
                 }
 
+            }
+            return frm_status;
+        },
+        updateGeneralSettings: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let {id, user_name, user_email, ripp, cipp} = args;
+            const user = await SiteUserModel.findOne({_id: id});
+            if(user) {
+                if(user_name && user_email && ripp && cipp) {
+                    try {
+                        await SiteUserModel.findOneAndUpdate({_id: id}, {
+                            user_full_name: user_name,
+                            user_email,
+                            user_recipe_items_per_page: ripp,
+                            user_categories_items_per_page: cipp
+                        }, {
+                            new: true
+                        });
+                        frm_status = {
+                            message: "User Updated Successfully!",
+                            success: true
+                        }
+                    } catch (error) {
+                        console.log(error.message);
+                        frm_status = {
+                            message: "Unable To Update User General Settings.",
+                            success: false
+                        }
+                    }
+                } else {
+                    frm_status = {
+                        message: "Missing Required Field",
+                        success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: "User Not Exist",
+                    success: false
+                }
+            }
+            return frm_status;
+        },
+        updatePassword: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let {id, password, confirm_password} = args;
+            const user = await SiteUserModel.findOne({_id: id});
+            if(user) {
+                if(password && confirm_password) {
+                    if(password === confirm_password) {
+                        try {
+                            const salt = await bcrypt.genSalt(10);
+                            const hashPwd = await bcrypt.hash(password, salt);
+                            await SiteUserModel.findOneAndUpdate({_id: id}, {
+                                user_password: hashPwd
+                            }, {
+                                new: true
+                            });
+                            frm_status = {
+                                message: "Password Updated Successfully!",
+                                success: true
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                            frm_status = {
+                                message: "Unable To Update User Password.",
+                                success: false
+                            }
+                        }
+
+                    } else {
+                        frm_status = {
+                            message: "Password & Confirm Password Doesn't Match.",
+                            success: false
+                        }
+                    }
+                } else {
+                    frm_status = {
+                        message: "Missing Required Field.",
+                        success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: "User Not Exist.",
+                    success: false
+                }
+            }
+            return frm_status;
+        },
+        updateProfilePicture: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let {id, user_photo} = args;
+            const user = await SiteUserModel.findOne({_id: id});
+            if(user) {
+                try {
+                    await SiteUserModel.findOneAndUpdate({_id: id}, {
+                        user_profile_photo: user_photo
+                    }, {
+                        new: true
+                    });
+                    frm_status = {
+                        message: "Profile Photo Updated Successfully!",
+                        success: true
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                    frm_status = {
+                        message: "Unable To Update User Profile Photo.",
+                        success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: "User Not Exist",
+                    success: false
+                }
             }
             return frm_status;
         }

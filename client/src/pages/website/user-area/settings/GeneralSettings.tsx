@@ -7,10 +7,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux-service/ReduxStore";
 import { toast, ToastContainer } from 'react-toastify';
-import Cookies from "universal-cookie";
 import "react-toastify/dist/ReactToastify.css";
+import Cookies from "universal-cookie";
 import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
 import { useEffect } from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
+
+const GET_USER_DETAILS = gql`
+    query getGeneralSettings($id: ID!) {
+        getGeneralSettings(id: $id) {
+            user_name,
+            user_email,
+            ripp,
+            cipp
+        }
+    }
+`;
+
+const UPDATE_USER_DETAILS = gql`
+    mutation updateGeneralSettings($id: ID!, $user_name: String!, $user_email: String!, $ripp: Int!, $cipp: Int!) {
+        updateGeneralSettings(id: $id, user_name: $user_name, user_email: $user_email, ripp: $ripp, cipp: $cipp) {
+            message,
+            success
+        }
+    }
+`;
 
 const GeneralSettings = () => {
     let { id } = useParams();
@@ -39,6 +60,8 @@ const GeneralSettings = () => {
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const cookies = new Cookies();
+    const authUserID = cookies.get("gjtrewcipets_auth_user_id");
     const validationSchema = z.object({
         userFullName: z.string({
             required_error: "Please enter Full Name",
@@ -65,19 +88,43 @@ const GeneralSettings = () => {
 
     type validationSchema = z.infer<typeof validationSchema>;
 
-    const { register, handleSubmit, formState: { errors }} = useForm<validationSchema>({
+    // Get values from DB.
+    let {loading, data} = useQuery(GET_USER_DETAILS, {
+        variables: { id: authUserID },
+    });
+
+    // Update Values
+    let [uGenSet] = useMutation(UPDATE_USER_DETAILS, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            const toastDefOpts = {
+                autoClose: 3000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
+            if(fdata.updateGeneralSettings.success) {
+                toast.success("Settings Saved Successfully!", toastDefOpts);
+            } else {
+                toast.error(fdata.updateGeneralSettings.message, toastDefOpts);
+            }
+        }
+    })
+
+    const { register, handleSubmit, setValue, formState: { errors }} = useForm<validationSchema>({
         resolver: zodResolver(validationSchema)
     });
     
-    const handleFormSubmit: SubmitHandler<validationSchema> = (data) => {
+    const handleFormSubmit: SubmitHandler<validationSchema> = (formData) => {
         // e.preventDefault();
-        const toastDefOpts = {
-            autoClose: 3000,
-            closeOnClick: true,
-            theme: `${ThemeMode ? 'dark' : 'light'}`
-        }
-        toast.success("Settings Saved Success!", toastDefOpts);
-        console.log(data);
+        uGenSet({
+            variables: {
+                id: id,
+                user_name: formData.userFullName,
+                user_email: formData.userEmail,
+                ripp: formData.recipeItemsPerPage,
+                cipp: formData.categoryItemsPerPage
+            }
+        });
     }
 
     useEffect(() => {
@@ -100,7 +147,15 @@ const GeneralSettings = () => {
                 clearTimeout(ss);
             }, 10);
         }
-    }, []);
+
+        if (data && !loading) {
+            // Set default values from the query data
+            setValue("userFullName", data?.getGeneralSettings.user_name);
+            setValue("userEmail", data?.getGeneralSettings.user_email);
+            setValue("recipeItemsPerPage", data?.getGeneralSettings.ripp);
+            setValue("categoryItemsPerPage", data?.getGeneralSettings.cipp);
+        }
+    }, [data, loading, setValue]);
 
     return (
         <>

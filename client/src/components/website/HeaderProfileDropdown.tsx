@@ -19,6 +19,7 @@ const GET_USER_DETAILS = gql`
 `;
 
 const HeaderProfileDropdown = () => {
+    const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
     const navigate = useNavigate();
     const UserAuth = useSelector((state: RootState) => state.user_login.isAuthenticated);
     const dispatch = useDispatch();
@@ -122,7 +123,7 @@ const HeaderProfileDropdown = () => {
                                     profilePhoto !== '' ? 
                                     (
                                         <>
-                                            <img src={`http://localhost:48256/uploads/${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} />
+                                            <img src={`${pp_path}${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} />
                                         </>
                                     ) 
                                     : 

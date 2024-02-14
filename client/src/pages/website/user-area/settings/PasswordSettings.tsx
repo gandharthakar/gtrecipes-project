@@ -1,16 +1,28 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SideBarLeftLinks from "../../../../components/website/SideBarLeftLinks";
 import SiteBreadcrumb from "../../../../components/website/SiteBreadcrumb";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux-service/ReduxStore";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
+import Cookies from "universal-cookie";
+import { gql, useMutation } from "@apollo/client";
+
+const UPDATE_USER_PWD = gql`
+    mutation updatePassword($id: ID!, $password: String!, $confirm_password: String!) {
+        updatePassword(id: $id, password: $password, confirm_password: $confirm_password) {
+            message,
+            success
+        }
+    }
+`;
 
 const PasswordSettings = () => {
     let { id } = useParams();
@@ -38,7 +50,8 @@ const PasswordSettings = () => {
     ];
 
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const[showPassword, setShowPassword] = useState(false);
 	const[showConfPassword, setShowConfPassword] = useState(false);
 
@@ -56,20 +69,59 @@ const PasswordSettings = () => {
 
     type validationSchema = z.infer<typeof validationSchema>;
 
+    // Update Password
+    let [updPwd] = useMutation(UPDATE_USER_PWD, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            const toastDefOpts = {
+                autoClose: 3000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
+            if(fdata.updatePassword.success) {
+                toast.success(fdata.updatePassword.message, toastDefOpts);
+            } else {
+                toast.error(fdata.updatePassword.message, toastDefOpts);
+            }
+        }
+    })
+
     const { register, handleSubmit, formState: { errors }} = useForm<validationSchema>({
         resolver: zodResolver(validationSchema)
     });
 
-    const handleFormSubmit: SubmitHandler<validationSchema> = (data) => {
+    const handleFormSubmit: SubmitHandler<validationSchema> = (formData) => {
         // e.preventDefault();
-        const toastDefOpts = {
-            autoClose: 3000,
-            closeOnClick: true,
-            theme: `${ThemeMode ? 'dark' : 'light'}`
-        }
-        toast.success("Settings Saved Success!", toastDefOpts);
-        console.log(data);
+        updPwd({
+            variables: {
+                id: id,
+                password: formData.userNewPassword,
+                confirm_password: formData.userNewConfirmPassword
+            }
+        })
     }
+
+    useEffect(() => {
+        const cookies = new Cookies();
+        const authUserID = cookies.get("gjtrewcipets_auth_user_id");
+        if(id !== authUserID) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+
+        if(authUserID !== id) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+    }, []);
 
     return (
         <>
