@@ -13,7 +13,9 @@ const GET_USER_DETAILS = gql`
     query getUserPhotoAndName($id: ID!) {
         getUserPhotoAndName(id: $id) {
             user_name,
-            user_photo
+            user_photo,
+            ripp,
+            cipp
         }
     }
 `;
@@ -35,9 +37,11 @@ const UserProfile = () => {
     const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [userName, setUserName] = useState('Jp');
-    const [uname, setUname] = useState('John Paul');
-    const [profilePhoto, setProfilePhoto] = useState('');
+    const [userName, setUserName] = useState<string>('Jp');
+    const [uname, setUname] = useState<string>('John Paul');
+    const [profilePhoto, setProfilePhoto] = useState<string>('');
+    const [recCount, setRecCount] = useState<number>(0);
+    const [catCount, setCatCount] = useState<number>(0);
 
     const cookies = new Cookies();
     const authUser = cookies.get("gjtrewcipets_auth_user");
@@ -53,6 +57,9 @@ const UserProfile = () => {
                 } else {
                     setProfilePhoto('');
                 }
+
+                setRecCount(data.getUserPhotoAndName.ripp);
+                setCatCount(data.getUserPhotoAndName.cipp);
 
                 // Set User Name.
                 let unm = data.getUserPhotoAndName.user_name;
@@ -132,7 +139,7 @@ const UserProfile = () => {
                                 </h1>
                                 <div className="twgtr-pt-1">
                                     <h2 className="twgtr-transition-all twgtr-font-open_sans twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-slate-600 dark:twgtr-text-slate-300">
-                                        <span className="twgtr-font-bold">0</span> Recipes . <span className="twgtr-font-bold">0</span> Categories
+                                        <span className="twgtr-font-bold">{recCount}</span> Recipes . <span className="twgtr-font-bold">{catCount}</span> Categories
                                     </h2>
                                 </div>
                             </div>

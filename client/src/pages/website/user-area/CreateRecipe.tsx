@@ -11,7 +11,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
-import { useNavigate } from 'react-router';
+// import { useNavigate } from 'react-router';
 import { HiOutlinePlus } from "react-icons/hi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
@@ -50,7 +50,7 @@ function getDateTimeString() {
 }
 
 const CreateRecipe = () => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';
 
@@ -173,7 +173,7 @@ const CreateRecipe = () => {
                 recipe_author_id: 1,
                 recipe_created_at: getDateTimeString()
             }
-            navigate('/user-area/profile/1');
+            // navigate('/user-area/profile/1');
         }
 
         console.log(data);

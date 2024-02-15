@@ -2,12 +2,24 @@ import { useParams } from "react-router-dom";
 import SideBarLeftLinks from "../../../../components/website/SideBarLeftLinks";
 import SiteBreadcrumb from "../../../../components/website/SiteBreadcrumb";
 import SiteModal from "../../../../components/website/SiteModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux-service/ReduxStore";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router';
+import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
+import Cookies from "universal-cookie";
+import { gql, useMutation } from "@apollo/client";
+
+const DELETE_USER = gql`
+    mutation deleteAccount($id: ID!) {
+        deleteAccount(id: $id) {
+            message,
+            success
+        }
+    }
+`;
 
 const DeleteAccountSettings = () => {
     let { id } = useParams();
@@ -35,20 +47,57 @@ const DeleteAccountSettings = () => {
     ];
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const [showModal, setShowModal] = useState(false);
 
-    const handleSubmit = () => {
+    let [delAcc] = useMutation(DELETE_USER, {
+        onCompleted: fdata => {
+            console.log(fdata);
+            const toastDefOpts = {
+                autoClose: 3000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
+            if(fdata.deleteAccount.success) {
+                toast.success(fdata.deleteAccount.message, toastDefOpts);
+            } else {
+                toast.error(fdata.deleteAccount.message, toastDefOpts);
+            }
+        }
+    });
 
-        const toastDefOpts = {
-            autoClose: 3000,
-            closeOnClick: true,
-            theme: `${ThemeMode ? 'dark' : 'light'}`
+    const handleSubmit = () => {
+        delAcc({
+            variables: {
+                id
+            }
+        });
+        setShowModal(false);
+        // navigate("/");
+    }
+
+    useEffect(() => {
+        const cookies = new Cookies();
+        const authUserID = cookies.get("gjtrewcipets_auth_user_id");
+        if(id !== authUserID) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
         }
 
-        toast.error("Required fields is empty.", toastDefOpts);
-        navigate("/");
-    }
+        if(authUserID !== id) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 10);
+        }
+    }, []);
 
     return (
         <>

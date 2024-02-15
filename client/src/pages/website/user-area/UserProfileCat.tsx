@@ -3,16 +3,16 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { PiPlusBold } from "react-icons/pi";
 import SiteModal from "../../../components/website/SiteModal";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from 'react-toastify';
-import { RootState } from '../../../redux-service/ReduxStore';
-import { useSelector } from "react-redux";
+// import { toast, ToastContainer } from 'react-toastify';
+// import { RootState } from '../../../redux-service/ReduxStore';
+// import { useSelector } from "react-redux";
 import { MdOutlineCategory } from "react-icons/md";
 import CategoryCard from "../../../components/website/CategoryCard";
 import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 
 /* Encode string to slug */
 function convertToSlug( str:string ) {
@@ -33,7 +33,30 @@ const GET_USER_DETAILS = gql`
     query getUserPhotoAndName($id: ID!) {
         getUserPhotoAndName(id: $id) {
             user_name,
-            user_photo
+            user_photo,
+            ripp,
+            cipp
+        }
+    }
+`;
+
+const CREATE_RECIPE_CATEGORY = gql`
+    mutation createRecipeCategories($category_name: String!, $category_slug: String!, $category_auth_id: String!, $category_auth_name: String!) {
+        createRecipeCategories(category_name: $category_name, category_slug: $category_slug, category_auth_id: $category_auth_id, category_auth_name: $category_auth_name) {
+            message,
+            success
+        }
+    }
+`;
+
+const GET_RECIPE_CATEGORIES = gql`
+    query getAllRecipeCategories($id: ID!) {
+        getAllRecipeCategories(id: $id) {
+            id,
+            category_name,
+            category_slug,
+            category_auth_id,
+            category_auth_name
         }
     }
 `;
@@ -52,7 +75,7 @@ const UserProfileCat = () => {
             page_slug: `/user-area/categories/${id}`
         },
     ];
-    const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
+    // const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
     const [showModal, setShowModal] = useState(false);
     const [createCat, setCreateCat] = useState('');
@@ -60,53 +83,96 @@ const UserProfileCat = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [userName, setUserName] = useState('Jp');
-    const [uname, setUname] = useState('John Paul');
-    const [profilePhoto, setProfilePhoto] = useState('');
+    const [userName, setUserName] = useState<string>('Jp');
+    const [uname, setUname] = useState<string>('John Paul');
+    const [profilePhoto, setProfilePhoto] = useState<string>('');
+    const [recCount, setRecCount] = useState<number>(0);
+    const [catCount, setCatCount] = useState<number>(0);
+
+    interface RecCats {
+        id: string,
+        category_name: string,
+        category_slug: string,
+        category_auth_id: string,
+        category_auth_name: string
+    }
+    const [recipeCats, setRecipeCats] = useState<RecCats[]>([]);
 
     const cookies = new Cookies();
-    const authUser = cookies.get("gjtrewcipets_auth_user");
     const authUserID = cookies.get("gjtrewcipets_auth_user_id");
-    if(authUser) {
-        useQuery(GET_USER_DETAILS, {
-            variables: { id: authUserID },
-            onCompleted: data => {
-                // Set Profile Photo.
-                let upp = data.getUserPhotoAndName.user_photo;
-                if(upp !== '') {
-                    setProfilePhoto(upp);
-                } else {
-                    setProfilePhoto('');
-                }
+    
+    useQuery(GET_USER_DETAILS, {
+        variables: { id: authUserID },
+        onCompleted: fdata => {
+            // Set Profile Photo.
+            let upp = fdata.getUserPhotoAndName.user_photo;
+            if(upp !== '') {
+                setProfilePhoto(upp);
+            } else {
+                setProfilePhoto('');
+            }
 
-                // Set User Name.
-                let unm = data.getUserPhotoAndName.user_name;
-                setUname(unm);
-                let spltar = unm.split(" ");
-                if(spltar.length === 1) {
-                    let slcnam = spltar[0].split();
-                    if(slcnam.length === 1) {
-                        setUserName(slcnam);
-                    } else {
-                        if(slcnam < 3) {
-                            let c1 = slcnam.charAt(0);
-                            let c2 = slcnam.charAt(1);
-                            setUserName(c1 + c2);
-                        }
-                    }
+            setRecCount(fdata.getUserPhotoAndName.ripp);
+            setCatCount(fdata.getUserPhotoAndName.cipp);
+
+            // Set User Name.
+            let unm = fdata.getUserPhotoAndName.user_name;
+            setUname(unm);
+
+            let spltar = unm.split(" ");
+            if(spltar.length === 1) {
+                let slcnam = spltar[0].split();
+                if(slcnam.length === 1) {
+                    setUserName(slcnam);
                 } else {
-                    if(spltar.length < 3) {
-                        let w1 = spltar[0];
-                        let w2 = spltar[1];
-                        let fwc1 = w1.charAt(0);
-                        let fwc2 = w2.charAt(0);
-                        setUserName(fwc1+fwc2);
+                    if(slcnam < 3) {
+                        let c1 = slcnam.charAt(0);
+                        let c2 = slcnam.charAt(1);
+                        setUserName(c1 + c2);
                     }
+                }
+            } else {
+                if(spltar.length < 3) {
+                    let w1 = spltar[0];
+                    let w2 = spltar[1];
+                    let fwc1 = w1.charAt(0);
+                    let fwc2 = w2.charAt(0);
+                    setUserName(fwc1+fwc2);
                 }
             }
-        });
-    }
+        }
+    });
 
+    useQuery(GET_RECIPE_CATEGORIES, {
+        variables: { id },
+        onCompleted: grcdata => {
+            // console.log(grcdata);
+            setRecipeCats(grcdata?.getAllRecipeCategories);
+        }
+    });
+
+    // console.log(recipeCats);
+    
+    // Create Categories.
+    let [crtCats] = useMutation(CREATE_RECIPE_CATEGORY, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            // const toastDefOpts = {
+            //     autoClose: 3000,
+            //     closeOnClick: true,
+            //     theme: `${ThemeMode ? 'dark' : 'light'}`
+            // };
+            // if(fdata.createRecipeCategories.success) {
+            //     toast.success(fdata.createRecipeCategories.message, toastDefOpts);
+            // } else {
+            //     toast.error(fdata.createRecipeCategories.message, toastDefOpts);
+            // }
+            alert(fdata.createRecipeCategories.message);
+            if(fdata.createRecipeCategories.success) {
+                window.location.reload();
+            }
+        },
+    })
 
     // console.log(convertToSlug("Cakes And Pastries"));
     const handleCreateCatModalInputChange = (e:any) => {
@@ -118,23 +184,47 @@ const UserProfileCat = () => {
     const handleSubmit = (e:any) => {
         e.preventDefault();
 
-        const toastDefOpts = {
-            autoClose: 3000,
-            closeOnClick: true,
-            theme: `${ThemeMode ? 'dark' : 'light'}`
-        }
+        // const toastDefOpts = {
+        //     autoClose: 1000,
+        //     closeOnClick: true,
+        //     theme: `${ThemeMode ? 'dark' : 'light'}`
+        // }
 
-        let data = {};
+        let ct_data = {
+            category_name: '',
+            category_slug: '',
+            category_auth_id: '',
+            category_auth_name: ''
+        };
         if(createCat == '') {
-            toast.error("Required fields is empty.", toastDefOpts);
-            data = {};
+            // toast.error("Required fields is empty.", toastDefOpts);
+            alert("Required fields is empty.");
+            ct_data = {
+                category_name: '',
+                category_slug: '',
+                category_auth_id: '',
+                category_auth_name: ''
+            };
         } else {
-            data = {
+            ct_data = {
                 category_name: createCat,
-                category_slug: createCatSlug
+                category_slug: createCatSlug,
+                category_auth_id: id ? id : '',
+                category_auth_name: uname
             }
+            setShowModal(!showModal);
+            crtCats({
+                variables: {
+                    category_name: ct_data.category_name,
+                    category_slug: ct_data.category_slug,
+                    category_auth_id: ct_data.category_auth_id,
+                    category_auth_name: ct_data.category_auth_name
+                }
+            });        
+            setCreateCat('');
+            setCreateCatSlug('');
         }
-        console.log(data);
+        // console.log(ct_data);
     }
 
     useEffect(() => {
@@ -161,7 +251,7 @@ const UserProfileCat = () => {
 
     return (
         <>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
             <SiteBreadcrumb page_name="Categories" page_title="All Categories" />
             <div className="twgtr-transition-all twgtr-px-4 twgtr-py-6 lg:twgtr-py-12 twgtr-border-t twgtr-border-solid twgtr-border-slate-300 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-600">
                 <div className="site-container">
@@ -188,7 +278,7 @@ const UserProfileCat = () => {
                                 </h1>
                                 <div className="twgtr-pt-1">
                                     <h2 className="twgtr-transition-all twgtr-font-open_sans twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-slate-600 dark:twgtr-text-slate-300">
-                                        <span className="twgtr-font-bold">0</span> Recipes . <span className="twgtr-font-bold">0</span> Categories
+                                        <span className="twgtr-font-bold">{recCount}</span> Recipes . <span className="twgtr-font-bold">{catCount}</span> Categories
                                     </h2>
                                 </div>
                             </div>
@@ -253,7 +343,7 @@ const UserProfileCat = () => {
                         </div>
                         <div className="twgtr-transition-all twgtr-border-t twgtr-border-slate-300 twgtr-border-solid dark:twgtr-border-slate-500">
                             <div className="twgtr-px-[20px] twgtr-py-[10px] twgtr-flex twgtr-gap-x-4 twgtr-gap-y-3 twgtr-flex-wrap twgtr-items-center twgtr-justify-end">
-                                <button type="button" title="Close" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-2 twgtr-text-theme-color-2 hover:twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2 hover:twgtr-border-theme-color-2 dark:twgtr-border-slate-300 dark:twgtr-text-slate-300 dark:hover:twgtr-bg-slate-300 dark:hover:twgtr-text-slate-700" onClick={() => setShowModal(false)}>
+                                <button type="button" title="Close" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-2 twgtr-text-theme-color-2 hover:twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2 hover:twgtr-border-theme-color-2 dark:twgtr-border-slate-300 dark:twgtr-text-slate-300 dark:hover:twgtr-bg-slate-300 dark:hover:twgtr-text-slate-700" onClick={() => setShowModal(!showModal)}>
                                     Close
                                 </button>
                                 <button type="submit" title="Create" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 hover:twgtr-bg-theme-color-4-hover-dark twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-border-theme-color-4-hover-dark">
@@ -274,25 +364,34 @@ const UserProfileCat = () => {
 						</div>
 
                         <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-250px)] 2xl:twgtr-w-[calc(100%-300px)] twgtr-border twgtr-border-solid twgtr-px-4 twgtr-py-3 lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">
-                            {/* No Category Found */}
-                            <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
-                                <MdOutlineCategory size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
-                                <div className="twgtr-pt-2 md:twgtr-pt-4">
-                                    <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
-                                        No Categories Found
-                                    </h6>
-                                </div>
-                                <div className="twgtr-pt-1">
-                                    <NavLink to="#" title="+ Add New" className="twgtr-transition-all twgtr-font-open_sans twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-4" onClick={() => setShowModal(true)}>
-                                        + Add New
-                                    </NavLink>
-                                </div>
-                            </div>
-
-                            <div className="">
-                                <CategoryCard user_id={1} category_id={1} category_name={"Cookies"} category_slug={"cookies"} />
-                                <CategoryCard user_id={1} category_id={2} category_name={"Cakes"} category_slug={"cakes"} />
-                            </div>
+                            {
+                                recipeCats?.length > 0 ? 
+                                (
+                                    <div className="">
+                                        {
+                                            recipeCats?.map((item) => (
+                                                <CategoryCard key={item.id} user_id={item.category_auth_id} user_name={item.category_auth_name} category_id={item.id} category_name={item.category_name} category_slug={item.category_slug} />
+                                            ))
+                                        }
+                                    </div>
+                                ) 
+                                : 
+                                (
+                                    <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
+                                        <MdOutlineCategory size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
+                                        <div className="twgtr-pt-2 md:twgtr-pt-4">
+                                            <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
+                                                No Categories Found
+                                            </h6>
+                                        </div>
+                                        <div className="twgtr-pt-1">
+                                            <NavLink to="#" title="+ Add New" className="twgtr-transition-all twgtr-font-open_sans twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-4" onClick={() => setShowModal(true)}>
+                                                + Add New
+                                            </NavLink>
+                                        </div>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
                 </div>

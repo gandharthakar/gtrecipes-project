@@ -2,10 +2,29 @@ import { MdOutlineCategory } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useState } from "react";
-import { RootState } from "../../redux-service/ReduxStore";
-import { useSelector } from "react-redux";
+// import { RootState } from "../../redux-service/ReduxStore";
+// import { useSelector } from "react-redux";
 import SiteModal from "./SiteModal";
-import { toast, ToastContainer } from 'react-toastify';
+import { gql, useMutation } from "@apollo/client";
+// import { toast, ToastContainer } from 'react-toastify';
+
+const UPDATE_CATEGORY = gql`
+    mutation updateRecipeCategories($category_name: String!, $category_name_old: String!, $category_slug: String!, $category_auth_id: String!) {
+        updateRecipeCategories(category_name: $category_name, category_name_old: $category_name_old, category_slug: $category_slug, category_auth_id: $category_auth_id) {
+            message,
+            success
+        }
+    }
+`;
+
+const DELETE_CATEGORY = gql`
+    mutation deleteRecipeCategory($id: ID!) {
+        deleteRecipeCategory(id: $id) {
+            message,
+            success
+        }
+    }
+`;
 
 /* Encode string to slug */
 function convertToSlug( str:string ) {
@@ -23,11 +42,33 @@ function convertToSlug( str:string ) {
 }
 
 const CategoryCard = (props:any) => {
-    const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
+    // const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const [showModal, setShowModal] = useState(false);
-    let { user_id, category_id, category_name, category_slug } = props;
+    let { user_id, user_name, category_id, category_name, category_slug } = props;
     const [createCat, setCreateCat] = useState(category_name);
     const [createCatSlug, setCreateCatSlug] = useState(category_slug);
+
+    // Update Category.
+    let [updCat] = useMutation(UPDATE_CATEGORY, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            alert(fdata.updateRecipeCategories.message);
+            if(fdata.updateRecipeCategories.success) {
+                window.location.reload();
+            }
+        }
+    });
+
+    // Delete Category.
+    let [delCat] = useMutation(DELETE_CATEGORY, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            alert(fdata.deleteRecipeCategory.message);
+            if(fdata.deleteRecipeCategory.success) {
+                window.location.reload();
+            }
+        }
+    });
 
     const handleCreateCatModalInputChange = (e:any) => {
         const value = e.target.value;
@@ -38,28 +79,55 @@ const CategoryCard = (props:any) => {
     const handleSubmit = (e:any) => {
         e.preventDefault();
 
-        const toastDefOpts = {
-            autoClose: 3000,
-            closeOnClick: true,
-            theme: `${ThemeMode ? 'dark' : 'light'}`
-        }
+        // const toastDefOpts = {
+        //     autoClose: 3000,
+        //     closeOnClick: true,
+        //     theme: `${ThemeMode ? 'dark' : 'light'}`
+        // }
 
-        let data = {};
+        let ct_data = {
+            category_name: '',
+            category_slug: ''
+        };
         if(createCat == '') {
-            toast.error("Required fields is empty.", toastDefOpts);
-            data = {};
+            // toast.error("Required fields is empty.", toastDefOpts);
+            alert("Required fields is empty.");
+            ct_data = {
+                category_name: '',
+                category_slug: ''
+            };
         } else {
-            data = {
+            ct_data = {
                 category_name: createCat,
                 category_slug: createCatSlug
             }
+            updCat({
+                variables: {
+                    category_auth_id: user_id,
+                    category_name_old: category_name,
+                    category_name: ct_data.category_name,
+                    category_slug: ct_data.category_slug
+                }
+            });
+            setShowModal(!showModal);
         }
-        console.log(data);
+        // console.log(ct_data);
+    }
+
+    const handleDelete = () => {
+        const conf = confirm("Are you sure want to delete this category ?");
+        if(conf) {
+            delCat({
+                variables: {
+                    id: category_id
+                }
+            });
+        }
     }
 
     return (
         <>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
             <div style={{display: 'none'}}>
                 {user_id} {category_id}
             </div>
@@ -73,6 +141,7 @@ const CategoryCard = (props:any) => {
                             </h3>
                             <h4 className="twgtr-transition-all twgtr-block twgtr-font-open_sans twgtr-text-slate-700 dark:twgtr-text-slate-300 twgtr-break-all twgtr-text-[14px] md:twgtr-text-[16px]">
                                 {category_slug}
+                                <div style={{display: 'none'}}>{user_name}</div>
                             </h4>
                         </div>
                     </div>
@@ -80,7 +149,7 @@ const CategoryCard = (props:any) => {
                         <button type="button" title="Edit Category" className="" onClick={() => setShowModal(true)}>
                             <MdEdit size={20} className="twgtr-transition-all twgtr-w-[15px] twgtr-h-[15px] md:twgtr-w-[20px] md:twgtr-h-[20px] twgtr-text-sky-600 dark:twgtr-text-sky-300" />
                         </button>
-                        <button type="button" title="Delete Category" className="">
+                        <button type="button" title="Delete Category" className="" onClick={handleDelete}>
                             <FaRegTrashAlt size={20} className="twgtr-transition-all twgtr-w-[15px] twgtr-h-[15px] md:twgtr-w-[20px] md:twgtr-h-[20px] twgtr-text-red-600 dark:twgtr-text-red-300" />
                         </button>
                     </div>
@@ -130,11 +199,11 @@ const CategoryCard = (props:any) => {
                         </div>
                         <div className="twgtr-transition-all twgtr-border-t twgtr-border-slate-300 twgtr-border-solid dark:twgtr-border-slate-500">
                             <div className="twgtr-px-[20px] twgtr-py-[10px] twgtr-flex twgtr-gap-x-4 twgtr-gap-y-3 twgtr-flex-wrap twgtr-items-center twgtr-justify-end">
-                                <button type="button" title="Close" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-2 twgtr-text-theme-color-2 hover:twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2 hover:twgtr-border-theme-color-2 dark:twgtr-border-slate-300 dark:twgtr-text-slate-300 dark:hover:twgtr-bg-slate-300 dark:hover:twgtr-text-slate-700" onClick={() => setShowModal(false)}>
+                                <button type="button" title="Close" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-2 twgtr-text-theme-color-2 hover:twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2 hover:twgtr-border-theme-color-2 dark:twgtr-border-slate-300 dark:twgtr-text-slate-300 dark:hover:twgtr-bg-slate-300 dark:hover:twgtr-text-slate-700" onClick={() => setShowModal(!showModal)}>
                                     Close
                                 </button>
-                                <button type="submit" title="Create" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 hover:twgtr-bg-theme-color-4-hover-dark twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-border-theme-color-4-hover-dark">
-                                    Create
+                                <button type="submit" title="Update" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 hover:twgtr-bg-theme-color-4-hover-dark twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-border-theme-color-4-hover-dark">
+                                    Update
                                 </button>
                             </div>
                         </div>
