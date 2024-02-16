@@ -94,7 +94,22 @@ const resolvers = {
             }
             // console.log(data);
             return data;
-        }
+        },
+        getPerPagesCount: async (parent, args) => {
+            let { id } = args;
+            let respdata = {
+                category_per_page: 5,
+                recipes_per_page: 5
+            }
+            const user = await SiteUserModel.findOne({_id: id});
+            if(user) {
+                respdata = {
+                    category_per_page: user.user_categories_items_per_page,
+                    recipes_per_page: user.user_recipe_items_per_page
+                }
+            }
+            return respdata;
+        },
     },
     Mutation: {
         registerNewUser: async (parent, args) => {

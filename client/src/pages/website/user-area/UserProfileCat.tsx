@@ -6,13 +6,12 @@ import { useEffect, useState } from "react";
 // import { toast, ToastContainer } from 'react-toastify';
 // import { RootState } from '../../../redux-service/ReduxStore';
 // import { useSelector } from "react-redux";
-import { MdOutlineCategory } from "react-icons/md";
-import CategoryCard from "../../../components/website/CategoryCard";
 import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import RecipeCategories from "./RecipeCategories";
 
 /* Encode string to slug */
 function convertToSlug( str:string ) {
@@ -49,18 +48,6 @@ const CREATE_RECIPE_CATEGORY = gql`
     }
 `;
 
-const GET_RECIPE_CATEGORIES = gql`
-    query getAllRecipeCategories($id: ID!) {
-        getAllRecipeCategories(id: $id) {
-            id,
-            category_name,
-            category_slug,
-            category_auth_id,
-            category_auth_name
-        }
-    }
-`;
-
 const UserProfileCat = () => {
     let { id } = useParams();
     const sideBarLinks = [
@@ -77,9 +64,9 @@ const UserProfileCat = () => {
     ];
     // const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
-    const [showModal, setShowModal] = useState(false);
-    const [createCat, setCreateCat] = useState('');
-    const [createCatSlug, setCreateCatSlug] = useState('');
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [createCat, setCreateCat] = useState<string>('');
+    const [createCatSlug, setCreateCatSlug] = useState<string>('');
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -88,15 +75,6 @@ const UserProfileCat = () => {
     const [profilePhoto, setProfilePhoto] = useState<string>('');
     const [recCount, setRecCount] = useState<number>(0);
     const [catCount, setCatCount] = useState<number>(0);
-
-    interface RecCats {
-        id: string,
-        category_name: string,
-        category_slug: string,
-        category_auth_id: string,
-        category_auth_name: string
-    }
-    const [recipeCats, setRecipeCats] = useState<RecCats[]>([]);
 
     const cookies = new Cookies();
     const authUserID = cookies.get("gjtrewcipets_auth_user_id");
@@ -138,21 +116,28 @@ const UserProfileCat = () => {
                     let fwc1 = w1.charAt(0);
                     let fwc2 = w2.charAt(0);
                     setUserName(fwc1+fwc2);
+                } else {
+                    let w1 = spltar[0];
+                    let w2 = spltar[1];
+                    let sp1 = '';
+                    let sp2 = '';
+                    if(w1.length === 1) {
+                        sp1 = w1;
+                    } else {
+                        sp1 = w1.charAt(0);
+                    }
+
+                    if(w2.length === 1) {
+                        sp2 = w2;
+                    } else {
+                        sp2 = w2.charAt(0);
+                    }
+                    setUserName(sp1+sp2);
                 }
             }
         }
     });
 
-    useQuery(GET_RECIPE_CATEGORIES, {
-        variables: { id },
-        onCompleted: grcdata => {
-            // console.log(grcdata);
-            setRecipeCats(grcdata?.getAllRecipeCategories);
-        }
-    });
-
-    // console.log(recipeCats);
-    
     // Create Categories.
     let [crtCats] = useMutation(CREATE_RECIPE_CATEGORY, {
         onCompleted: fdata => {
@@ -363,36 +348,7 @@ const UserProfileCat = () => {
 							</div>
 						</div>
 
-                        <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-250px)] 2xl:twgtr-w-[calc(100%-300px)] twgtr-border twgtr-border-solid twgtr-px-4 twgtr-py-3 lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">
-                            {
-                                recipeCats?.length > 0 ? 
-                                (
-                                    <div className="">
-                                        {
-                                            recipeCats?.map((item) => (
-                                                <CategoryCard key={item.id} user_id={item.category_auth_id} user_name={item.category_auth_name} category_id={item.id} category_name={item.category_name} category_slug={item.category_slug} />
-                                            ))
-                                        }
-                                    </div>
-                                ) 
-                                : 
-                                (
-                                    <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
-                                        <MdOutlineCategory size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
-                                        <div className="twgtr-pt-2 md:twgtr-pt-4">
-                                            <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
-                                                No Categories Found
-                                            </h6>
-                                        </div>
-                                        <div className="twgtr-pt-1">
-                                            <NavLink to="#" title="+ Add New" className="twgtr-transition-all twgtr-font-open_sans twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-4" onClick={() => setShowModal(true)}>
-                                                + Add New
-                                            </NavLink>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                        </div>
+                        <RecipeCategories uid={id} showModal={showModal} setShowModal={setShowModal} />
                     </div>
                 </div>
             </div>

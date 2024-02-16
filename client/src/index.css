@@ -147,3 +147,131 @@
         }
     }
 }
+
+.pgn-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	padding: 20px;
+}
+
+.pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px 20px;
+}
+
+.pg-btns {
+	display: inline-block;
+	text-decoration: none;
+	margin: 0px;
+	padding: 8px 15px;
+    font-family: 'Open Sans', sans-serif;
+	background-color: #FF5A5F;
+	color: #fdfdfd;
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: 0.8s;
+}
+
+.pg-btns:hover, .pg-btns:active {
+	text-decoration: none;
+	background-color: #df5054;
+	color: #fdfdfd;
+}
+
+/* .twgtr-dark .pg-btns {
+    background-color: #475569;
+}
+
+.twgtr-dark .pg-btns:hover, .twgtr-dark .pg-btns:active {
+    background-color: #64748b;
+} */
+
+.pg-btns[disabled], .pg-btns.disabled {
+	pointer-events: none;
+	opacity: 0.2;
+}
+
+.pagination-list {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	flex-wrap: wrap;
+	gap: 5px 10px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.pagination-list .prev-pg-btns {
+	margin-right: 10px;
+}
+
+.pagination-list .next-pg-btns {
+	margin-left: 10px;
+}
+
+.pagination-list .dot-break {
+	display: inline-block;
+	border: 0px;
+	margin: 0px;
+	padding: 5px 8px;
+	background-color: transparent;
+	color: #161616;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 0px;
+	transition: 0.8s;
+}
+
+.pagination-list .dot-break:hover, .pagination-list .dot-break:active {
+	background-color: #dfdfdf;
+	color: #df5054;
+}
+
+.pagination-list li a.nav-link {
+	display: inline-block;
+	text-decoration: none;
+	border: 0px;
+	margin: 0px;
+	padding: 2px 5px;
+    min-width: 28px;
+    min-height: 28px;
+    text-align: center;
+	background-color: transparent;
+	color: #020617;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 0px;
+	transition: 0.8s;
+}
+
+.pagination-list li a.nav-link:hover, .pagination-list li a.nav-link:active {
+	text-decoration: none;
+	background-color: #e2e8f0;
+	color: #1e293b;
+}
+
+.pagination-list li a.nav-link.active {
+	text-decoration: none;
+	background-color: #FF5A5F;
+	color: #e2e8f0;
+}
+
+.pagination-list li.active a.nav-link {
+	text-decoration: none;
+	background-color: #dfdfdf;
+	color: #161616;
+}
+
+.twgtr-dark .pagination-list li a.nav-link {
+    color: #e2e8f0;
+}
+
+.twgtr-dark .pagination-list li a.nav-link:hover, .pagination-list li a.nav-link:active {
+    background-color: #64748b;
+	color: #e2e8f0;
+}

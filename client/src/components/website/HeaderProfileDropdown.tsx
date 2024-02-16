@@ -28,9 +28,9 @@ const HeaderProfileDropdown = () => {
         user_settings_uri: '/',
     });
 
-    const [userName, setUserName] = useState('Jp');
-    const [profilePhoto, setProfilePhoto] = useState('');
-    const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const [userName, setUserName] = useState<string>('Jp');
+    const [profilePhoto, setProfilePhoto] = useState<string>('');
+    const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
     const cookies = new Cookies();
     const authUser = cookies.get("gjtrewcipets_auth_user");
     const authUserID = cookies.get("gjtrewcipets_auth_user_id");
@@ -67,6 +67,23 @@ const HeaderProfileDropdown = () => {
                         let fwc1 = w1.charAt(0);
                         let fwc2 = w2.charAt(0);
                         setUserName(fwc1+fwc2);
+                    } else {
+                        let w1 = spltar[0];
+                        let w2 = spltar[1];
+                        let sp1 = '';
+                        let sp2 = '';
+                        if(w1.length === 1) {
+                            sp1 = w1;
+                        } else {
+                            sp1 = w1.charAt(0);
+                        }
+
+                        if(w2.length === 1) {
+                            sp2 = w2;
+                        } else {
+                            sp2 = w2.charAt(0);
+                        }
+                        setUserName(sp1+sp2);
                     }
                 }
             }

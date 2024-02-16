@@ -50,11 +50,17 @@ const typeDefs = gql`
         category_auth_name: String!
     }
 
+    type PerPageGenSet {
+        category_per_page: Int!
+        recipes_per_page: Int!
+    }
+
     type Query {
         # Site Users Queries.
         getUserPhotoAndName(id: ID!): UserProfileNameAndPhoto
         getGeneralSettings(id: ID!): UserGeneralSettings
         getProfilePicture(id: ID!): UserProfilePicture
+        getPerPagesCount(id: ID!): PerPageGenSet
 
         # Categories Queries.
         getAllRecipeCategories(id: ID!): [RecipeCategories]
