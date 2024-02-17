@@ -3,9 +3,9 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { PiPlusBold } from "react-icons/pi";
 import SiteModal from "../../../components/website/SiteModal";
 import { useEffect, useState } from "react";
-// import { toast, ToastContainer } from 'react-toastify';
-// import { RootState } from '../../../redux-service/ReduxStore';
-// import { useSelector } from "react-redux";
+import { toast, ToastContainer } from 'react-toastify';
+import { RootState } from '../../../redux-service/ReduxStore';
+import { useSelector } from "react-redux";
 import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
@@ -62,7 +62,7 @@ const UserProfileCat = () => {
             page_slug: `/user-area/categories/${id}`
         },
     ];
-    // const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
+    const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
     const [showModal, setShowModal] = useState<boolean>(false);
     const [createCat, setCreateCat] = useState<string>('');
@@ -142,20 +142,24 @@ const UserProfileCat = () => {
     let [crtCats] = useMutation(CREATE_RECIPE_CATEGORY, {
         onCompleted: fdata => {
             // console.log(fdata);
-            // const toastDefOpts = {
-            //     autoClose: 3000,
-            //     closeOnClick: true,
-            //     theme: `${ThemeMode ? 'dark' : 'light'}`
-            // };
-            // if(fdata.createRecipeCategories.success) {
-            //     toast.success(fdata.createRecipeCategories.message, toastDefOpts);
-            // } else {
-            //     toast.error(fdata.createRecipeCategories.message, toastDefOpts);
-            // }
-            alert(fdata.createRecipeCategories.message);
+            const toastDefOpts = {
+                autoClose: 3000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
             if(fdata.createRecipeCategories.success) {
-                window.location.reload();
+                toast.success(fdata.createRecipeCategories.message, toastDefOpts);
+                let suctmr = setTimeout(function(){
+                    window.location.reload();
+                    clearTimeout(suctmr);
+                }, 1000);
+            } else {
+                toast.error(fdata.createRecipeCategories.message, toastDefOpts);
             }
+            // alert(fdata.createRecipeCategories.message);
+            // if(fdata.createRecipeCategories.success) {
+            //     window.location.reload();
+            // }
         },
     })
 
@@ -169,11 +173,11 @@ const UserProfileCat = () => {
     const handleSubmit = (e:any) => {
         e.preventDefault();
 
-        // const toastDefOpts = {
-        //     autoClose: 1000,
-        //     closeOnClick: true,
-        //     theme: `${ThemeMode ? 'dark' : 'light'}`
-        // }
+        const toastDefOpts = {
+            autoClose: 1000,
+            closeOnClick: true,
+            theme: `${ThemeMode ? 'dark' : 'light'}`
+        }
 
         let ct_data = {
             category_name: '',
@@ -182,8 +186,8 @@ const UserProfileCat = () => {
             category_auth_name: ''
         };
         if(createCat == '') {
-            // toast.error("Required fields is empty.", toastDefOpts);
-            alert("Required fields is empty.");
+            toast.error("Required fields is empty.", toastDefOpts);
+            // alert("Required fields is empty.");
             ct_data = {
                 category_name: '',
                 category_slug: '',
@@ -236,7 +240,7 @@ const UserProfileCat = () => {
 
     return (
         <>
-            {/* <ToastContainer /> */}
+            <ToastContainer />
             <SiteBreadcrumb page_name="Categories" page_title="All Categories" />
             <div className="twgtr-transition-all twgtr-px-4 twgtr-py-6 lg:twgtr-py-12 twgtr-border-t twgtr-border-solid twgtr-border-slate-300 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-600">
                 <div className="site-container">

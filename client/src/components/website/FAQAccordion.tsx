@@ -5,7 +5,7 @@ import { PiMinusBold } from "react-icons/pi";
 const FAQAccordion = (props:any) => {
 	const { ques_text, children, show_icon, is_open, onClick } = props;
 
-	const accRef = useRef<HTMLInputElement>(null);
+	const accRef = useRef<HTMLDivElement>(null);
 
 	return (
 		<>

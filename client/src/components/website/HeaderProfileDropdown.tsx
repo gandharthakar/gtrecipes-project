@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { FaPowerOff } from "react-icons/fa6";
@@ -30,6 +30,7 @@ const HeaderProfileDropdown = () => {
 
     const [userName, setUserName] = useState<string>('Jp');
     const [profilePhoto, setProfilePhoto] = useState<string>('');
+    const menuRef = useRef<HTMLDivElement>(null);
     const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
     const cookies = new Cookies();
     const authUser = cookies.get("gjtrewcipets_auth_user");
@@ -112,6 +113,16 @@ const HeaderProfileDropdown = () => {
                 }
             });
         }
+
+        let menuHandler = (e:any) => {
+            if(menuRef.current !== null) {
+                if(!menuRef.current.contains(e.target)) {
+                    setShowProfileMenu(false);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', menuHandler);
     }, []);
 
     const handleClick = () => {
@@ -132,7 +143,7 @@ const HeaderProfileDropdown = () => {
             {
                 UserAuth ? 
                 (
-                    <div className="twgtr-relative">
+                    <div className="twgtr-relative" ref={menuRef}>
                         <button type="button" title="Profile" className="twgtr-transition-all twgtr-px-2 twgtr-py-2" onClick={() => setShowProfileMenu(!showProfileMenu)}>
                             <div className="twgtr-relative twgtr-w-[40px] twgtr-h-[40px] twgtr-uppercase twgtr-bg-slate-200 twgtr-text-theme-color-5 twgtr-rounded-full twgtr-flex twgtr-items-center twgtr-justify-center twgtr-font-semibold twgtr-font-open_sans">
                                 <span className="twgtr-relative twgtr-z-[2]">{userName}</span>

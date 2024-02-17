@@ -2,11 +2,11 @@ import { MdOutlineCategory } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useState } from "react";
-// import { RootState } from "../../redux-service/ReduxStore";
-// import { useSelector } from "react-redux";
+import { RootState } from "../../redux-service/ReduxStore";
+import { useSelector } from "react-redux";
 import SiteModal from "./SiteModal";
 import { gql, useMutation } from "@apollo/client";
-// import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const UPDATE_CATEGORY = gql`
     mutation updateRecipeCategories($category_name: String!, $category_name_old: String!, $category_slug: String!, $category_auth_id: String!) {
@@ -42,7 +42,7 @@ function convertToSlug( str:string ) {
 }
 
 const CategoryCard = (props:any) => {
-    // const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
+    const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const [showModal, setShowModal] = useState(false);
     let { user_id, user_name, category_id, category_name, category_slug } = props;
     const [createCat, setCreateCat] = useState(category_name);
@@ -52,10 +52,24 @@ const CategoryCard = (props:any) => {
     let [updCat] = useMutation(UPDATE_CATEGORY, {
         onCompleted: fdata => {
             // console.log(fdata);
-            alert(fdata.updateRecipeCategories.message);
+            const toastDefOpts = {
+                autoClose: 1000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
             if(fdata.updateRecipeCategories.success) {
-                window.location.reload();
+                toast.success(fdata.updateRecipeCategories.message, toastDefOpts);
+                let suctmr = setTimeout(function(){
+                    window.location.reload();
+                    clearTimeout(suctmr);
+                }, 1000);
+            } else {
+                toast.error(fdata.updateRecipeCategories.message, toastDefOpts);
             }
+            // alert(fdata.updateRecipeCategories.message);
+            // if(fdata.updateRecipeCategories.success) {
+            //     window.location.reload();
+            // }
         }
     });
 
@@ -63,10 +77,24 @@ const CategoryCard = (props:any) => {
     let [delCat] = useMutation(DELETE_CATEGORY, {
         onCompleted: fdata => {
             // console.log(fdata);
-            alert(fdata.deleteRecipeCategory.message);
+            const toastDefOpts = {
+                autoClose: 1000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
             if(fdata.deleteRecipeCategory.success) {
-                window.location.reload();
+                toast.success(fdata.deleteRecipeCategory.message, toastDefOpts);
+                let suctmr = setTimeout(function(){
+                    window.location.reload();
+                    clearTimeout(suctmr);
+                }, 1000);
+            } else {
+                toast.error(fdata.deleteRecipeCategory.message, toastDefOpts);
             }
+            // alert(fdata.deleteRecipeCategory.message);
+            // if(fdata.deleteRecipeCategory.success) {
+            //     window.location.reload();
+            // }
         }
     });
 
@@ -79,19 +107,19 @@ const CategoryCard = (props:any) => {
     const handleSubmit = (e:any) => {
         e.preventDefault();
 
-        // const toastDefOpts = {
-        //     autoClose: 3000,
-        //     closeOnClick: true,
-        //     theme: `${ThemeMode ? 'dark' : 'light'}`
-        // }
+        const toastDefOpts = {
+            autoClose: 3000,
+            closeOnClick: true,
+            theme: `${ThemeMode ? 'dark' : 'light'}`
+        }
 
         let ct_data = {
             category_name: '',
             category_slug: ''
         };
         if(createCat == '') {
-            // toast.error("Required fields is empty.", toastDefOpts);
-            alert("Required fields is empty.");
+            toast.error("Required fields is empty.", toastDefOpts);
+            // alert("Required fields is empty.");
             ct_data = {
                 category_name: '',
                 category_slug: ''
@@ -127,7 +155,7 @@ const CategoryCard = (props:any) => {
 
     return (
         <>
-            {/* <ToastContainer /> */}
+            <ToastContainer />
             <div style={{display: 'none'}}>
                 {user_id} {category_id}
             </div>
