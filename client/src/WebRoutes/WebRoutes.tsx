@@ -100,6 +100,7 @@ const WebRoutes = createBrowserRouter([
         path: "gql-upload",
         element: <GQLFileUploadDemo />
     }
-], { basename: '/' });
+// ], { basename: '/' });
+]);
 
 export default WebRoutes;

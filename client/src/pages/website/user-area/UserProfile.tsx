@@ -115,7 +115,7 @@ const UserProfile = () => {
             let ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
-            }, 10);
+            }, 200);
         }
 
         if(authUserID !== id) {
@@ -124,7 +124,7 @@ const UserProfile = () => {
             let ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
-            }, 10);
+            }, 200);
         }
     }, []);
 
