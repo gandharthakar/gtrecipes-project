@@ -101,7 +101,10 @@ const UserProfileCat = () => {
             if(spltar.length === 1) {
                 let slcnam = spltar[0].split();
                 if(slcnam.length === 1) {
-                    setUserName(slcnam);
+                    let ch1 = slcnam[0].charAt(0);
+                    let gch2 = slcnam[0].charAt(1);
+                    let ch2 = gch2 ? gch2 : '';
+                    setUserName(ch1+ch2);
                 } else {
                     if(slcnam < 3) {
                         let c1 = slcnam.charAt(0);

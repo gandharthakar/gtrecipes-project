@@ -61,7 +61,8 @@ const CreateRecipe = () => {
     const [category, setCategory] = useState([
         {
             value: 'uncategorized',
-            label: "Uncategorized"
+            label: "Uncategorized",
+            slug: "abc"
         }
     ]);
     // const [catOpts, setCatOpts] = useState([
@@ -235,7 +236,7 @@ const CreateRecipe = () => {
                                     <textarea 
                                         name="recipe_summary" 
                                         id="recsum" 
-                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
                                         rows={5} 
                                         value={recipeSummary} 
                                         onChange={(e) => setRecipeSummary(e.target.value)}
