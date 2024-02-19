@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SiteUserModel = require("../mongodb/models/siteUsers.js");
 const recipeCategoriesModel = require("../mongodb/models/recipeCategories.js");
+const RecipeModel = require("../mongodb/models/recipes.js");
+const { default: mongoose } = require("mongoose");
 
 const resolvers = {
     Query: {
@@ -110,6 +112,19 @@ const resolvers = {
             }
             return respdata;
         },
+        getUserFullName: async (parent, args) => {
+            let { id } = args;
+            let respdata = {
+                user_name: ''
+            };
+            const user = await SiteUserModel.findOne({_id: id});
+            if(user) {
+                respdata = {
+                    user_name: user.user_full_name
+                }
+            }
+            return respdata;
+        }
     },
     Mutation: {
         registerNewUser: async (parent, args) => {
@@ -252,11 +267,22 @@ const resolvers = {
                             message: "User Updated Successfully!",
                             success: true
                         }
+
+                        // Update Categories Author Name.
                         let cats = await recipeCategoriesModel.find({recipe_category_author_id: id})
                         // console.log(cats);
                         if(cats.length > 0) {
                             await recipeCategoriesModel.updateMany({recipe_category_author_id: id}, {
                                 recipe_category_author_name: user_name
+                            });
+                        }
+
+                        // Update Recipe Author Name.
+                        let reci = await RecipeModel.find({recipe_author_id: id});
+                        // console.log(reci);
+                        if(reci.length > 0) {
+                            await RecipeModel.updateMany({recipe_author_id: id}, {
+                                recipe_author: user_name
                             });
                         }
                     } catch (error) {
@@ -462,6 +488,7 @@ const resolvers = {
                                 success: true
                             }
                         } catch (error) {
+                            console.log(error.message);
                             frm_status = {
                                 message: "Unable To Update Category",
                                 success: false
@@ -483,12 +510,24 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let { id } = args;
+            let { id, user_id } = args;
             try {
                 await recipeCategoriesModel.findByIdAndDelete({_id: id});
                 frm_status = {
                     message: 'Category Deleted Successfully!',
                     success: true
+                }
+                let reci = await RecipeModel.find({recipe_author_id: user_id});
+                if(reci.length > 0) {
+                    reci.forEach((item) => {
+                        const index = item.recipe_categories.indexOf(id);
+                        const arr = item.recipe_categories;
+                        if (index !== -1) {
+                            // item.recipe_categories[index] = category_name;
+                            arr.splice(index, 1);
+                        }
+                        item.save();
+                    });
                 }
             } catch (error) {
                 frm_status = {
@@ -498,6 +537,59 @@ const resolvers = {
             }
             return frm_status;
         },
+        createNewRecipe: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let { 
+                recipe_title, 
+                recipe_featured_image, 
+                recipe_categories, 
+                recipe_summary, 
+                recipe_content, 
+                recipe_ingradients,
+                recipe_author, 
+                recipe_author_id, 
+                recipe_created_at, 
+            } = args;
+
+            const user = await SiteUserModel.find({_id: recipe_author_id});
+            if(user) {
+                try {
+                    let doc = new RecipeModel({
+                        recipe_title,
+                        recipe_featured_image,
+                        recipe_categories,
+                        recipe_summary,
+                        recipe_content,
+                        recipe_ingradients,
+                        recipe_author,
+                        recipe_author_id,
+                        recipe_created_at
+                    });
+                    await doc.save();
+                    frm_status = {
+                        message: 'Recipe Created Successfully!',
+                        success: true
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                    frm_status = {
+                        message: 'Unable To Create New Recipe.',
+                        success: false
+                    }
+                }
+                    
+            } else {
+                frm_status = {
+                    message: 'Author Not Valid',
+                    success: false
+                }
+            }
+            return frm_status;
+        }
     }
 };
 

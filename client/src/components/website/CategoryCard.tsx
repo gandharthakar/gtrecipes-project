@@ -18,8 +18,8 @@ const UPDATE_CATEGORY = gql`
 `;
 
 const DELETE_CATEGORY = gql`
-    mutation deleteRecipeCategory($id: ID!) {
-        deleteRecipeCategory(id: $id) {
+    mutation deleteRecipeCategory($id: ID!, $user_id: String!) {
+        deleteRecipeCategory(id: $id, user_id: $user_id) {
             message,
             success
         }
@@ -147,7 +147,8 @@ const CategoryCard = (props:any) => {
         if(conf) {
             delCat({
                 variables: {
-                    id: category_id
+                    id: category_id,
+                    user_id
                 }
             });
         }

@@ -1,0 +1,27 @@
+
+    type UserProfileNameAndPhoto {
+        user_id: ID!
+        user_name: String!
+        user_photo: String
+        ripp: Int!
+        cipp: Int!
+    }
+
+    type UserGeneralSettings {
+        user_id: ID!
+        user_name: String!
+        user_email: String!
+        ripp: Int!
+        cipp: Int!
+    }
+
+    type UserProfilePicture {
+        user_id: ID!
+        user_photo: String
+    }
+
+    # Site Users Queries.
+        getUserPhotoAndName(id: ID!): UserProfileNameAndPhoto
+        getGeneralSettings(id: ID!): UserGeneralSettings
+        getProfilePicture(id: ID!): UserProfilePicture
+        getPerPagesCount(id: ID!): PerPageGenSet

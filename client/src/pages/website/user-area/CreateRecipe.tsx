@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import JoditReact from "jodit-react-ts";
 import { Jodit } from 'jodit';
 import Select from "react-tailwindcss-select";
@@ -6,15 +6,19 @@ import 'react-tailwindcss-select/dist/index.css';
 // import 'jodit/build/jodit.min.css';
 import './../../../jodit.min.css';
 import SiteBreadcrumb from "../../../components/website/SiteBreadcrumb";
-// import axios from "axios";
+import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
-// import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { HiOutlinePlus } from "react-icons/hi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { useParams } from 'react-router';
+import Cookies from "universal-cookie";
+import { useDispatch } from "react-redux";
+import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
 
 let checkDTheme = localStorage.getItem('site-dark-mode');
 let thm = false;
@@ -49,57 +53,135 @@ function getDateTimeString() {
     return `${day} ${month} ${year}, ${hour}:${minute}:${second}`;
 }
 
+const GET_RECIPE_CATEGORIES = gql`
+    query getAllRecipeCategories($id: ID!) {
+        getAllRecipeCategories(id: $id) {
+            id,
+            category_name,
+            category_auth_name
+        }
+    }
+`;
+
+const GET_USER_FULL_NAME = gql`
+    query getUserFullName($id: ID!) {
+        getUserFullName(id: $id) {
+            user_name
+        }
+    }
+`;
+
+const CREATE_NEW_RECIPE = gql`
+    mutation createNewRecipe(
+            $recipe_title: String!, 
+            $recipe_featured_image: String!, 
+            $recipe_categories: [String!], 
+            $recipe_summary: String!, 
+            $recipe_content: String!, 
+            $recipe_ingradients: [String!], 
+            $recipe_author: String!, 
+            $recipe_author_id: String!, 
+            $recipe_created_at: String!
+        ) {
+        createNewRecipe(
+            recipe_title: $recipe_title, 
+            recipe_featured_image: $recipe_featured_image, 
+            recipe_categories: $recipe_categories,
+            recipe_summary: $recipe_summary,
+            recipe_content: $recipe_content, 
+            recipe_ingradients: $recipe_ingradients, 
+            recipe_author: $recipe_author,
+            recipe_author_id: $recipe_author_id,
+            recipe_created_at: $recipe_created_at
+        ) {
+            message,
+            success
+        }
+    }
+`;
+
+// Main Component
 const CreateRecipe = () => {
-    // const navigate = useNavigate();
+    let { id } = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';
 
     const [recipeTitle, setRecipeTitle] = useState<string>('');
     const [recipeSummary, setRecipeSummary] = useState<string>('');
-    const [editorContent, setEditorContent] = useState<string>();
+    const [editorContent, setEditorContent] = useState<string>('');
     const [featuredImage, setFeaturedImage] = useState<string>(defaultFeImgPath);
-    const [category, setCategory] = useState([
+    const [authorName, setAuthorName] = useState<string>('');
+    interface CategoryType {
+        value: string,
+        label: string
+    }
+    const [category, setCategory] = useState<CategoryType[]>([
         {
             value: 'uncategorized',
             label: "Uncategorized",
-            slug: "abc"
         }
     ]);
-    // const [catOpts, setCatOpts] = useState([
-    //     {
-    //         value: 'uncategorized',
-    //         label: "Uncategorized"
-    //     },
-    //     {
-    //         value: 'category-1',
-    //         label: "Category-1"
-    //     },
-    //     {
-    //         value: 'category-2',
-    //         label: "Category-2"
-    //     }
-    // ]);
-    const catOpts = [
-        {
-            value: 'uncategorized',
-            label: "Uncategorized"
-        },
-        {
-            value: 'category-1',
-            label: "Category-1"
-        },
-        {
-            value: 'category-2',
-            label: "Category-2"
-        }
-    ];
-    const [fileExt, setFileExt] = useState('');
-
+    const [catOpts, setCatOpts] = useState<CategoryType[]>([]);
+    const [fileExt, setFileExt] = useState<string>('');
     interface Recing {
         recipe_ingredient: string
     }
-
     const [recins, setRecins] = useState<Recing[]>([{recipe_ingredient: ''}]);
+    const [hasFeImage, setHasFeImage] = useState<boolean>(false);
+    const [imgFIle, setImgFile] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useQuery(GET_RECIPE_CATEGORIES, {
+        variables: { id },
+        onCompleted: fdata => {
+            let ctdata = fdata.getAllRecipeCategories;
+            // Set Option to category dropdown.
+            let arr:CategoryType[] = [{
+                value: 'uncategorized',
+                label: "Uncategorized",
+            }];
+            ctdata.map((ctdata:any) => {
+                return arr.push({value: ctdata.id, label: ctdata.category_name});
+            });
+            setCatOpts(arr);
+        }
+    });
+
+    useQuery(GET_USER_FULL_NAME, {
+        variables: { id },
+        onCompleted: fdata => {
+            setAuthorName(fdata.getUserFullName.user_name);
+        }
+    });
+
+    let [crtNewRec] = useMutation(CREATE_NEW_RECIPE, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            const toastDefOpts = {
+                autoClose: 1000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
+            if(fdata.createNewRecipe.success) {
+                toast.success(fdata.createNewRecipe.message, toastDefOpts);
+                setIsLoading(true);
+                if(featuredImage == defaultFeImgPath) {
+                    setTimeout(function(){
+                        navigate(`/user-area/profile/${id}`);
+                    }, 1500);
+                }
+            } else {
+                toast.error(fdata.createNewRecipe.message, toastDefOpts);
+            }
+        }
+    });
+
+    const removeFeImage = () => {
+        setHasFeImage(false);
+        setFeaturedImage(defaultFeImgPath);
+    }
 
     const handleAddInput = () => {
         setRecins([...recins, {recipe_ingredient: ''}]);
@@ -124,6 +206,7 @@ const CreateRecipe = () => {
 
         let gfnext = file.name;
 		let fext = gfnext.split('.').pop();
+        setImgFile(file);
 		setFileExt(fext);
         setFeaturedImage(URL.createObjectURL(file));
     }
@@ -154,47 +237,106 @@ const CreateRecipe = () => {
             newFileName = `${makeid(12)}_${Date.now()}.${fileExt}`;
         }
 
-        let data = {};
+        type RecData = {
+            recipe_title: string,
+            recipe_summary: string,
+            recipe_content: string,
+            recipe_ingradients: string[],
+            recipe_featured_image: string,
+            recipe_categories: string[],
+            recipe_author: string,
+            recipe_author_id: string,
+            recipe_created_at: string
+        }
+
+        let data: RecData = {
+            recipe_title: '',
+            recipe_summary: '',
+            recipe_content: '',
+            recipe_ingradients: [],
+            recipe_featured_image: '',
+            recipe_categories: [],
+            recipe_author: '',
+            recipe_author_id: '',
+            recipe_created_at: ''
+        };
         let ingradients: string[] = [];
         recins.map((item) => ingradients.push(item.recipe_ingredient));
-        console.log(ingradients);
+        // console.log(ingradients);
 
         if(recipeTitle == '' || editorContent == undefined || recipeSummary == '') {
             toast.error("Required fields is empty.", toastDefOpts);
-            data = {};
+            data = {
+                recipe_title: '',
+                recipe_summary: '',
+                recipe_content: '',
+                recipe_ingradients: [],
+                recipe_featured_image: '',
+                recipe_categories: [],
+                recipe_author: '',
+                recipe_author_id: '',
+                recipe_created_at: ''
+            };
         } else {
             data = {
                 recipe_title: recipeTitle,
                 recipe_summary: recipeSummary,
                 recipe_content: editorContent,
-                recipe_ingradients: ingradients,
+                recipe_ingradients: ingradients ? ingradients : [],
                 recipe_featured_image: newFileName,
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : ['uncategorized'],
-                recipe_author: "Author Name",
-                recipe_author_id: 1,
+                recipe_author: authorName,
+                recipe_author_id: id ? id: '',
                 recipe_created_at: getDateTimeString()
             }
-            // navigate('/user-area/profile/1');
+            
+            crtNewRec({
+                variables: {...data}
+            });
         }
 
-        console.log(data);
 
         if(fnam !== defaultFeImgPath) {
-            // const file = new File([fnam], newFileName);
-            // const fData = new FormData();
-            // fData.append('file', file);
-            // axios.post('http://localhost:48256/site-uploads', fData)
-            // .then((res) => {
-            //     console.log(res);
-            // })
-            // .catch(err => console.log(err));
-            // let ss = setTimeout(()=> {
-            //     // Clear Stuff
-            //     clearTimeout(ss);
-            // }, 200);
+            const file = new File([imgFIle], newFileName);
+            const fData = new FormData();
+            fData.append('file', file);
+            axios.post('http://localhost:48256/site-uploads/recipe-featured-images', fData)
+            .then((res) => {
+                // console.log(res);
+                if(res.status === 200) {
+                    setTimeout(function(){
+                        navigate(`/user-area/profile/${id}`);
+                    }, 1500);
+                }  else {
+                    toast.error("Something Is Wrong!", toastDefOpts);
+                }
+            })
+            .catch(err => toast.error(err.message, toastDefOpts));
         }
 
     }
+
+    useEffect(() => {
+        const cookies = new Cookies();
+        const authUserID = cookies.get("gjtrewcipets_auth_user_id");
+        if(id !== authUserID) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 200);
+        }
+
+        if(authUserID !== id) {
+            dispatch(do_logout());
+            navigate("/");
+            let ss = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(ss);
+            }, 200);
+        }
+    }, []);
 
     return (
         <>
@@ -202,7 +344,7 @@ const CreateRecipe = () => {
             <SiteBreadcrumb page_name="New Recipe" page_title="Create New Recipe" />
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="twgtr-flex twgtr-gap-[20px] twgtr-items-start twgtr-flex-col lg:twgtr-flex-row">
                             <div className="twgtr-transition-all twgtr-w-full lg:twgtr-w-[70%] twgtr-bg-white twgtr-border twgtr-border-solid twgtr-border-slate-200 twgtr-px-4 twgtr-py-6 dark:twgtr-bg-slate-700 dark:twgtr-border-slate-600">
                                 <div className="twgtr-pb-4">
@@ -266,7 +408,7 @@ const CreateRecipe = () => {
                                                     <input 
                                                         type="text" 
                                                         name="recipe_ingredient" 
-                                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
                                                         placeholder="Eg. 1kg of Water" 
                                                         autoComplete="off"
                                                         value={items.recipe_ingredient}
@@ -296,19 +438,34 @@ const CreateRecipe = () => {
                                         Featured Image
                                     </label>
                                     <img src={featuredImage} className="twgtr-mb-2 twgtr-block twgtr-w-full" alt="photo" />
-                                    <div className="twgtr-flex twgtr-gap-x-[15px] twgtr-items-center twgtr-justify-between">
-                                        <div>
-                                            <label htmlFor="nfimg" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-theme-color-2 twgtr-bg-theme-color-2 twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2-hover-dark hover:twgtr-border-theme-color-2-hover-dark">
-                                                <input type="file" id="nfimg" name="featured_image" className="twgtr-hidden" onChange={handleFeImgChange} />
-                                                Choose Image
-                                            </label>
-                                        </div>
-                                        <div>
-                                            <button type="button" title="Clear" className="twgtr-transition-all twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-300 dark:hover:twgtr-text-theme-color-4" onClick={clearFeImageInput}>
-                                                Clear
-                                            </button>
-                                        </div>
-                                    </div>
+                                    {
+                                        hasFeImage ? 
+                                        (
+                                            <div className="twgtr-text-right">
+                                                <button type="button" title="Remove Image" className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[14px] twgtr-text-theme-color-1 twgtr-underline dark:twgtr-text-slate-200" onClick={removeFeImage}>
+                                                    Remove Image
+                                                </button>
+                                            </div>
+                                        ) 
+                                        : 
+                                        (
+                                            <>
+                                                <div className="twgtr-flex twgtr-gap-x-[15px] twgtr-items-center twgtr-justify-between">
+                                                    <div>
+                                                        <label htmlFor="nfimg" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-theme-color-2 twgtr-bg-theme-color-2 twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2-hover-dark hover:twgtr-border-theme-color-2-hover-dark">
+                                                            <input type="file" id="nfimg" name="featured_image" className="twgtr-hidden" onChange={handleFeImgChange} />
+                                                            Choose Image
+                                                        </label>
+                                                    </div>
+                                                    <div>
+                                                        <button type="button" title="Clear" className="twgtr-transition-all twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-300 dark:hover:twgtr-text-theme-color-4" onClick={clearFeImageInput}>
+                                                            Clear
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )
+                                    }
                                 </div>
                                 <div className="twgtr-pb-8">
                                     <label className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
@@ -329,11 +486,29 @@ const CreateRecipe = () => {
                                         }}
                                     />
                                 </div>
-                                <div className="twgtr-text-right">
-                                    <button type="submit" title="Publish" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-4 twgtr-py-2 md:twgtr-px-5 md:twgtr-py-3 twgtr-border twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-4-hover-dark hover:twgtr-border-theme-color-4-hover-dark">
-                                        Publish
-                                    </button>
-                                </div>
+                                {
+                                    isLoading ? 
+                                    (
+                                        <div className="twgtr-flex twgtr-gap-x-[10px] twgtr-items-center">
+                                            <div>
+                                                <div className="site-spinner !twgtr-w-[30px] !twgtr-h-[30px] md:!twgtr-w-[35px] md:!twgtr-h-[35px]"></div>
+                                            </div>
+                                            <div>
+                                                <h6 className="twgtr-text-[16px] md:twgtr-text-[20px] twgtr-text-slate-600">
+                                                    Processing...
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    ) 
+                                    : 
+                                    (
+                                        <div className="twgtr-text-right">
+                                            <button type="submit" title="Publish" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-4 twgtr-py-2 md:twgtr-px-5 md:twgtr-py-3 twgtr-border twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-4-hover-dark hover:twgtr-border-theme-color-4-hover-dark">
+                                                Publish
+                                            </button>
+                                        </div>
+                                    )
+                                }
                             </div>
                         </div>
                     </form>

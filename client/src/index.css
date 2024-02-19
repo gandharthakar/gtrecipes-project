@@ -275,3 +275,47 @@
     background-color: #64748b;
 	color: #e2e8f0;
 }
+
+.site-spinner {
+    --spinner-color: #FF5A5F;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 2.4px;
+    background: -webkit-radial-gradient(farthest-side,var(--spinner-color) 95%,#0000) 50% 0/9.6px 9.6px no-repeat, -webkit-radial-gradient(farthest-side,#0000 -webkit-calc(100% - 4px),var(--spinner-color) -webkit-calc(100% - 3.2px)) content-box;
+    background: -moz-radial-gradient(farthest-side,var(--spinner-color) 95%,#0000) 50% 0/9.6px 9.6px no-repeat, -moz-radial-gradient(farthest-side,#0000 -moz-calc(100% - 4px),var(--spinner-color) -moz-calc(100% - 3.2px)) content-box;
+    background: -o-radial-gradient(farthest-side,var(--spinner-color) 95%,#0000) 50% 0/9.6px 9.6px no-repeat, -o-radial-gradient(farthest-side,#0000 calc(100% - 4px),var(--spinner-color) calc(100% - 3.2px)) content-box;
+    background: radial-gradient(farthest-side,var(--spinner-color) 95%,#0000) 50% 0/9.6px 9.6px no-repeat, radial-gradient(farthest-side,#0000 calc(100% - 4px),var(--spinner-color) calc(100% - 3.2px)) content-box;
+    
+    -webkit-animation: spinner-x3enp9 1.5s infinite;
+    -moz-animation: spinner-x3enp9 1.5s infinite;
+    -o-animation: spinner-x3enp9 1.5s infinite;
+    animation: spinner-x3enp9 1.5s infinite;
+ }
+ 
+ @-webkit-keyframes spinner-x3enp9 {
+    to {
+       -webkit-transform: rotate(1turn);
+               transform: rotate(1turn);
+    }
+ }
+@-moz-keyframes spinner-x3enp9 {
+    to {
+       -moz-transform: rotate(1turn);
+            transform: rotate(1turn);
+    }
+ }
+@-o-keyframes spinner-x3enp9 {
+    to {
+       -o-transform: rotate(1turn);
+          transform: rotate(1turn);
+    }
+ }
+@keyframes spinner-x3enp9 {
+    to {
+       -webkit-transform: rotate(1turn);
+          -moz-transform: rotate(1turn);
+            -o-transform: rotate(1turn);
+               transform: rotate(1turn);
+    }
+ }

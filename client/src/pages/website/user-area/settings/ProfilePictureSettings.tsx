@@ -147,7 +147,7 @@ const ProfilePictureSettings = () => {
         setFileDimensions(false);
 
         if(data?.getProfilePicture.user_photo !== '') {
-            console.log('hey');
+            // console.log('hey');
             let fileName = data?.getProfilePicture.user_photo;
             axios.post('http://localhost:48256/delete-uploads/site-user-profile-photos', {fileName})
             .then(() => {
@@ -216,7 +216,7 @@ const ProfilePictureSettings = () => {
                                 toast.error("Something Is Wrong!", toastDefOpts);
                             }
                         })
-                        .catch(err => console.log(err));
+                        .catch(err => toast.error(err.message, toastDefOpts));
                     }
                 }
             }

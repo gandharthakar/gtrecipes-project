@@ -20,26 +20,14 @@ const typeDefs = gql`
         message: String!
         success: Boolean!
     }
-
-    type UserProfileNameAndPhoto {
-        user_id: ID!
-        user_name: String!
-        user_photo: String
-        ripp: Int!
-        cipp: Int!
-    }
-
-    type UserGeneralSettings {
+    
+    type SiteUser {
         user_id: ID!
         user_name: String!
         user_email: String!
+        user_photo: String
         ripp: Int!
         cipp: Int!
-    }
-
-    type UserProfilePicture {
-        user_id: ID!
-        user_photo: String
     }
 
     type RecipeCategories {
@@ -50,6 +38,19 @@ const typeDefs = gql`
         category_auth_name: String!
     }
 
+    type RecipeType {
+        id: ID!
+        recipe_title: String!
+        recipe_featured_image: String!
+        recipe_categories: [String!]
+        recipe_summary: String!
+        recipe_content: String!
+        recipe_ingradients: [String!]
+        recipe_author: String!
+        recipe_author_id: String!
+        recipe_created_at: String!
+    }
+
     type PerPageGenSet {
         category_per_page: Int!
         recipes_per_page: Int!
@@ -57,10 +58,11 @@ const typeDefs = gql`
 
     type Query {
         # Site Users Queries.
-        getUserPhotoAndName(id: ID!): UserProfileNameAndPhoto
-        getGeneralSettings(id: ID!): UserGeneralSettings
-        getProfilePicture(id: ID!): UserProfilePicture
+        getUserPhotoAndName(id: ID!): SiteUser
+        getGeneralSettings(id: ID!): SiteUser
+        getProfilePicture(id: ID!): SiteUser
         getPerPagesCount(id: ID!): PerPageGenSet
+        getUserFullName(id: ID!): SiteUser
 
         # Categories Queries.
         getAllRecipeCategories(id: ID!): [RecipeCategories]
@@ -78,7 +80,10 @@ const typeDefs = gql`
         # Categories Mutations.
         createRecipeCategories(category_name: String!, category_slug: String!, category_auth_id: String!, category_auth_name: String!): CommonStatus!
         updateRecipeCategories(category_name: String!, category_name_old: String!, category_slug: String!, category_auth_id: String!): CommonStatus!
-        deleteRecipeCategory(id: ID!): CommonStatus!
+        deleteRecipeCategory(id: ID!, user_id: String!): CommonStatus!
+
+        # Recipe Mutations.
+        createNewRecipe(recipe_title: String!, recipe_featured_image: String!, recipe_categories: [String!], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String!], recipe_author: String!, recipe_author_id: String!, recipe_created_at: String!): CommonStatus!
     }
 `;
 
