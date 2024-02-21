@@ -11,7 +11,7 @@ import ReduxStore from './redux-service/ReduxStore';
 import { Provider } from 'react-redux';
 
 const apolloClient = new ApolloClient({
-	uri: 'http://localhost:48256/graphql',
+	uri: `${import.meta.env.VITE_BACKEND_URI_BASE}/graphql`,
 	cache: new InMemoryCache()
 });
 

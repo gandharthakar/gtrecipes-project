@@ -14,11 +14,22 @@ const typeDefs = gql`
         success: Boolean!
     }
 
+    type DeleteAccountType {
+        message: String!
+        success: Boolean!
+        recipe_featured_image: [String!]
+    }
+
     type LogStatus {
         user_id: String!
         token: String!
         message: String!
         success: Boolean!
+    }
+
+    type AuthorType {
+        author_id: String!
+        author_name: String!
     }
     
     type SiteUser {
@@ -32,22 +43,20 @@ const typeDefs = gql`
 
     type RecipeCategories {
         id: ID!
-        category_name: String!
-        category_slug: String!
-        category_auth_id: String!
-        category_auth_name: String!
+        recipe_category_name: String!
+        recipe_category_slug: String!
+        author: AuthorType!
     }
 
     type RecipeType {
         id: ID!
         recipe_title: String!
         recipe_featured_image: String!
-        recipe_categories: [String!]
+        recipe_categories: [RecipeCategories!]
         recipe_summary: String!
         recipe_content: String!
         recipe_ingradients: [String!]
-        recipe_author: String!
-        recipe_author_id: String!
+        author: AuthorType!
         recipe_created_at: String!
     }
 
@@ -66,6 +75,9 @@ const typeDefs = gql`
 
         # Categories Queries.
         getAllRecipeCategories(id: ID!): [RecipeCategories]
+
+        # Recipe Queries.
+        getAllRecipes(id: ID!): [RecipeType]
     }
 
     type Mutation {
@@ -75,15 +87,16 @@ const typeDefs = gql`
         updateGeneralSettings(id: ID!, user_name: String!, user_email: String!, ripp: Int!, cipp: Int!): CommonStatus!
         updatePassword(id: ID!, password: String!, confirm_password: String!): CommonStatus!
         updateProfilePicture(id: ID!, user_photo: String): CommonStatus!
-        deleteAccount(id: ID!): CommonStatus!
+        deleteAccount(id: ID!): DeleteAccountType!
 
         # Categories Mutations.
-        createRecipeCategories(category_name: String!, category_slug: String!, category_auth_id: String!, category_auth_name: String!): CommonStatus!
-        updateRecipeCategories(category_name: String!, category_name_old: String!, category_slug: String!, category_auth_id: String!): CommonStatus!
+        createRecipeCategories(recipe_category_name: String!, recipe_category_slug: String!, recipe_category_author_id: String!, recipe_category_author_name: String!): CommonStatus!
+        updateRecipeCategories(recipe_category_name: String!, category_name_old: String!, recipe_category_slug: String!, recipe_category_author_id: String!): CommonStatus!
         deleteRecipeCategory(id: ID!, user_id: String!): CommonStatus!
 
         # Recipe Mutations.
         createNewRecipe(recipe_title: String!, recipe_featured_image: String!, recipe_categories: [String!], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String!], recipe_author: String!, recipe_author_id: String!, recipe_created_at: String!): CommonStatus!
+        deleteRecipe(id: ID!): CommonStatus!
     }
 `;
 

@@ -156,6 +156,14 @@
 	padding: 20px;
 }
 
+.pgn-wrapper-rec {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	padding: 40px 20px 20px 20px;
+}
+
 .pagination {
 	display: flex;
 	align-items: center;

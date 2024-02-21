@@ -1,6 +1,17 @@
 const mongoose = require("mongoose");
 const { Schema, models, model } = mongoose;
 
+const authorSchema = new Schema({
+    author_id: {
+        type: String,
+        required: true
+    },
+    author_name: {
+        type: String,
+        required: true
+    }
+});
+
 const recipeCategoriesSchema = new Schema({
     recipe_category_name: {
         type: String,
@@ -10,13 +21,8 @@ const recipeCategoriesSchema = new Schema({
         type: String,
         required: true
     },
-    recipe_category_author_id: {
-        type: String,
-        required: true
-    },
-    recipe_category_author_name: {
-        type: String,
-        required: true
+    author: {
+        type: authorSchema
     }
 });
 

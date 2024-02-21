@@ -10,11 +10,27 @@ const userLoginReducer = createSlice({
     initialState,
     reducers: {
         do_login: (state, action) => {
-            let expDays = 30;
-            let date = new Date();
-            date.setTime(date.getTime() + (expDays * 24 * 60 * 60 * 1000));
+            // Expiry Date.
+            // let expDays = 30;
+            // let date = new Date();
+            // date.setTime(date.getTime() + expDays * 24 * 60 * 60 * 1000);
 
-            const cookies = new Cookies(null, {path: "/", expires: date});
+            let ndate = new Date();
+            ndate.setDate(ndate.getDate() + 30);
+            
+            // const days = 30;
+
+            // 30 days in miliseconds.
+            // const milliseconds = days * 24 * 60 * 60 * 1000;
+            // console.log(milliseconds);
+
+            // 24 hours * 60 minutes * 60 seconds
+            // const secondsInADay = 24 * 60 * 60;
+            // const secondsIn30Days = days * secondsInADay;
+            // console.log(`There are ${secondsIn30Days} seconds in 30 days.`);
+
+            const cookies = new Cookies(null, {path: "/", expires: ndate});
+            // const cookies = new Cookies(null, {path: "/", maxAge: secondsIn30Days});
             cookies.set("gjtrewcipets_auth_user", action.payload.token);
             cookies.set("gjtrewcipets_auth_user_id", action.payload.user_id);
             state.isAuthenticated = true;

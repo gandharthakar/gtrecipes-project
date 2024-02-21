@@ -57,8 +57,7 @@ const GET_RECIPE_CATEGORIES = gql`
     query getAllRecipeCategories($id: ID!) {
         getAllRecipeCategories(id: $id) {
             id,
-            category_name,
-            category_auth_name
+            recipe_category_name
         }
     }
 `;
@@ -117,12 +116,7 @@ const CreateRecipe = () => {
         value: string,
         label: string
     }
-    const [category, setCategory] = useState<CategoryType[]>([
-        {
-            value: 'uncategorized',
-            label: "Uncategorized",
-        }
-    ]);
+    const [category, setCategory] = useState<CategoryType[]>([]);
     const [catOpts, setCatOpts] = useState<CategoryType[]>([]);
     const [fileExt, setFileExt] = useState<string>('');
     interface Recing {
@@ -138,12 +132,9 @@ const CreateRecipe = () => {
         onCompleted: fdata => {
             let ctdata = fdata.getAllRecipeCategories;
             // Set Option to category dropdown.
-            let arr:CategoryType[] = [{
-                value: 'uncategorized',
-                label: "Uncategorized",
-            }];
+            let arr:CategoryType[] = [];
             ctdata.map((ctdata:any) => {
-                return arr.push({value: ctdata.id, label: ctdata.category_name});
+                return arr.push({value: ctdata.id, label: ctdata.recipe_category_name});
             });
             setCatOpts(arr);
         }
@@ -169,7 +160,8 @@ const CreateRecipe = () => {
                 setIsLoading(true);
                 if(featuredImage == defaultFeImgPath) {
                     setTimeout(function(){
-                        navigate(`/user-area/profile/${id}`);
+                        // navigate(`/user-area/profile/${id}`);
+                        window.location.href = `/user-area/profile/${id}`;
                     }, 1500);
                 }
             } else {
@@ -284,7 +276,7 @@ const CreateRecipe = () => {
                 recipe_content: editorContent,
                 recipe_ingradients: ingradients ? ingradients : [],
                 recipe_featured_image: newFileName,
-                recipe_categories: category && category.length > 0 ? category.map(item => item.value) : ['uncategorized'],
+                recipe_categories: category && category.length > 0 ? category.map(item => item.value) : [],
                 recipe_author: authorName,
                 recipe_author_id: id ? id: '',
                 recipe_created_at: getDateTimeString()
@@ -305,7 +297,8 @@ const CreateRecipe = () => {
                 // console.log(res);
                 if(res.status === 200) {
                     setTimeout(function(){
-                        navigate(`/user-area/profile/${id}`);
+                        // navigate(`/user-area/profile/${id}`);
+                        window.location.href = `/user-area/profile/${id}`;
                     }, 1500);
                 }  else {
                     toast.error("Something Is Wrong!", toastDefOpts);

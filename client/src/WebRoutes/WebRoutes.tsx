@@ -20,8 +20,13 @@ import ProfilePictureSettings from "../pages/website/user-area/settings/ProfileP
 import PasswordSettings from "../pages/website/user-area/settings/PasswordSettings";
 import DeleteAccountSettings from "../pages/website/user-area/settings/DeleteAccountSettings";
 import ViewSingleRecipe from "../pages/website/ViewSingleRecipe";
+import PageNotFound from "../pages/website/PageNotFound";
 
 const WebRoutes = createBrowserRouter([
+    {
+        path: "*",
+        element: <PageNotFound />
+    },
     {
         path: "/",
         element: <App />,

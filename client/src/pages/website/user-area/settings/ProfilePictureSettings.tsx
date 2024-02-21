@@ -68,7 +68,7 @@ const ProfilePictureSettings = () => {
     ];
 
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
-    const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
+    const pp_path = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/site-user-profile-photos/`;
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const defaultFeImgPath = 'https://placehold.co/500x500?text=Profile.';
@@ -149,7 +149,7 @@ const ProfilePictureSettings = () => {
         if(data?.getProfilePicture.user_photo !== '') {
             // console.log('hey');
             let fileName = data?.getProfilePicture.user_photo;
-            axios.post('http://localhost:48256/delete-uploads/site-user-profile-photos', {fileName})
+            axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName})
             .then(() => {
                 // console.log(res);
                 updProPic({
@@ -203,7 +203,7 @@ const ProfilePictureSettings = () => {
 
                         const fData = new FormData();
                         fData.append('file', file);
-                        axios.post('http://localhost:48256/site-uploads/site-user-profile-photos', fData)
+                        axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/site-uploads/site-user-profile-photos`, fData)
                         .then((res) => {
                             // console.log(res);
                             if(res.status === 200) {

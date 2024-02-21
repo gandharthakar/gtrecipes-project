@@ -9,8 +9,8 @@ import { gql, useMutation } from "@apollo/client";
 import { toast, ToastContainer } from 'react-toastify';
 
 const UPDATE_CATEGORY = gql`
-    mutation updateRecipeCategories($category_name: String!, $category_name_old: String!, $category_slug: String!, $category_auth_id: String!) {
-        updateRecipeCategories(category_name: $category_name, category_name_old: $category_name_old, category_slug: $category_slug, category_auth_id: $category_auth_id) {
+    mutation updateRecipeCategories($recipe_category_name: String!, $category_name_old: String!, $recipe_category_slug: String!, $recipe_category_author_id: String!) {
+        updateRecipeCategories(recipe_category_name: $recipe_category_name, category_name_old: $category_name_old, recipe_category_slug: $recipe_category_slug, recipe_category_author_id: $recipe_category_author_id) {
             message,
             success
         }
@@ -131,10 +131,10 @@ const CategoryCard = (props:any) => {
             }
             updCat({
                 variables: {
-                    category_auth_id: user_id,
+                    recipe_category_author_id: user_id,
                     category_name_old: category_name,
-                    category_name: ct_data.category_name,
-                    category_slug: ct_data.category_slug
+                    recipe_category_name: ct_data.category_name,
+                    recipe_category_slug: ct_data.category_slug
                 }
             });
             setShowModal(!showModal);

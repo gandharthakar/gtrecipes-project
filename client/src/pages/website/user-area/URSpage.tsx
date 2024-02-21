@@ -1,8 +1,8 @@
 import { useState } from "react";
-import CategoryCard from "../../../components/website/CategoryCard";
 import ReactPaginate from "react-paginate";
+import RecipeCard from "../../../components/website/RecipeCard";
 
-const RCSpage = (props:any) => {
+const URSpage = (props:any) => {
 
     let { cdata, itemsPerPage=5 } = props;
 
@@ -10,6 +10,7 @@ const RCSpage = (props:any) => {
     const endOffset = itemOffset + itemsPerPage;
     const currentItems = cdata.slice(itemOffset, endOffset);
     const pageCount = Math.ceil(cdata.length / itemsPerPage);
+    const baseURIFeImg = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
 
     const handlePageClick = (event:any) => {
         const newOffset = (event.selected * itemsPerPage) % cdata.length;
@@ -18,15 +19,17 @@ const RCSpage = (props:any) => {
 
     return (
         <>
-            {
-                currentItems?.map((item:any) => (
-                    <CategoryCard key={item.id} user_id={item.author.author_id} user_name={item.author.author_name} category_id={item.id} category_name={item.recipe_category_name} category_slug={item.recipe_category_slug} />
-                ))
-            }
+            <div className="twgtr-grid twgtr-grid-cols-1 md:twgtr-grid-cols-2 twgtr-gap-[20px]">
+                {
+                    currentItems?.map((item:any) => (
+                        <RecipeCard key={item.id} recipe_id={item.id} rfeb_URI={baseURIFeImg} recipe_featured_image={item.recipe_featured_image} categories={item.recipe_categories} recipe_title={item.recipe_title} recipe_summary={item.recipe_summary} recipe_author_id={item.author.author_id} recipe_author_name={item.author.author_name} actions={true} />
+                    ))
+                }
+            </div>
 
             {
                 pageCount === 1 ? (<></>) : (
-                    <div className='pgn-wrapper'>
+                    <div className='pgn-wrapper-rec'>
                         <ReactPaginate
                             className="pagination-list"
                             activeLinkClassName="active"
@@ -49,4 +52,4 @@ const RCSpage = (props:any) => {
     )
 };
 
-export default RCSpage;
+export default URSpage;

@@ -209,7 +209,7 @@ const ViewSingleRecipe = () => {
                         <div className="twgtr-max-w-[1240px] twgtr-mx-auto twgtr-w-full md:twgtr-px-[20px] twgtr-relative twgtr-z-[5]">
                             <div className="twgtr-pb-[25px]">
                                 <h4 className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[20px] md:twgtr-text-[25px] twgtr-font-bold twgtr-text-theme-color-1 dark:twgtr-text-theme-color-3">
-                                    Related Recipes
+                                    You May Also Like
                                 </h4>
                             </div>
 
@@ -220,6 +220,7 @@ const ViewSingleRecipe = () => {
                                     categories={SiteConstants[0].static_cats} 
                                     recipe_title="Test Recipe 1"
                                     recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente illum nisi mollitia recusandae ipsum"
+                                    recipe_author_name="Author Name"
                                     actions={false}
                                 />
                                 <RecipeCard 
@@ -228,6 +229,7 @@ const ViewSingleRecipe = () => {
                                     categories={SiteConstants[0].static_cats} 
                                     recipe_title="Test Recipe 2"
                                     recipe_summary=""
+                                    recipe_author_name="Author Name"
                                     actions={false}
                                 />
                                 <RecipeCard 
@@ -235,7 +237,8 @@ const ViewSingleRecipe = () => {
                                     recipe_featured_image="/images/food-dummy.jpg" 
                                     categories={SiteConstants[0].static_cats} 
                                     recipe_title="Test Recipe 3"
-                                    recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit. "
+                                    recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit."
+                                    recipe_author_name="Author Name"
                                     actions={false}
                                 />
                             </div>

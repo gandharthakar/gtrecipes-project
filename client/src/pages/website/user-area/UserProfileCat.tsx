@@ -40,8 +40,8 @@ const GET_USER_DETAILS = gql`
 `;
 
 const CREATE_RECIPE_CATEGORY = gql`
-    mutation createRecipeCategories($category_name: String!, $category_slug: String!, $category_auth_id: String!, $category_auth_name: String!) {
-        createRecipeCategories(category_name: $category_name, category_slug: $category_slug, category_auth_id: $category_auth_id, category_auth_name: $category_auth_name) {
+    mutation createRecipeCategories($recipe_category_name: String!, $recipe_category_slug: String!, $recipe_category_author_id: String!, $recipe_category_author_name: String!) {
+        createRecipeCategories(recipe_category_name: $recipe_category_name, recipe_category_slug: $recipe_category_slug, recipe_category_author_id: $recipe_category_author_id, recipe_category_author_name: $recipe_category_author_name) {
             message,
             success
         }
@@ -207,10 +207,10 @@ const UserProfileCat = () => {
             setShowModal(!showModal);
             crtCats({
                 variables: {
-                    category_name: ct_data.category_name,
-                    category_slug: ct_data.category_slug,
-                    category_auth_id: ct_data.category_auth_id,
-                    category_auth_name: ct_data.category_auth_name
+                    recipe_category_name: ct_data.category_name,
+                    recipe_category_slug: ct_data.category_slug,
+                    recipe_category_author_id: ct_data.category_auth_id,
+                    recipe_category_author_name: ct_data.category_auth_name
                 }
             });        
             setCreateCat('');

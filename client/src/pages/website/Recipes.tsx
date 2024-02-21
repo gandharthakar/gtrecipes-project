@@ -39,6 +39,7 @@ const Recipes = () => {
 								categories={SiteConstants[0].static_cats} 
 								recipe_title="This is title for this recipe box"
 								recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente illum nisi mollitia recusandae ipsum "
+								recipe_author_name="Author Name"
 								actions={false}
 							/>
 							<RecipeCard 
@@ -47,6 +48,7 @@ const Recipes = () => {
 								categories={SiteConstants[0].static_cats} 
 								recipe_title="This is title for this recipe box This is title for this recipe box"
 								recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente illum nisi mollitia recusandae ipsum"
+								recipe_author_name="Author Name"
 								actions={false}
 							/>
 						</div>

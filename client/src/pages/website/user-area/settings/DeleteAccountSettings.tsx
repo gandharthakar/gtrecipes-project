@@ -11,12 +11,14 @@ import { useNavigate } from 'react-router';
 import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
 import { gql, useMutation } from "@apollo/client";
+import axios from "axios";
 
 const DELETE_USER = gql`
     mutation deleteAccount($id: ID!) {
         deleteAccount(id: $id) {
             message,
-            success
+            success,
+            recipe_featured_image
         }
     }
 `;
@@ -53,14 +55,29 @@ const DeleteAccountSettings = () => {
 
     let [delAcc] = useMutation(DELETE_USER, {
         onCompleted: fdata => {
-            console.log(fdata);
+            // console.log(fdata);
+            let feimgs = fdata.deleteAccount.recipe_featured_image;
             const toastDefOpts = {
-                autoClose: 3000,
+                autoClose: 1000,
                 closeOnClick: true,
                 theme: `${ThemeMode ? 'dark' : 'light'}`
             };
             if(fdata.deleteAccount.success) {
                 toast.success(fdata.deleteAccount.message, toastDefOpts);
+                if(feimgs.length > 0) {
+                    feimgs.forEach((img:string) => {
+                        // console.log(img);
+                        axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: img})
+                        .then(() => {
+                            // console.log(resp);
+                        }).catch(err => console.log(err));
+                    });
+                }
+                let st = setTimeout(function(){
+                    dispatch(do_logout());
+                    navigate("/");
+                    clearTimeout(st);
+                }, 1500);
             } else {
                 toast.error(fdata.deleteAccount.message, toastDefOpts);
             }
