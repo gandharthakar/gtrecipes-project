@@ -8,8 +8,8 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 
 const DELETE_RECIPE = gql`
-    mutation deleteRecipe($id: ID!) {
-        deleteRecipe(id: $id) {
+    mutation deleteRecipe($id: ID!, $user_id: String!) {
+        deleteRecipe(id: $id, user_id: $user_id) {
             message,
             success
         }
@@ -56,7 +56,8 @@ const RecipeCard = (props:any) => {
                     if(resp.status === 200) {
                         delRec({
                             variables: {
-                                id: recipe_id
+                                id: recipe_id,
+                                user_id: recipe_author_id
                             }
                         });
                         let suctmr = setTimeout(function(){
@@ -68,7 +69,8 @@ const RecipeCard = (props:any) => {
             } else {
                 delRec({
                     variables: {
-                        id: recipe_id
+                        id: recipe_id,
+                        user_id: recipe_author_id
                     }
                 });
             }
@@ -140,7 +142,7 @@ const RecipeCard = (props:any) => {
                             actions ? (
                                 <div className="twgtr-px-[15px] md:twgtr-px-[20px] twgtr-mt-[15px] twgtr-py-2 twgtr-border-t twgtr-border-solid twgtr-border-slate-400 dark:twgtr-border-slate-500">
                                     <div className="twgtr-flex twgtr-items-center twgtr-flex-wrap twgtr-gap-x-[20px] twgtr-gap-y-[3px]">
-                                        <NavLink to={`/edit-recipe/${recipe_id}`} title="Edit Recipe" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[14px] twgtr-font-semibold twgtr-text-sky-600 dark:twgtr-text-sky-300">
+                                        <NavLink to={`/edit-recipe/${recipe_author_id}/${recipe_id}`} title="Edit Recipe" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[14px] twgtr-font-semibold twgtr-text-sky-600 dark:twgtr-text-sky-300">
                                             <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[5px]">
                                                 <MdEdit size={20} className="twgtr-transition-all twgtr-w-[15px] twgtr-h-[15px] md:twgtr-w-[15px] md:twgtr-h-[15px]" />
                                                 <div>Edit</div>

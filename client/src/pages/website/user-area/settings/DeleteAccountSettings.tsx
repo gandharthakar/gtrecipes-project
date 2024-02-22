@@ -18,7 +18,8 @@ const DELETE_USER = gql`
         deleteAccount(id: $id) {
             message,
             success,
-            recipe_featured_image
+            recipe_featured_image,
+            profile_photo
         }
     }
 `;
@@ -57,6 +58,7 @@ const DeleteAccountSettings = () => {
         onCompleted: fdata => {
             // console.log(fdata);
             let feimgs = fdata.deleteAccount.recipe_featured_image;
+
             const toastDefOpts = {
                 autoClose: 1000,
                 closeOnClick: true,
@@ -68,10 +70,27 @@ const DeleteAccountSettings = () => {
                     feimgs.forEach((img:string) => {
                         // console.log(img);
                         axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: img})
-                        .then(() => {
+                        .then((resp) => {
                             // console.log(resp);
+                            if(resp.status === 200) {
+                                let pp = fdata.deleteAccount.profile_photo;
+                                if(pp !== '') {
+                                    axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName: pp})
+                                    .then(() => {
+                                        // Do Stuff Here ....
+                                    }).catch(err => console.log(err));
+                                }
+                            }
                         }).catch(err => console.log(err));
                     });
+                } else {
+                    let pp = fdata.deleteAccount.profile_photo;
+                    if(pp !== '') {
+                        axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName: pp})
+                        .then(() => {
+                            // Do Stuff Here ....
+                        }).catch(err => console.log(err));
+                    }
                 }
                 let st = setTimeout(function(){
                     dispatch(do_logout());
@@ -132,7 +151,11 @@ const DeleteAccountSettings = () => {
                             <form>
                                 <div className="twgtr-pb-[15px]">
                                     <p className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[14ox] md:twgtr-text-[16ox] twgtr-text-slate-700 dark:twgtr-text-theme-color-3">
-                                        If you delete your account you will be loose everyting you have created on this site. You won't be able to restore categories and recipes you have created. So take a note that before deleting your account. 
+                                        If you delete your account you will loose everyting you have created on this site like your categories, recipes and images you have uploaded such as recipe fetured images and profile photo as well. You won't be able to restore categories and recipes you have created. So take a note that before deleting your account. 
+                                    </p>
+                                    <br />
+                                    <p className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[14ox] md:twgtr-text-[16ox] twgtr-text-slate-700 dark:twgtr-text-theme-color-3">
+                                        If you messed up with current data you can always have option to search and delete categories and recipes instead of deleting your account. Also you can use "Delete All" option (located at User Profile &#x3e; Recipes &#x3e; above the all recipes right hand side.) to delete all your existing categories and recipes.
                                     </p>
                                 </div>
                                 <div>

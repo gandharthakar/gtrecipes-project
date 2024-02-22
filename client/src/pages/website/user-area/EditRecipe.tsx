@@ -40,18 +40,6 @@ function makeid(length:any) {
 	}
 	return result;
 }
-function getDateTimeString() {
-    const now = new Date();
-    const day = now.getDate().toString().padStart(2, '0'); // Zero pad day
-    const month = now.toLocaleString('default', { month: 'short' })[0].toUpperCase() + 
-                now.toLocaleString('default', { month: 'short' }).slice(1);
-    const year = now.getFullYear();
-    const hour = now.getHours().toString().padStart(2, '0'); // Zero pad hour
-    const minute = now.getMinutes().toString().padStart(2, '0'); // Zero pad minute
-    const second = now.getSeconds().toString().padStart(2, '0'); // Zero pad second
-
-    return `${day} ${month} ${year}, ${hour}:${minute}:${second}`;
-}
 
 const GET_RECIPE_CATEGORIES = gql`
     query getAllRecipeCategories($id: ID!) {
@@ -62,56 +50,66 @@ const GET_RECIPE_CATEGORIES = gql`
     }
 `;
 
-const GET_USER_FULL_NAME = gql`
-    query getUserFullName($id: ID!) {
-        getUserFullName(id: $id) {
-            user_name
+const GET_RECIPE_DETAILS = gql`
+    query getSingleRecipe($id: ID!, $user_id: String!) {
+        getSingleRecipe(id: $id, user_id: $user_id) {
+            recipe_title,
+            recipe_summary,
+            recipe_categories {
+                id,
+                recipe_category_name
+            },
+            recipe_content,
+            recipe_ingradients,
+            recipe_featured_image
         }
     }
 `;
 
-const CREATE_NEW_RECIPE = gql`
-    mutation createNewRecipe(
+const UPDATE_RECIPE = gql`
+    mutation updateRecipe(
+            $id: ID!, 
+            $user_id: String!, 
             $recipe_title: String!, 
             $recipe_featured_image: String!, 
-            $recipe_categories: [String!], 
+            $recipe_categories: [String], 
             $recipe_summary: String!, 
             $recipe_content: String!, 
-            $recipe_ingradients: [String!], 
-            $recipe_author: String!, 
-            $recipe_author_id: String!, 
-            $recipe_created_at: String!
-        ) {
-        createNewRecipe(
-            recipe_title: $recipe_title, 
-            recipe_featured_image: $recipe_featured_image, 
-            recipe_categories: $recipe_categories,
-            recipe_summary: $recipe_summary,
-            recipe_content: $recipe_content, 
-            recipe_ingradients: $recipe_ingradients, 
-            recipe_author: $recipe_author,
-            recipe_author_id: $recipe_author_id,
-            recipe_created_at: $recipe_created_at
-        ) {
-            message,
-            success
+            $recipe_ingradients: [String], 
+        ) 
+        {
+            updateRecipe(
+                id: $id, 
+                user_id: $user_id, 
+                recipe_title: $recipe_title, 
+                recipe_featured_image: $recipe_featured_image, 
+                recipe_categories: $recipe_categories,
+                recipe_summary: $recipe_summary,
+                recipe_content: $recipe_content, 
+                recipe_ingradients: $recipe_ingradients, 
+            ) 
+            {
+                message,
+                success
+            }
         }
-    }
 `;
 
 // Main Component
-const CreateRecipe = () => {
-    let { id } = useParams();
+const EditRecipe = () => {
+    let { uid, rid } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';
+    const feImgBasePath = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
+    const fallBackFeImg = 'images/default-feimg.svg';
 
     const [recipeTitle, setRecipeTitle] = useState<string>('');
     const [recipeSummary, setRecipeSummary] = useState<string>('');
+    const [eContent, setEContent] = useState<string>('');
     const [editorContent, setEditorContent] = useState<string>('');
-    const [featuredImage, setFeaturedImage] = useState<string>(defaultFeImgPath);
-    const [authorName, setAuthorName] = useState<string>('');
+    const [featuredImage, setFeaturedImage] = useState<string>('default');
     interface CategoryType {
         value: string,
         label: string
@@ -126,9 +124,11 @@ const CreateRecipe = () => {
     const [hasFeImage, setHasFeImage] = useState<boolean>(false);
     const [imgFIle, setImgFile] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [dumpImg, setDumpImg] =useState<string>('');
+    const [brdRcName, setBrdRcName] =useState<string>('');
 
     useQuery(GET_RECIPE_CATEGORIES, {
-        variables: { id },
+        variables: { id: uid },
         onCompleted: fdata => {
             let ctdata = fdata.getAllRecipeCategories;
             // Set Option to category dropdown.
@@ -140,14 +140,64 @@ const CreateRecipe = () => {
         }
     });
 
-    useQuery(GET_USER_FULL_NAME, {
-        variables: { id },
+    useQuery(GET_RECIPE_DETAILS, {
+        variables: {
+            id: rid,
+            user_id: uid
+        },
         onCompleted: fdata => {
-            setAuthorName(fdata.getUserFullName.user_name);
-        }
-    });
+            // console.log(fdata);
+            let mdata = fdata.getSingleRecipe;
+            // console.log(mdata[0]);
 
-    let [crtNewRec] = useMutation(CREATE_NEW_RECIPE, {
+            // Set Recipe Title.
+            let Allrt = mdata[0].recipe_title;
+            setRecipeTitle(Allrt);
+            setBrdRcName(Allrt);
+
+            // Set Recipe Summary.
+            let Allrcsum = mdata[0].recipe_summary;
+            setRecipeSummary(Allrcsum);
+
+            // Set Recipe Content.
+            let allrcnt = mdata[0].recipe_content;
+            setEContent(allrcnt);
+            
+            // Set Recipe Ingradients.
+            let allins = mdata[0].recipe_ingradients;
+            let inarr:Recing[] = [];
+            if(allins.length > 0) {
+                allins.map((item:string) => inarr.push({recipe_ingredient: item}));
+            } else {
+                inarr = [{recipe_ingredient: ''}];
+            }
+            setRecins(inarr);
+
+            // Set Featured Image.
+            let allfeimg = mdata[0].recipe_featured_image;
+            if(allfeimg == 'default') {
+                setFeaturedImage('default');
+            } else {
+                setHasFeImage(true);
+                setFeaturedImage(feImgBasePath + '/' + allfeimg);
+                setDumpImg(allfeimg);
+                let fe = allfeimg.split('.');
+                setFileExt(fe[1]);
+            }
+
+            // Set Recipe Categories.
+            let allcts = mdata[0].recipe_categories;
+            let ctarr:CategoryType[] = [];
+            if(allcts.length > 0) {
+                allcts.map((item:any) => ctarr.push({ value: item.id, label: item.recipe_category_name}));
+            } else {
+                ctarr = [];
+            }
+            setCategory(ctarr);
+        }
+    })
+
+    let [updRec] = useMutation(UPDATE_RECIPE, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -155,24 +205,41 @@ const CreateRecipe = () => {
                 closeOnClick: true,
                 theme: `${ThemeMode ? 'dark' : 'light'}`
             };
-            if(fdata.createNewRecipe.success) {
-                toast.success(fdata.createNewRecipe.message, toastDefOpts);
+            if(fdata.updateRecipe.success) {
+                toast.success(fdata.updateRecipe.message, toastDefOpts);
                 setIsLoading(true);
-                if(featuredImage == defaultFeImgPath) {
+                if(featuredImage == 'default') {
                     setTimeout(function(){
                         // navigate(`/user-area/profile/${id}`);
-                        window.location.href = `/user-area/profile/${id}`;
+                        window.location.href = `/user-area/profile/${uid}`;
                     }, 1500);
                 }
             } else {
-                toast.error(fdata.createNewRecipe.message, toastDefOpts);
+                toast.error(fdata.updateRecipe.message, toastDefOpts);
             }
         }
     });
 
     const removeFeImage = () => {
-        setHasFeImage(false);
-        setFeaturedImage(defaultFeImgPath);
+        const toastDefOpts = {
+            autoClose: 1000,
+            closeOnClick: true,
+            theme: `${ThemeMode ? 'dark' : 'light'}`
+        };
+        if(featuredImage !== 'default') {
+            let conf = confirm("If you remove this image then it will also gets removed from server. Are you sure you want remove ?");
+            if(conf) {
+                axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: dumpImg})
+                .then((resp) => {
+                    if(resp.status === 200) {
+                        setHasFeImage(false);
+                        setFeaturedImage('default');
+                        toast.success("Image Removed Successfully!", toastDefOpts);
+                        setDumpImg('');
+                    }
+                }).catch(err => console.log(err));
+            }
+        }
     }
 
     const handleAddInput = () => {
@@ -204,7 +271,7 @@ const CreateRecipe = () => {
     }
 
     const clearFeImageInput = () => {
-        setFeaturedImage(defaultFeImgPath);
+        setFeaturedImage('default');
         setImgFile('');
     }
 
@@ -224,96 +291,104 @@ const CreateRecipe = () => {
 
         const fnam = featuredImage;
         let newFileName = '';
-        if(fnam == defaultFeImgPath) {
+        if(fnam == 'default') {
             newFileName = 'default';
         } else {
-            newFileName = `${makeid(12)}_${Date.now()}.${fileExt}`;
+            newFileName = dumpImg ? dumpImg : `${makeid(12)}_${Date.now()}.${fileExt}`;
         }
 
         type RecData = {
+            id: string,
+            user_id: string,
             recipe_title: string,
             recipe_summary: string,
             recipe_content: string,
             recipe_ingradients: string[],
             recipe_featured_image: string,
             recipe_categories: string[],
-            recipe_author: string,
-            recipe_author_id: string,
-            recipe_created_at: string
         }
 
         let data: RecData = {
+            id: '',
+            user_id: '',
             recipe_title: '',
             recipe_summary: '',
             recipe_content: '',
             recipe_ingradients: [],
             recipe_featured_image: '',
             recipe_categories: [],
-            recipe_author: '',
-            recipe_author_id: '',
-            recipe_created_at: ''
         };
         let ingradients: string[] = [];
-        recins.map((item) => ingradients.push(item.recipe_ingredient));
+        recins.map((item) => {
+            if(item.recipe_ingredient !== '') {
+                return ingradients.push(item.recipe_ingredient)
+            } else {
+                return [];
+            }
+        });
         // console.log(ingradients);
 
-        if(recipeTitle == '' || editorContent == undefined || recipeSummary == '') {
+        if(recipeTitle == '' || editorContent == '' || recipeSummary == '') {
             toast.error("Required fields is empty.", toastDefOpts);
             data = {
+                id: '',
+                user_id: '',
                 recipe_title: '',
                 recipe_summary: '',
                 recipe_content: '',
                 recipe_ingradients: [],
                 recipe_featured_image: '',
                 recipe_categories: [],
-                recipe_author: '',
-                recipe_author_id: '',
-                recipe_created_at: ''
             };
         } else {
             data = {
+                id: rid ? rid : '',
+                user_id: uid ? uid : '',
                 recipe_title: recipeTitle,
                 recipe_summary: recipeSummary,
                 recipe_content: editorContent,
                 recipe_ingradients: ingradients ? ingradients : [],
                 recipe_featured_image: newFileName,
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : [],
-                recipe_author: authorName,
-                recipe_author_id: id ? id: '',
-                recipe_created_at: getDateTimeString()
             }
             
-            crtNewRec({
+            updRec({
                 variables: {...data}
             });
         }
+        // console.log(data);
 
-
-        if(fnam !== defaultFeImgPath) {
+        if(fnam !== 'default') {
             const file = new File([imgFIle], newFileName);
             const fData = new FormData();
             fData.append('file', file);
-            axios.post('http://localhost:48256/site-uploads/recipe-featured-images', fData)
-            .then((res) => {
-                // console.log(res);
-                if(res.status === 200) {
-                    setTimeout(function(){
-                        // navigate(`/user-area/profile/${id}`);
-                        window.location.href = `/user-area/profile/${id}`;
-                    }, 1500);
-                }  else {
-                    toast.error("Something Is Wrong!", toastDefOpts);
-                }
-            })
-            .catch(err => toast.error(err.message, toastDefOpts));
+            if(file.name !== dumpImg) {
+                axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/site-uploads/recipe-featured-images`, fData)
+                .then((res) => {
+                    // console.log(res);
+                    if(res.status === 200) {
+                        setTimeout(function(){
+                            // navigate(`/user-area/profile/${id}`);
+                            window.location.href = `/user-area/profile/${uid}`;
+                        }, 1500);
+                    }  else {
+                        toast.error("Something Is Wrong!", toastDefOpts);
+                    }
+                })
+                .catch(err => toast.error(err.message, toastDefOpts));
+            } else {
+                setTimeout(function(){
+                    // navigate(`/user-area/profile/${id}`);
+                    window.location.href = `/user-area/profile/${uid}`;
+                }, 1500);
+            }
         }
-
     }
 
     useEffect(() => {
         const cookies = new Cookies();
         const authUserID = cookies.get("gjtrewcipets_auth_user_id");
-        if(id !== authUserID) {
+        if(uid !== authUserID) {
             dispatch(do_logout());
             navigate("/");
             let ss = setTimeout(function(){
@@ -322,7 +397,7 @@ const CreateRecipe = () => {
             }, 200);
         }
 
-        if(authUserID !== id) {
+        if(authUserID !== uid) {
             dispatch(do_logout());
             navigate("/");
             let ss = setTimeout(function(){
@@ -335,7 +410,7 @@ const CreateRecipe = () => {
     return (
         <>
             <ToastContainer />
-            <SiteBreadcrumb page_name="New Recipe" page_title="Create New Recipe" />
+            <SiteBreadcrumb page_name={brdRcName} page_title="Edit Recipe" />
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -385,7 +460,7 @@ const CreateRecipe = () => {
                                     <div className='site-joedit-adj'>
                                         <JoditReact 
                                             onChange={(content) => setEditorContent(content)} 
-                                            defaultValue="" 
+                                            defaultValue={eContent}
                                             config={config}
                                         />
                                     </div>
@@ -431,7 +506,11 @@ const CreateRecipe = () => {
                                     <label className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
                                         Featured Image
                                     </label>
-                                    <img src={featuredImage} className="twgtr-mb-2 twgtr-block twgtr-w-full" alt="photo" />
+                                    <img src={featuredImage == 'default' ? defaultFeImgPath : featuredImage} className="twgtr-mb-2 twgtr-block twgtr-w-full" alt="photo" 
+                                    onError={({ currentTarget }) => {
+                                        currentTarget.onerror = null; // prevents looping
+                                        currentTarget.src=fallBackFeImg;
+                                      }} />
                                     {
                                         hasFeImage ? 
                                         (
@@ -497,8 +576,8 @@ const CreateRecipe = () => {
                                     : 
                                     (
                                         <div className="twgtr-text-right">
-                                            <button type="submit" title="Publish" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-4 twgtr-py-2 md:twgtr-px-5 md:twgtr-py-3 twgtr-border twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-4-hover-dark hover:twgtr-border-theme-color-4-hover-dark">
-                                                Publish
+                                            <button type="submit" title="Update" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-4 twgtr-py-2 md:twgtr-px-5 md:twgtr-py-3 twgtr-border twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-4-hover-dark hover:twgtr-border-theme-color-4-hover-dark">
+                                                Update
                                             </button>
                                         </div>
                                     )
@@ -512,4 +591,4 @@ const CreateRecipe = () => {
     )
 }
 
-export default CreateRecipe;
+export default EditRecipe;

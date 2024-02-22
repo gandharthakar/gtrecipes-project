@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
-import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
+// import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
@@ -50,18 +50,18 @@ const CREATE_RECIPE_CATEGORY = gql`
 
 const UserProfileCat = () => {
     let { id } = useParams();
-    const sideBarLinks = [
-        {
-            id: 1,
-            page_name: "All Recipes",
-            page_slug: `/user-area/profile/${id}`
-        },
-        {
-            id: 2,
-            page_name: "Categories",
-            page_slug: `/user-area/categories/${id}`
-        },
-    ];
+    // const sideBarLinks = [
+    //     {
+    //         id: 1,
+    //         page_name: "All Recipes",
+    //         page_slug: `/user-area/profile/${id}`
+    //     },
+    //     {
+    //         id: 2,
+    //         page_name: "Categories",
+    //         page_slug: `/user-area/categories/${id}`
+    //     },
+    // ];
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
     const [showModal, setShowModal] = useState<boolean>(false);
@@ -146,18 +146,21 @@ const UserProfileCat = () => {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
+                toastId: 'ssToast1',
                 autoClose: 3000,
                 closeOnClick: true,
                 theme: `${ThemeMode ? 'dark' : 'light'}`
             };
             if(fdata.createRecipeCategories.success) {
-                toast.success(fdata.createRecipeCategories.message, toastDefOpts);
+                if (!toast.isActive('ssToast1', "ccat")) {
+                    toast.success(fdata.createRecipeCategories.message, toastDefOpts);
+                }
                 let suctmr = setTimeout(function(){
                     window.location.reload();
                     clearTimeout(suctmr);
                 }, 1000);
             } else {
-                toast.error(fdata.createRecipeCategories.message, toastDefOpts);
+                alert(fdata.createRecipeCategories.message);
             }
             // alert(fdata.createRecipeCategories.message);
             // if(fdata.createRecipeCategories.success) {
@@ -177,6 +180,7 @@ const UserProfileCat = () => {
         e.preventDefault();
 
         const toastDefOpts = {
+            toastId: 'ssToast2',
             autoClose: 1000,
             closeOnClick: true,
             theme: `${ThemeMode ? 'dark' : 'light'}`
@@ -243,7 +247,7 @@ const UserProfileCat = () => {
 
     return (
         <>
-            <ToastContainer />
+            <ToastContainer containerId={"ccat"} />
             <SiteBreadcrumb page_name="Categories" page_title="All Categories" />
             <div className="twgtr-transition-all twgtr-px-4 twgtr-py-6 lg:twgtr-py-12 twgtr-border-t twgtr-border-solid twgtr-border-slate-300 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-600">
                 <div className="site-container">
@@ -351,7 +355,19 @@ const UserProfileCat = () => {
                     <div className="twgtr-flex twgtr-flex-col lg:twgtr-flex-row twgtr-gap-4">
 						<div className="twgtr-min-w-0 lg:twgtr-min-w-[250px] 2xl:twgtr-min-w-[300px]">
 							<div className="lg:twgtr-sticky lg:twgtr-top-[15px]">
-                                <SideBarLeftLinks nav_links_data={sideBarLinks} />
+                                {/* <SideBarLeftLinks nav_links_data={sideBarLinks} /> */}
+                                <ul className="ssdl-nav twgtr-flex twgtr-flex-row lg:twgtr-flex-col twgtr-gap-x-8 twgtr-flex-nowrap twgtr-overflow-x-auto">
+                                    <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
+                                        <a href={`/user-area/profile/${id}`} title="Recipes" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
+                                            Recipes
+                                        </a>
+                                    </li>
+                                    <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
+                                        <a href={`/user-area/categories/${id}`} title="Categories" className="active twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
+                                            Categories
+                                        </a>
+                                    </li>
+                                </ul>
 							</div>
 						</div>
 

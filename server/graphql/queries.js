@@ -17,7 +17,8 @@ const typeDefs = gql`
     type DeleteAccountType {
         message: String!
         success: Boolean!
-        recipe_featured_image: [String!]
+        recipe_featured_image: [String]
+        profile_photo: String
     }
 
     type LogStatus {
@@ -52,10 +53,10 @@ const typeDefs = gql`
         id: ID!
         recipe_title: String!
         recipe_featured_image: String!
-        recipe_categories: [RecipeCategories!]
+        recipe_categories: [RecipeCategories]
         recipe_summary: String!
         recipe_content: String!
-        recipe_ingradients: [String!]
+        recipe_ingradients: [String]
         author: AuthorType!
         recipe_created_at: String!
     }
@@ -78,6 +79,7 @@ const typeDefs = gql`
 
         # Recipe Queries.
         getAllRecipes(id: ID!): [RecipeType]
+        getSingleRecipe(id: ID!, user_id: String!): [RecipeType]
     }
 
     type Mutation {
@@ -95,8 +97,9 @@ const typeDefs = gql`
         deleteRecipeCategory(id: ID!, user_id: String!): CommonStatus!
 
         # Recipe Mutations.
-        createNewRecipe(recipe_title: String!, recipe_featured_image: String!, recipe_categories: [String!], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String!], recipe_author: String!, recipe_author_id: String!, recipe_created_at: String!): CommonStatus!
-        deleteRecipe(id: ID!): CommonStatus!
+        createNewRecipe(recipe_title: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String], recipe_author: String!, recipe_author_id: String!, recipe_created_at: String!): CommonStatus!
+        updateRecipe(id: ID!, user_id: String!, recipe_title: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String]): CommonStatus!
+        deleteRecipe(id: ID!, user_id: String!): CommonStatus!
     }
 `;
 

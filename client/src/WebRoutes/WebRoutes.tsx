@@ -21,6 +21,7 @@ import PasswordSettings from "../pages/website/user-area/settings/PasswordSettin
 import DeleteAccountSettings from "../pages/website/user-area/settings/DeleteAccountSettings";
 import ViewSingleRecipe from "../pages/website/ViewSingleRecipe";
 import PageNotFound from "../pages/website/PageNotFound";
+import EditRecipe from "../pages/website/user-area/EditRecipe";
 
 const WebRoutes = createBrowserRouter([
     {
@@ -70,6 +71,10 @@ const WebRoutes = createBrowserRouter([
             {
                 path: "/create-recipe/:id",
                 element: <CreateRecipe />
+            },
+            {
+                path: "/edit-recipe/:uid/:rid",
+                element: <EditRecipe />
             },
             {
                 path: "/user-area/settings/:id",

@@ -1,7 +1,7 @@
 import SiteBreadcrumb from "../../../components/website/SiteBreadcrumb";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { PiPlusBold } from "react-icons/pi";
-import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
+// import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
@@ -22,18 +22,18 @@ const GET_USER_DETAILS = gql`
 
 const UserProfile = () => {
     let { id } = useParams();
-    const sideBarLinks = [
-        {
-            id: 1,
-            page_name: "All Recipes",
-            page_slug: `/user-area/profile/${id}`
-        },
-        {
-            id: 2,
-            page_name: "Categories",
-            page_slug: `/user-area/categories/${id}`
-        },
-    ];
+    // const sideBarLinks = [
+    //     {
+    //         id: 1,
+    //         page_name: "All Recipes",
+    //         page_slug: `/user-area/profile/${id}`
+    //     },
+    //     {
+    //         id: 2,
+    //         page_name: "Categories",
+    //         page_slug: `/user-area/categories/${id}`
+    //     },
+    // ];
     const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -181,7 +181,19 @@ const UserProfile = () => {
                     <div className="twgtr-flex twgtr-flex-col lg:twgtr-flex-row twgtr-gap-4">
 						<div className="twgtr-min-w-0 lg:twgtr-min-w-[250px] 2xl:twgtr-min-w-[300px]">
 							<div className="lg:twgtr-sticky lg:twgtr-top-[15px]">
-                                <SideBarLeftLinks nav_links_data={sideBarLinks} />
+                                {/* <SideBarLeftLinks nav_links_data={sideBarLinks} /> */}
+                                <ul className="ssdl-nav twgtr-flex twgtr-flex-row lg:twgtr-flex-col twgtr-gap-x-8 twgtr-flex-nowrap twgtr-overflow-x-auto">
+                                    <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
+                                        <a href={`/user-area/profile/${id}`} title="Recipes" className="active twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
+                                            Recipes
+                                        </a>
+                                    </li>
+                                    <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
+                                        <a href={`/user-area/categories/${id}`} title="Categories" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
+                                            Categories
+                                        </a>
+                                    </li>
+                                </ul>
 							</div>
 						</div>
 

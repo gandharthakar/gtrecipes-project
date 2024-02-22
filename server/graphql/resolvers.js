@@ -36,8 +36,8 @@ const resolvers = {
             let respdata = {
                 user_name: '',
                 user_email: '',
-                ripp: 0,
-                cipp: 0
+                ripp: 6,
+                cipp: 5
             };
             try {
                 const user = await SiteUserModel.findOne({_id: args.id});
@@ -75,20 +75,25 @@ const resolvers = {
             let { id } = args;
             let data = [];
             try {
-                const user = await recipeCategoriesModel.find({'author.author_id': id});
-                if(user.length > 0) {
-                    await user.forEach( async (usr, idx) => {
-                        let obj = {
-                            id: usr._id.toString(),
-                            recipe_category_name: usr.recipe_category_name,
-                            recipe_category_slug: usr.recipe_category_slug,
-                            author: {
-                                author_id: usr.author.author_id,
-                                author_name: usr.author.author_name
+                const user = await SiteUserModel.find({_id: id});
+                if(user) {
+                    const cats = await recipeCategoriesModel.find({'author.author_id': id});
+                    if(cats.length > 0) {
+                        cats.forEach( async (usr, idx) => {
+                            let obj = {
+                                id: usr._id.toString(),
+                                recipe_category_name: usr.recipe_category_name,
+                                recipe_category_slug: usr.recipe_category_slug,
+                                author: {
+                                    author_id: usr.author.author_id,
+                                    author_name: usr.author.author_name
+                                }
                             }
-                        }
-                        await data.push(obj);
-                    });
+                            await data.push(obj);
+                        });
+                    } else {
+                        data = [];
+                    }
                 } else {
                     data = [];
                 }
@@ -131,9 +136,49 @@ const resolvers = {
             // console.log(args);
             let response_data = [];
             try {
-                const recipes = await RecipeModel.find({'author.author_id': args.id});
-                if(recipes.length > 0) {
-                    recipes.forEach( async (rec, idx) => {
+                const user = await SiteUserModel.find({_id: args.id});
+                if(user) {
+                    const recipes = await RecipeModel.find({'author.author_id': args.id});
+                    if(recipes.length > 0) {
+                        recipes.forEach( async (rec, idx) => {
+                            let obj = {
+                                id: rec._id.toString(),
+                                recipe_title: rec.recipe_title,
+                                recipe_featured_image: rec.recipe_featured_image,
+                                recipe_categories: rec.recipe_categories,
+                                recipe_summary: rec.recipe_summary,
+                                recipe_content: rec.recipe_content,
+                                recipe_ingradients: rec.recipe_ingradients,
+                                author: {
+                                    author_name: rec.author.author_name,
+                                    author_id: rec.author.author_id,
+                                },
+                                recipe_created_at: rec.recipe_created_at
+                            }
+                            await response_data.push(obj);
+                        });
+                    } else {
+                        response_data = [];
+                    }
+                } else {
+                    response_data = [];
+                }
+            } catch (error) {
+                console.log(error.message);
+                response_data = [];
+            }
+
+            return response_data;
+        },
+        getSingleRecipe: async (parent, args) => {
+            // console.log(args);
+            let response_data = [];
+            try {
+                const user = await SiteUserModel.find({_id: args.user_id});
+                if(user) {
+                    let reci = await RecipeModel.find({_id: args.id});
+                    // console.log(reci);
+                    reci.forEach( async (rec, idx) => {
                         let obj = {
                             id: rec._id.toString(),
                             recipe_title: rec.recipe_title,
@@ -159,7 +204,7 @@ const resolvers = {
             }
 
             return response_data;
-        }
+        },
     },
     Mutation: {
         registerNewUser: async (parent, args) => {
@@ -438,19 +483,20 @@ const resolvers = {
                 message: '',
                 success: false,
                 recipe_featured_image: [],
+                profile_photo: ''
             }
             let { id } = args;
 
             // Get & Delete Categories.
             let rc_cats = await recipeCategoriesModel.find({'author.author_id': id});
-            if(rc_cats) {
+            if(rc_cats.length > 0) {
                 await recipeCategoriesModel.deleteMany({'author.author_id': id});
             }
 
             // Get & Delete Recipes.
             let cr_main = await RecipeModel.find({'author.author_id': id});
             let arr = [];
-            if(cr_main) {
+            if(cr_main.length > 0) {
                 let res = await RecipeModel.find({'author.author_id': id});
                 if(res.length > 0) {
                     let imgs = await RecipeModel.find({'author.author_id': id}).select('recipe_featured_image');
@@ -468,13 +514,16 @@ const resolvers = {
             
             // Finally Delete User.
             let mn_usr = await SiteUserModel.find({_id: id});
-            if(mn_usr) {
+            // console.log(mn_usr);
+            let pp = mn_usr[0].user_profile_photo;
+            if(mn_usr.length > 0) {
                 await SiteUserModel.findByIdAndDelete({_id: id});
             }
             frm_status = {
                 message: 'Account Deleted Successfully',
                 success: true,
-                recipe_featured_image: arr
+                recipe_featured_image: arr,
+                profile_photo: pp
             }
             // console.log(frm_status);
             return frm_status;
@@ -486,9 +535,9 @@ const resolvers = {
                 success: true
             }
             let { recipe_category_name, recipe_category_slug, recipe_category_author_id, recipe_category_author_name } = args;
-            const user = await recipeCategoriesModel.find({'author.author_id': recipe_category_author_id});
+            const user = await SiteUserModel.find({_id: recipe_category_author_id});
             // console.log(user);
-            if(user.length > 0) {
+            if(user) {
                 const cats = await recipeCategoriesModel.find({recipe_category_name: recipe_category_name});
                 // console.log(cats);
                 if(cats.length > 0) {
@@ -516,27 +565,31 @@ const resolvers = {
                     }
                 }
             } else {
-                try {
-                    const doc = new recipeCategoriesModel({
-                        recipe_category_name,
-                        recipe_category_slug,
-                        author: {
-                            author_id: recipe_category_author_id,
-                            author_name: recipe_category_author_name
-                        }
-                    });
-                    await doc.save();
-                    // frm_status = {
-                    //     message: 'Category Created Successfully!',
-                    //     success: true
-                    // }
-                } catch (error) {
-                    console.log(error.message);
-                    frm_status = {
-                        message: "Unable To Create Category",
-                        success: false
-                    }
+                frm_status = {
+                    message: "Unable To Find User",
+                    success: false
                 }
+                // try {
+                //     const doc = new recipeCategoriesModel({
+                //         recipe_category_name,
+                //         recipe_category_slug,
+                //         author: {
+                //             author_id: recipe_category_author_id,
+                //             author_name: recipe_category_author_name
+                //         }
+                //     });
+                //     await doc.save();
+                //     // frm_status = {
+                //     //     message: 'Category Created Successfully!',
+                //     //     success: true
+                //     // }
+                // } catch (error) {
+                //     console.log(error.message);
+                //     frm_status = {
+                //         message: "Unable To Create Category",
+                //         success: false
+                //     }
+                // }
             }
             return frm_status;
         },
@@ -547,9 +600,9 @@ const resolvers = {
                 success: false
             }
             let { recipe_category_name, category_name_old, recipe_category_slug, recipe_category_author_id } = args;
-            const user = await recipeCategoriesModel.find({'author.author_id': recipe_category_author_id});
+            const user = await SiteUserModel.find({_id: recipe_category_author_id});
             // console.log(user);
-            if(user.length > 0) {
+            if(user) {
                 const cats = await recipeCategoriesModel.find({recipe_category_name: category_name_old});
                 // console.log(cats);
                 if(cats.length > 0) {
@@ -594,30 +647,35 @@ const resolvers = {
                 success: false
             }
             let { id, user_id } = args;
-            try {
-                await recipeCategoriesModel.findByIdAndDelete({_id: id});
-                frm_status = {
-                    message: 'Category Deleted Successfully!',
-                    success: true
+            const user = await SiteUserModel.find({_id: user_id});
+            if(user) {
+                try {
+                    await recipeCategoriesModel.findByIdAndDelete({_id: id});
+                    frm_status = {
+                        message: 'Category Deleted Successfully!',
+                        success: true
+                    }
+                    let reci = await RecipeModel.find({'author.author_id': user_id});
+                    if(reci.length > 0) {
+                        reci.forEach((item) => {
+                            const index = item.recipe_categories.indexOf(id);
+                            const arr = item.recipe_categories;
+                            if (index !== -1) {
+                                // item.recipe_categories[index] = category_name;
+                                arr.splice(index, 1);
+                            }
+                            item.save();
+                        });
+                    }
+                } catch (error) {
+                    frm_status = {
+                        message: 'Unable Deleted Category',
+                        success: false
+                    }
                 }
-                let reci = await RecipeModel.find({recipe_author_id: user_id});
-                if(reci.length > 0) {
-                    reci.forEach((item) => {
-                        const index = item.recipe_categories.indexOf(id);
-                        const arr = item.recipe_categories;
-                        if (index !== -1) {
-                            // item.recipe_categories[index] = category_name;
-                            arr.splice(index, 1);
-                            // if(arr.length < 1) {
-                            //     arr.push('uncategorized');
-                            // }
-                        }
-                        item.save();
-                    });
-                }
-            } catch (error) {
+            } else {
                 frm_status = {
-                    message: 'Unable Deleted Category',
+                    message: 'Unable To Find User.',
                     success: false
                 }
             }
@@ -672,10 +730,57 @@ const resolvers = {
                     
             } else {
                 frm_status = {
-                    message: 'Author Not Valid',
+                    message: 'Unable To Find User.',
                     success: false
                 }
             }
+            return frm_status;
+        },
+        updateRecipe: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let { id, user_id,  recipe_title, recipe_featured_image, recipe_categories, recipe_summary, recipe_content, recipe_ingradients } = args;
+            let user = await SiteUserModel.findOne({_id: user_id});
+            if(user) {
+                let recipe = await RecipeModel.find({_id: id});
+                // console.log(recipe);
+                if(recipe.length > 0) {
+                    try {
+                        await RecipeModel.findByIdAndUpdate({_id: id}, {
+                            recipe_title,
+                            recipe_featured_image,
+                            recipe_categories,
+                            recipe_summary,
+                            recipe_content,
+                            recipe_ingradients
+                        }, { new: true });
+                        frm_status = {
+                            message: 'Recipe Updated Successfully!',
+                            success: true
+                        }
+                    } catch (error) {
+                        console.log(error.message);
+                        frm_status = {
+                            message: 'Unable To Update Recipe.',
+                            success: false
+                        }
+                    }
+                } else {
+                    frm_status = {
+                        message: 'Unable To Find Recipe.',
+                        success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: 'Unable To Find User.',
+                    success: false
+                }
+            }
+        
             return frm_status;
         },
         deleteRecipe: async (parent, args) => {
@@ -684,18 +789,26 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let { id } = args;
-            try {
-                const rec = await RecipeModel.findByIdAndDelete({_id: id});
-                // console.log(rec);
-                frm_status = {
-                    message: 'Recipe Deleted Successfully!',
-                    success: true
+            let { id, user_id } = args;
+            const user = await SiteUserModel.find({_id: user_id});
+            if(user) {
+                try {
+                    const rec = await RecipeModel.findByIdAndDelete({_id: id});
+                    // console.log(rec);
+                    frm_status = {
+                        message: 'Recipe Deleted Successfully!',
+                        success: true
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                    frm_status = {
+                        message: 'Unable To Delete Recipe.',
+                        success: false
+                    }
                 }
-            } catch (error) {
-                console.log(error.message);
+            } else {
                 frm_status = {
-                    message: 'Unable To Delete Recipe.',
+                    message: 'Unable To Find User.',
                     success: false
                 }
             }
@@ -704,10 +817,15 @@ const resolvers = {
     },
     RecipeType: {
         recipe_categories: async (data) => {
+            // console.log(data);
             let cats = data.recipe_categories;
-            let resp = await recipeCategoriesModel.find({_id: cats});
-            // console.log(resp);
-            return resp;
+            if(cats.length > 0) {
+                let resp = await recipeCategoriesModel.find({_id: cats});
+                // console.log(resp);
+                return resp;
+            } else {
+                return [];
+            }
         }
     }
 };
