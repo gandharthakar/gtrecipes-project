@@ -254,7 +254,14 @@ const CreateRecipe = () => {
             recipe_created_at: ''
         };
         let ingradients: string[] = [];
-        recins.map((item) => ingradients.push(item.recipe_ingredient));
+        // recins.map((item) => ingradients.push(item.recipe_ingredient));
+        recins.map((item) => {
+            if(item.recipe_ingredient !== '') {
+                return ingradients.push(item.recipe_ingredient)
+            } else {
+                return [];
+            }
+        });
         // console.log(ingradients);
 
         if(recipeTitle == '' || editorContent == undefined || recipeSummary == '') {

@@ -1,8 +1,13 @@
 import { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { MdOutlineCategory } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import RCSpage from "./RCSpage";
+import { RiSearchLine } from "react-icons/ri";
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { RootState } from '../../../redux-service/ReduxStore';
+import { useSelector } from "react-redux";
 
 const GET_RECIPE_CATEGORIES = gql`
     query getAllRecipeCategories($id: ID!) {
@@ -26,6 +31,15 @@ const GET_PER_PAGE_COUNTS = gql`
     }
 `;
 
+const DELETE_ALL_CATEGORIES = gql`
+    mutation deleteAllRecipeCategory($user_id: String!) {
+        deleteAllRecipeCategory(user_id: $user_id) {
+            message,
+            success
+        }
+    }
+`;
+
 const RecipeCategories = (props:any) => {
 
     let { uid, showModal, setShowModal } = props;
@@ -40,11 +54,13 @@ const RecipeCategories = (props:any) => {
         }
     }
 
+    const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const [recipeCats, setRecipeCats] = useState<RecCats[]>([]);
     const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     // Get All Categories.
-    useQuery(GET_RECIPE_CATEGORIES, {
+    let {data} = useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata);
@@ -61,9 +77,122 @@ const RecipeCategories = (props:any) => {
         }
     });
 
+    let [delAlCts] = useMutation(DELETE_ALL_CATEGORIES, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            const toastDefOpts = {
+                autoClose: 1000,
+                closeOnClick: true,
+                theme: `${ThemeMode ? 'dark' : 'light'}`
+            };
+            if(fdata.deleteAllRecipeCategory.success) {
+                toast.success(fdata.deleteAllRecipeCategory.message, toastDefOpts);
+                if(fdata.deleteAllRecipeCategory.message !== "No Categories Found.") {
+                    let suctmr = setTimeout(function(){
+                        window.location.reload();
+                        clearTimeout(suctmr);
+                    }, 1000);
+                }
+            } else {
+                alert(fdata.deleteAllRecipeCategory.message);
+            }
+        }
+    })
+
+    const handleDeleteAll = () => {
+        let conf = confirm("Are you sure want to delete all categories ?");
+        if(conf) {
+            delAlCts({
+                variables: {
+                    user_id: uid
+                }
+            })
+        }
+    }
+
+    const handleSearchInputChange = (e:any) => {
+        setSearchTerm(e.target.value);
+        if(searchTerm.length === 1) {
+            setRecipeCats(data.getAllRecipeCategories);
+        }
+    }
+
+    const handleSearchInputKeyDown = (e:any) => {
+        setSearchTerm(e.target.value);
+        if(e.key === "Backspace") {
+            setRecipeCats(data.getAllRecipeCategories);
+        }
+    }
+
+    const handleSearchSubmit = (e:any) => {
+        e.preventDefault();
+        const toastDefOpts = {
+            autoClose: 1000,
+            closeOnClick: true,
+            theme: `${ThemeMode ? 'dark' : 'light'}`
+        };
+        if(recipeCats.length > 0) {
+            let res = recipeCats.filter((item) => {
+                const srch_res = item.recipe_category_name.toLowerCase().includes(searchTerm.toLowerCase()) || item.recipe_category_slug.toLowerCase().includes(searchTerm.toLowerCase());
+                return srch_res;
+            });
+
+            if(res.length > 0) {
+                setRecipeCats(res);
+                if(searchTerm == '') {
+                    // setRecipeCats(data.getAllRecipeCategories);
+                    setRecipeCats([]);
+                    toast.warn("No Recipes Found", toastDefOpts);
+                }
+            } else {
+                if(searchTerm == '') {
+                    // setRecipeCats(data.getAllRecipeCategories);
+                    setRecipeCats([]);
+                    toast.warn("No Recipes Found", toastDefOpts);
+                }
+                setRecipeCats(res);
+            }
+        } else {
+            toast.info("No Categories Found", toastDefOpts);
+        }
+    }
+
     return (
         <>
-            <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-250px)] 2xl:twgtr-w-[calc(100%-300px)] twgtr-border twgtr-border-solid twgtr-px-4 twgtr-py-3 lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">
+            <ToastContainer />
+            <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-250px)] 2xl:twgtr-w-[calc(100%-300px)] twgtr-border twgtr-border-solid twgtr-px-[20px] twgtr-py-[30px] lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">
+                <div className="twgtr-pb-[30px]">
+                    <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[15px] twgtr-gap-y-[10px] twgtr-justify-between twgtr-flex-wrap">
+                        <div className="md:twgtr-max-w-[300px] twgtr-w-full md:twgtr-w-auto">
+                            <form onSubmit={handleSearchSubmit}>
+                                <div className="twgtr-relative">
+                                    <input 
+                                        type="text" 
+                                        id="unmfrm"
+                                        className="twgtr-transition-all twgtr-w-full twgtr-pl-2 md:twgtr-pl-3 twgtr-pr-[35px] md:twgtr-pr-[45px] twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                        placeholder="Search..." 
+                                        autoComplete="off"
+                                        value={searchTerm}
+                                        onChange={handleSearchInputChange}
+                                        onKeyDown={handleSearchInputKeyDown}
+                                    />
+                                    <div className="twgtr-absolute twgtr-right-[10px] twgtr-top-[12px] md:twgtr-right-[15px] md:twgtr-top-[11px] twgtr-z-[5]">
+                                        <button type="submit" title="Search">
+                                            <RiSearchLine size={20} className="twgtr-transition-all twgtr-w-[18px] twgtr-h-[18px] md:twgtr-w-[20px] md:twgtr-h-[20px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div className="twgtr-text-right twgtr-w-full md:twgtr-w-auto">
+                            <button type="button" title="Delete All" className="twgtr-transition-all twgtr-inline-block twgtr-font-open_sans twgtr-text-[14px] md:twgtr-text-[16px] twgtr-underline twgtr-text-red-600 dark:twgtr-text-slate-200" onClick={handleDeleteAll}>
+                                Delete All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 {
                     recipeCats?.length > 0 ? 
                     (

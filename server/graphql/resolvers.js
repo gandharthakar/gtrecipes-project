@@ -520,7 +520,7 @@ const resolvers = {
                 await SiteUserModel.findByIdAndDelete({_id: id});
             }
             frm_status = {
-                message: 'Account Deleted Successfully',
+                message: 'Account Deleted Successfully!',
                 success: true,
                 recipe_featured_image: arr,
                 profile_photo: pp
@@ -804,6 +804,81 @@ const resolvers = {
                     frm_status = {
                         message: 'Unable To Delete Recipe.',
                         success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: 'Unable To Find User.',
+                    success: false
+                }
+            }
+            return frm_status;
+        },
+        deleteAllRecipes: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false,
+                recipe_featured_image: []
+            }
+
+            let { user_id } = args;
+            let user = await SiteUserModel.find({_id: user_id});
+            let arr = [];
+            if(user.length > 0) {
+                let recps = await RecipeModel.find({'author.author_id': user_id});
+                if(recps.length > 0) {
+                    let imgs = await RecipeModel.find({'author.author_id': user_id}).select('recipe_featured_image');
+                    imgs.forEach((dt, idx) => {
+                        let feimg = dt.recipe_featured_image;
+                        if(feimg !== 'default') {
+                            // console.log(feimg);
+                            arr.push(feimg);
+                        }
+                    });
+                    await RecipeModel.deleteMany({'author.author_id': user_id});
+                    frm_status = {
+                        message: 'All Recipes Deleted Successfully!',
+                        success: true,
+                        recipe_featured_image: arr
+                    }
+                } else {
+                    frm_status = {
+                        message: 'No Recipes Found.',
+                        success: true,
+                        recipe_featured_image: []
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: 'Unable To Find User.',
+                    success: false,
+                    recipe_featured_image: []
+                }
+            }
+            return frm_status;
+        },
+        deleteAllRecipeCategory: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false,
+            }
+
+            let { user_id } = args;
+            let user = await SiteUserModel.find({_id: user_id});
+            if(user.length > 0) {
+                let allcts = await recipeCategoriesModel.find({'author.author_id': user_id})
+                if(allcts.length > 0) {
+                    await recipeCategoriesModel.deleteMany({'author.author_id': user_id});
+                    frm_status = {
+                        message: 'All Categories Deleted Successfully!',
+                        success: true
+                    }
+                } else {
+                    frm_status = {
+                        message: 'No Categories Found.',
+                        success: true
                     }
                 }
             } else {
