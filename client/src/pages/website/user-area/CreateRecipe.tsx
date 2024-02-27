@@ -4,7 +4,7 @@ import { Jodit } from 'jodit';
 import Select from "react-tailwindcss-select";
 import 'react-tailwindcss-select/dist/index.css';
 // import 'jodit/build/jodit.min.css';
-import './../../../jodit.min.css';
+// import './../../../jodit.min.css';
 import SiteBreadcrumb from "../../../components/website/SiteBreadcrumb";
 import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
@@ -20,14 +20,7 @@ import Cookies from "universal-cookie";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
 
-let checkDTheme = localStorage.getItem('site-dark-mode');
-let thm = false;
-if(checkDTheme) {
-    let prs = JSON.parse(checkDTheme);
-    thm = prs;
-}
-
-const config: Jodit['options'] = { ...Jodit.defaultOptions, height: 400, theme: `${thm ? 'dark':'light'}` }
+const config: Jodit['options'] = { ...Jodit.defaultOptions, height: 400 }
 
 function makeid(length:any) {
 	let result = '';
@@ -339,10 +332,18 @@ const CreateRecipe = () => {
         }
     }, []);
 
+    const rest_pages = [
+        {
+            id: 474,
+            page_name: 'All Recipes',
+            page_slug: `/user-area/profile/${id}`
+        }
+    ];
+
     return (
         <>
             <ToastContainer />
-            <SiteBreadcrumb page_name="New Recipe" page_title="Create New Recipe" />
+            <SiteBreadcrumb page_name="New Recipe" page_title="Create New Recipe" rest_pages={rest_pages} />
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -484,6 +485,10 @@ const CreateRecipe = () => {
                                         classNames={{
                                             menuButton: () => (`flex text-sm text-gray-500 border border-gray-300 rounded shadow-sm transition-all duration-300 focus:outline-none bg-white hover:border-gray-400 focus:border-indigo-500 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200`),
                                             tagItem: () => (`bg-gray-200 border rounded-sm flex space-x-1 pl-1 dark:[&>p.select-none]:!twgtr-text-slate-200 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-700 dark:twgtr-text-slate-200`),
+                                            menu: `absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700 dark:twgtr-bg-slate-800 dark:twgtr-border-slate-600`,
+                                            listItem: () => (`block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded text-gray-500 hover:bg-indigo-100 hover:text-indigo-500 dark:hover:twgtr-bg-slate-500 dark:hover:twgtr-text-slate-200`),
+                                            searchBox: `w-full py-2 pl-8 text-sm text-gray-500 bg-gray-100 border border-gray-200 rounded focus:border-gray-200 focus:ring-0 focus:outline-none dark:twgtr-bg-slate-600 dark:twgtr-border-slate-500 dark:twgtr-text-slate-200 dark:placeholder:twgtr-text-slate-200`,
+                                            searchIcon: `absolute w-5 h-5 mt-2.5 pb-0.5 ml-2 text-gray-500 dark:twgtr-text-slate-200`,
                                         }}
                                     />
                                 </div>

@@ -16,7 +16,24 @@ const DELETE_RECIPE = gql`
     }
 `;
 
-const RecipeCard = (props:any) => {
+type Cats = {
+    id: string,
+    recipe_category_name: string
+}
+
+interface CompProp {
+    recipe_id: string,
+    rfeb_URI?: string,
+    recipe_featured_image: string,
+    categories?: Cats[],
+    recipe_title: string,
+    recipe_summary: string,
+    recipe_author_id?: string,
+    recipe_author_name: string,
+    actions?: boolean
+}
+
+const RecipeCard = (props: CompProp) => {
     let { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false } = props;
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';

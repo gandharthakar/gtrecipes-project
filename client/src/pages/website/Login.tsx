@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import SiteLogo from "../../components/website/SiteLogo";
 import { FaRegEye } from "react-icons/fa6";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -12,6 +12,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useMutation, gql } from "@apollo/client";
 import { do_login } from "../../redux-service/website/auth/UserLoginReducer";
+import { set_dark_mode, unset_dark_mode } from "../../redux-service/website/SiteThemeModeReducer";
 
 const LOGIN_USER = gql`
 	mutation loginUser($email: String!, $password: String!) {
@@ -29,7 +30,7 @@ const Login = () => {
 	const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
 	// const UserAuth = useSelector((state: RootState) => state.user_login.isAuthenticated);
 	const dispatch = useDispatch();
-	const[showPassword, setShowPassword] = useState(false);
+	const[showPassword, setShowPassword] = useState<boolean>(false);
 	const [loginUser] = useMutation(LOGIN_USER, {
 		onCompleted: data => {
 			// console.log(data);
@@ -79,6 +80,20 @@ const Login = () => {
 		// Reset Form
 		reset();
 	}
+
+	useEffect(() => {
+        // Automatically Check and Set Dark Mode.
+        // const detectMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        // Manually Toggle and Save Dark Mode.
+        let glsi = localStorage.getItem('site-dark-mode');
+        const checkDM = glsi ? JSON.parse(glsi) : '';
+        if(checkDM) {
+            dispatch(set_dark_mode());
+        } else {
+            dispatch(unset_dark_mode());
+        }
+    }, []);
 
 	return (
 		<>

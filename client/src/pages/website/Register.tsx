@@ -2,15 +2,16 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import SiteLogo from "../../components/website/SiteLogo";
 import { FaRegEye } from "react-icons/fa6";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux-service/ReduxStore";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useMutation, gql } from "@apollo/client";
+import { set_dark_mode, unset_dark_mode } from "../../redux-service/website/SiteThemeModeReducer";
 
 const REGISTER_USER = gql`
 	mutation registerNewUser($full_name: String!, $email: String!, $password: String!, $confirm_password: String!) {
@@ -24,8 +25,9 @@ const REGISTER_USER = gql`
 const Register = () => {
 	const navigate = useNavigate();
 	const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
-	const[showPassword, setShowPassword] = useState(false);
-	const[showConfPassword, setShowConfPassword] = useState(false);
+	const dispatch = useDispatch();
+	const[showPassword, setShowPassword] = useState<boolean>(false);
+	const[showConfPassword, setShowConfPassword] = useState<boolean>(false);
 
 	const [registerUser] = useMutation(REGISTER_USER, {
 		onCompleted: data => {
@@ -91,6 +93,20 @@ const Register = () => {
 		// Reset Form
 		reset();
 	}
+
+	useEffect(() => {
+        // Automatically Check and Set Dark Mode.
+        // const detectMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        // Manually Toggle and Save Dark Mode.
+        let glsi = localStorage.getItem('site-dark-mode');
+        const checkDM = glsi ? JSON.parse(glsi) : '';
+        if(checkDM) {
+            dispatch(set_dark_mode());
+        } else {
+            dispatch(unset_dark_mode());
+        }
+    }, []);
 
 	return (
 		<>

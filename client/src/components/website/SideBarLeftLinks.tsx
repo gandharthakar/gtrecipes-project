@@ -1,6 +1,16 @@
 import { NavLink } from "react-router-dom";
 
-const SideBarLeftLinks = (props: any) => {
+type NavLink = {
+	id: string,
+	page_name: string,
+	page_slug: string
+}
+
+interface CompProp {
+	nav_links_data: NavLink[]
+}
+
+const SideBarLeftLinks = (props: CompProp) => {
 	const { nav_links_data } = props;
 	return (
 		<>

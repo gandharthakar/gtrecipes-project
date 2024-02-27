@@ -2,7 +2,20 @@ import { NavLink } from "react-router-dom";
 import { IoHome } from "react-icons/io5";
 import { TfiAngleRight } from "react-icons/tfi";
 
-const SiteBreadcrumb= (props:any) => {
+type NavLink = {
+	id: number,
+	page_name: string,
+	page_slug: string
+}
+
+interface CompProp {
+    page_name: string,
+    page_title: string,
+    home_uri?: string,
+    rest_pages?: NavLink[]
+}
+
+const SiteBreadcrumb= (props: CompProp) => {
     const { page_name, page_title, home_uri, rest_pages } = props;
     return (
         <>

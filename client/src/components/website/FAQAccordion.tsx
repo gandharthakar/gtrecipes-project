@@ -2,7 +2,15 @@ import { useRef } from "react";
 import { PiPlusBold } from "react-icons/pi";
 import { PiMinusBold } from "react-icons/pi";
 
-const FAQAccordion = (props:any) => {
+interface CompProp {
+	ques_text: string,
+	children: React.ReactNode,
+	show_icon?: boolean,
+	is_open?: boolean,
+	onClick: any
+}
+
+const FAQAccordion = (props: CompProp) => {
 	const { ques_text, children, show_icon, is_open, onClick } = props;
 
 	const accRef = useRef<HTMLDivElement>(null);
@@ -16,7 +24,7 @@ const FAQAccordion = (props:any) => {
 							{ques_text}
 						</h4>
 						{
-							show_icon == 'true' ? 
+							show_icon ? 
 							(
 								<>
 									<div>

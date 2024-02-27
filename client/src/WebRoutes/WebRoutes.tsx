@@ -1,5 +1,4 @@
 import App from "../App";
-import GQLFileUploadDemo from "../pages/GQLFileUploadDemo/GQLFileUploadDemo";
 import {
     createBrowserRouter
 } from "react-router-dom";
@@ -105,10 +104,6 @@ const WebRoutes = createBrowserRouter([
     {
         path: "/register",
         element: <Register />
-    },
-    {
-        path: "gql-upload",
-        element: <GQLFileUploadDemo />
     }
 // ], { basename: '/' });
 ]);

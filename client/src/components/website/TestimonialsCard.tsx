@@ -1,6 +1,13 @@
 import { BiSolidQuoteAltLeft } from "react-icons/bi";
 
-const TestimonialsCard = (props:any) => {
+interface CompProp {
+    photo: string,
+    testimonial_content: string,
+    testimonial_person_name: string,
+    testimonial_person_designation: string
+}
+
+const TestimonialsCard = (props: CompProp) => {
     let { photo, testimonial_content, testimonial_person_name, testimonial_person_designation } = props;
     return (
         <>

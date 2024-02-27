@@ -4,14 +4,26 @@ import { IoMdClose } from "react-icons/io";
 import ThemeModeSwitch from "./ThemeModeSwitch";
 import SiteLogo from "./SiteLogo";
 import HeaderProfileDropdown from "./HeaderProfileDropdown";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SiteHeader = () => {
-	const [menuToggle, setToggleMenu] = useState(false);
-
+	const [menuToggle, setToggleMenu] = useState<boolean>(false);
+	const menuRef = useRef<HTMLDivElement>(null);
 	const toggleSIteMenu = () => {
 		setToggleMenu(!menuToggle);
 	}
+
+	useEffect(() => {
+		let menuHandler = (e:any) => {
+            if(menuRef.current !== null) {
+                if(!menuRef.current.contains(e.target)) {
+                    setToggleMenu(false);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', menuHandler);
+	}, []);
 
 	return (
 		<>
@@ -23,25 +35,25 @@ const SiteHeader = () => {
 						</NavLink>
 					</div>
 					<div className="twgtr-flex twgtr-items-center">
-						<nav className={`site-header md:twgtr-block twgtr-pr-0 md:twgtr-pr-2 ${menuToggle ? 'twgtr-block' : 'twgtr-hidden'}`}>
+						<nav ref={menuRef} className={`site-header md:twgtr-block twgtr-pr-0 md:twgtr-pr-2 ${menuToggle ? 'twgtr-block' : 'twgtr-hidden'}`}>
 							<ul className="twgtr-flex twgtr-items-center twgtr-flex-col md:twgtr-flex-row md:twgtr-items-start twgtr-flex-wrap twgtr-gap-x-6 twgtr-font-ubuntu twgtr-absolute md:twgtr-relative twgtr-left-0 twgtr-top-[57px] twgtr-z-20 md:twgtr-top-0 md:twgtr-w-auto twgtr-w-full twgtr-bg-white md:twgtr-bg-transparent">
 								<li className="twgtr-px-3 md:twgtr-px-0 twgtr-w-full md:twgtr-w-auto twgtr-py-3 md:twgtr-py-0 twgtr-border-b-[1px] twgtr-border-slate-300 md:twgtr-border-0 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-700">
-									<NavLink to="/" title="Home" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4">
+									<NavLink to="/" title="Home" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4" onClick={toggleSIteMenu}>
 										Home
 									</NavLink>
 								</li>
 								<li className="twgtr-px-3 md:twgtr-px-0 twgtr-w-full md:twgtr-w-auto twgtr-py-3 md:twgtr-py-0 twgtr-border-b-[1px] twgtr-border-slate-300 md:twgtr-border-0 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-700">
-									<NavLink to="/recipes" title="Recipes" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4">
+									<NavLink to="/recipes" title="Recipes" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4" onClick={toggleSIteMenu}>
 										Recipes
 									</NavLink>
 								</li>
 								<li className="twgtr-px-3 md:twgtr-px-0 twgtr-w-full md:twgtr-w-auto twgtr-py-3 md:twgtr-py-0 twgtr-border-b-[1px] twgtr-border-slate-300 md:twgtr-border-0 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-700">
-									<NavLink to="/about" title="About" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4">
+									<NavLink to="/about" title="About" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4" onClick={toggleSIteMenu}>
 										About
 									</NavLink>
 								</li>
 								<li className="twgtr-px-3 md:twgtr-px-0 twgtr-w-full md:twgtr-w-auto twgtr-py-3 md:twgtr-py-0 twgtr-border-b-[1px] twgtr-border-slate-300 md:twgtr-border-0 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-700">
-									<NavLink to="/contact" title="Contact" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4">
+									<NavLink to="/contact" title="Contact" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4" onClick={toggleSIteMenu}>
 										Contact
 									</NavLink>
 								</li>

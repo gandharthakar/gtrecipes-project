@@ -4,7 +4,7 @@ import SiteBreadcrumb from "../../components/website/SiteBreadcrumb";
 import { NavLink } from "react-router-dom";
 
 const FAQs = () => {
-	const [activeIndex, setActiveIndex] = useState(null);
+	const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
 	const handleItemClick = (index:any) => {
 		setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -28,7 +28,7 @@ const FAQs = () => {
 							<div>
 								<FAQAccordion 
 									ques_text="This is question number 1"
-									show_icon="true"
+									show_icon={true}
 									is_open={activeIndex === 1}
 									onClick={() => handleItemClick(1)}
 								>
@@ -43,7 +43,7 @@ const FAQs = () => {
 								</FAQAccordion>
 								<FAQAccordion 
 									ques_text="This is question number 2"
-									show_icon="true"
+									show_icon={true}
 									is_open={activeIndex === 2}
 									onClick={() => handleItemClick(2)}
 								>
@@ -58,7 +58,7 @@ const FAQs = () => {
 								</FAQAccordion>
 								<FAQAccordion 
 									ques_text="This is question number 3"
-									show_icon="true"
+									show_icon={true}
 									is_open={activeIndex === 3}
 									onClick={() => handleItemClick(3)}
 								>
@@ -73,7 +73,7 @@ const FAQs = () => {
 								</FAQAccordion>
 								<FAQAccordion 
 									ques_text="This is question number 4"
-									show_icon="true"
+									show_icon={true}
 									is_open={activeIndex === 4}
 									onClick={() => handleItemClick(4)}
 								>
@@ -88,7 +88,7 @@ const FAQs = () => {
 								</FAQAccordion>
 								<FAQAccordion 
 									ques_text="This is question number 5"
-									show_icon="true"
+									show_icon={true}
 									is_open={activeIndex === 5}
 									onClick={() => handleItemClick(5)}
 								>
@@ -103,7 +103,7 @@ const FAQs = () => {
 								</FAQAccordion>
 								<FAQAccordion 
 									ques_text="This is question number 6"
-									show_icon="true"
+									show_icon={true}
 									is_open={activeIndex === 6}
 									onClick={() => handleItemClick(6)}
 								>
@@ -118,7 +118,7 @@ const FAQs = () => {
 								</FAQAccordion>
 								<FAQAccordion 
 									ques_text="This is question number 7"
-									show_icon="true"
+									show_icon={true}
 									is_open={activeIndex === 7}
 									onClick={() => handleItemClick(7)}
 								>

@@ -47,7 +47,7 @@ const ViewSingleRecipe = () => {
                                 SiteConstants[0].static_cats.map((item) => (
                                     <div key={item.id} className="twgtr-flex twgtr-flex-wrap twgtr-gap-x-[10px] twgtr-items-center rpcat-box">
                                         <li className="twgtr-transition-all twgtr-inline-block twgtr-font-open_sans twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-1 dark:twgtr-text-slate-300">
-                                            {item.category_name}
+                                            {item.recipe_category_name}
                                         </li>
                                         <li className="twgtr-transition-all twgtr-inline-block dot twgtr-font-open_sans twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-1 dark:twgtr-text-slate-300">
                                             <div className="twgtr-transition-all twgtr-w-[3px] twgtr-h-[3px] twgtr-rounded-full twgtr-bg-theme-color-1 dark:twgtr-bg-theme-color-3"></div>
@@ -215,7 +215,7 @@ const ViewSingleRecipe = () => {
 
                             <div className="twgtr-grid twgtr-grid-cols-1 md:twgtr-grid-cols-2 lg:twgtr-grid-cols-3 twgtr-gap-[20px]">
                                 <RecipeCard 
-                                    recipe_id={1} 
+                                    recipe_id={"1"} 
                                     recipe_featured_image="/images/food-dummy.jpg" 
                                     categories={SiteConstants[0].static_cats} 
                                     recipe_title="Test Recipe 1"
@@ -224,7 +224,7 @@ const ViewSingleRecipe = () => {
                                     actions={false}
                                 />
                                 <RecipeCard 
-                                    recipe_id={2} 
+                                    recipe_id={"2"} 
                                     recipe_featured_image="/images/food-dummy.jpg" 
                                     categories={SiteConstants[0].static_cats} 
                                     recipe_title="Test Recipe 2"
@@ -233,7 +233,7 @@ const ViewSingleRecipe = () => {
                                     actions={false}
                                 />
                                 <RecipeCard 
-                                    recipe_id={3} 
+                                    recipe_id={"3"} 
                                     recipe_featured_image="/images/food-dummy.jpg" 
                                     categories={SiteConstants[0].static_cats} 
                                     recipe_title="Test Recipe 3"

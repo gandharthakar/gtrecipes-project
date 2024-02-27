@@ -86,6 +86,7 @@ const typeDefs = gql`
         # Recipe Queries.
         getAllRecipes(id: ID!): [RecipeType]
         getSingleRecipe(id: ID!, user_id: String!): [RecipeType]
+        getSIngleRecipeByID(id: ID!): [RecipeType]
     }
 
     type Mutation {

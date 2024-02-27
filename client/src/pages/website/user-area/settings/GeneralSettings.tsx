@@ -37,22 +37,22 @@ const GeneralSettings = () => {
     let { id } = useParams();
     const sideBarLinks = [
         {
-            id: 1,
+            id: "1",
             page_name: "General",
             page_slug: `/user-area/settings/${id}`
         },
         {
-            id: 2,
+            id: "2",
             page_name: "Password",
             page_slug: `/user-area/settings/change-password/${id}`
         },
         {
-            id: 3,
+            id: "3",
             page_name: "Profile Picture",
             page_slug: `/user-area/settings/change-profile-picture/${id}`
         },
         {
-            id: 4,
+            id: "4",
             page_name: "Delete Account",
             page_slug: `/user-area/settings/delete-account/${id}`
         },

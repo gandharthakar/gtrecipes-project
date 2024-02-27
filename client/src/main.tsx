@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import WebRoutes from './WebRoutes/WebRoutes';
 import './index.css';
+import './jodit.min.css';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
 import {

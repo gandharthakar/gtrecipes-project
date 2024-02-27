@@ -41,12 +41,20 @@ function convertToSlug( str:string ) {
     return str;
 }
 
-const CategoryCard = (props:any) => {
+interface CompProps {
+    user_id?: string,
+    user_name?: string,
+    category_id?: string,
+    category_name: string,
+    category_slug: string
+}
+
+const CategoryCard = (props: CompProps) => {
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
     let { user_id, user_name, category_id, category_name, category_slug } = props;
-    const [createCat, setCreateCat] = useState(category_name);
-    const [createCatSlug, setCreateCatSlug] = useState(category_slug);
+    const [createCat, setCreateCat] = useState<string>(category_name);
+    const [createCatSlug, setCreateCatSlug] = useState<string>(category_slug);
 
     // Update Category.
     let [updCat] = useMutation(UPDATE_CATEGORY, {

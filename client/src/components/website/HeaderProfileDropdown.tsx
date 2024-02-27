@@ -19,7 +19,7 @@ const GET_USER_DETAILS = gql`
 `;
 
 const HeaderProfileDropdown = () => {
-    const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
+    const pp_path = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/site-user-profile-photos/`;
     const navigate = useNavigate();
     const UserAuth = useSelector((state: RootState) => state.user_login.isAuthenticated);
     const dispatch = useDispatch();

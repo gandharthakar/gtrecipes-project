@@ -10,13 +10,13 @@ const themeModeReducer = createSlice({
     reducers: {
         set_dark_mode: (state) => {
             const docHTML = document.querySelector('html');
-            docHTML?.classList.add('twgtr-dark');
+            docHTML?.classList.add('twgtr-dark', 'jodit_theme_dark');
             localStorage.setItem('site-dark-mode', JSON.stringify(true));
             state.dark_theme_mode = true;
         },
         unset_dark_mode: (state) => {
             const docHTML = document.querySelector('html');
-            docHTML?.classList.remove('twgtr-dark');
+            docHTML?.classList.remove('twgtr-dark', 'jodit_theme_dark');
             localStorage.setItem('site-dark-mode', JSON.stringify(false));
             state.dark_theme_mode = false;
         },
