@@ -1,13 +1,12 @@
 import SiteBreadcrumb from "../../../components/website/SiteBreadcrumb";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { PiPlusBold } from "react-icons/pi";
+import { useNavigate, useParams } from "react-router-dom";
 // import SideBarLeftLinks from "../../../components/website/SideBarLeftLinks";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
 import { gql, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
-import UserRecipes from "./UserRecipes";
+import UserSavedRecipes from "./UserSavedRecipes";
 
 const GET_USER_DETAILS = gql`
     query getUserPhotoAndName($id: ID!) {
@@ -20,7 +19,7 @@ const GET_USER_DETAILS = gql`
     }
 `;
 
-const UserProfile = () => {
+const UserProfileSR = () => {
     let { id } = useParams();
     // const sideBarLinks = [
     //     {
@@ -164,15 +163,6 @@ const UserProfile = () => {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="twgtr-ml-[60px] md:twgtr-ml-0">
-                            <NavLink to={`/create-recipe/${id}`} title="+ New Recipe" className="twgtr-transition-all twgtr-inline-block twgtr-border-2 twgtr-font-open_sans twgtr-font-bold twgtr-text-sm twgtr-border-theme-color-2 twgtr-py-[7px] twgtr-px-3 twgtr-text-theme-color-2 hover:twgtr-bg-theme-color-2 hover:twgtr-text-slate-200 md:twgtr-text-base md:twgtr-px-5 dark:twgtr-border-theme-color-4 dark:twgtr-text-theme-color-4 dark:hover:twgtr-bg-theme-color-4 dark:hover:twgtr-text-slate-200">
-                                <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[10px]">
-                                    <PiPlusBold size={15} />
-                                    <div>New Recipe</div>
-                                </div>
-                            </NavLink>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -184,7 +174,7 @@ const UserProfile = () => {
                                 {/* <SideBarLeftLinks nav_links_data={sideBarLinks} /> */}
                                 <ul className="ssdl-nav twgtr-flex twgtr-flex-row lg:twgtr-flex-col twgtr-gap-x-8 twgtr-flex-nowrap twgtr-overflow-x-auto">
                                     <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
-                                        <a href={`/user-area/profile/${id}`} title="Recipes" className="active twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
+                                        <a href={`/user-area/profile/${id}`} title="Recipes" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
                                             Recipes
                                         </a>
                                     </li>
@@ -194,7 +184,7 @@ const UserProfile = () => {
                                         </a>
                                     </li>
                                     <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
-                                        <a href={`/user-area/saved-recipes/${id}`} title="Saved Recipes" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
+                                        <a href={`/user-area/saved-recipes/${id}`} title="Saved Recipes" className="active twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
                                             Saved Recipes
                                         </a>
                                     </li>
@@ -202,7 +192,7 @@ const UserProfile = () => {
 							</div>
 						</div>
 
-                        <UserRecipes uid={id} />
+                        <UserSavedRecipes uid={id} />
                     </div>
                 </div>
             </div>
@@ -210,4 +200,4 @@ const UserProfile = () => {
     )
 }
 
-export default UserProfile;
+export default UserProfileSR;

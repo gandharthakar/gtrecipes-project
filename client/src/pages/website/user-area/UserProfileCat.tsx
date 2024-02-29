@@ -367,6 +367,11 @@ const UserProfileCat = () => {
                                             Categories
                                         </a>
                                     </li>
+                                    <li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2">
+                                        <a href={`/user-area/saved-recipes/${id}`} title="Saved Recipes" className="twgtr-transition-all twgtr-inline-block twgtr-font-ubuntu twgtr-text-[16px] md:twgtr-text-[18px] twgtr-py-1 lg:twgtr-pl-3 twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-relative">
+                                            Saved Recipes
+                                        </a>
+                                    </li>
                                 </ul>
 							</div>
 						</div>

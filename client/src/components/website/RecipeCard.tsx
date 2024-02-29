@@ -63,11 +63,12 @@ interface CompProp {
     recipe_author_id?: string,
     recipe_author_name: string,
     actions?: boolean,
-    recipe_type?: string
+    recipe_type?: string,
+    page_reload_on_unsave?: boolean
 }
 
 const RecipeCard = (props: CompProp) => {
-    let { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false, recipe_type="veg" } = props;
+    let { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false, recipe_type="veg", page_reload_on_unsave=false } = props;
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const AuthUser = useSelector((state: RootState) => state.user_login.isAuthenticated);
     const navigate = useNavigate();
@@ -194,18 +195,33 @@ const RecipeCard = (props: CompProp) => {
                 });
                 setRecSaved(true);
             } else {
-                unSavRec({
-                    variables: {
-                        user_id: authUserID_g,
-                        recipe_id
+                if(page_reload_on_unsave) {
+                    let conf = confirm("Are you sure want to remove this recipe from saved collection ?");
+                    if(conf) {
+                        unSavRec({
+                            variables: {
+                                user_id: authUserID_g,
+                                recipe_id
+                            }
+                        });
+                        setRecSaved(false);
+                        window.location.reload();
                     }
-                });
-                setRecSaved(false);
+                } else {
+                    unSavRec({
+                        variables: {
+                            user_id: authUserID_g,
+                            recipe_id
+                        }
+                    });
+                    setRecSaved(false);
+                }
             }
         } else {
             navigate("/login");
         }
     }
+
     useEffect(()=> {
         const cookies = new Cookies();
         // const authUser = cookies.get("gjtrewcipets_auth_user") || '';

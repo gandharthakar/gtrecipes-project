@@ -109,14 +109,16 @@ const resolvers = {
         getPerPagesCount: async (parent, args) => {
             let { id } = args;
             let respdata = {
-                category_per_page: 5,
-                recipes_per_page: 5
+                category_per_page: 0,
+                recipes_per_page: 0,
+                saved_recipes_per_page: 0
             }
             const user = await SiteUserModel.findOne({_id: id});
             if(user) {
                 respdata = {
                     category_per_page: user.user_categories_items_per_page,
-                    recipes_per_page: user.user_recipe_items_per_page
+                    recipes_per_page: user.user_recipe_items_per_page,
+                    saved_recipes_per_page: user.user_saved_recipes_items_per_page
                 }
             }
             return respdata;
@@ -913,11 +915,27 @@ const resolvers = {
             const user = await SiteUserModel.find({_id: user_id});
             if(user) {
                 try {
-                    const rec = await RecipeModel.findByIdAndDelete({_id: id});
-                    // console.log(rec);
-                    frm_status = {
-                        message: 'Recipe Deleted Successfully!',
-                        success: true
+                    let rcf = await RecipeModel.find({_id: id});
+                    if(rcf.length > 0) {
+                        let usr = await SiteUserModel.find({"saved_recipes": { $in: id }});
+                        if(usr.length > 0) {
+                            // console.log(usr);
+                            await SiteUserModel.updateMany({"saved_recipes": { $in: id }}, {
+                                $pull: {
+                                    saved_recipes: id
+                                }
+                            });  
+                        }
+                        await RecipeModel.findByIdAndDelete({_id: id});
+                        frm_status = {
+                            message: 'Recipe Deleted Successfully!',
+                            success: true
+                        }
+                    } else {
+                        frm_status = {
+                            message: 'Unable To Find Recipe.',
+                            success: false
+                        }
                     }
                 } catch (error) {
                     console.log(error.message);
@@ -956,6 +974,18 @@ const resolvers = {
                             arr.push(feimg);
                         }
                     });
+                    let yy = await RecipeModel.find({'author.author_id': user_id}).select('_id');
+                    let idarr = yy.length > 0 ? yy.map((itm) => itm._id.toString()) : [];
+                    let usr = idarr.length > 0 ? await SiteUserModel.find({"saved_recipes": { $in: idarr }}) : [];
+                    if(usr.length > 0) {
+                        // console.log(usr);
+                        // console.log(idarr);
+                        await SiteUserModel.updateMany({"saved_recipes": { $in: idarr }}, {
+                            $pull: {
+                                "saved_recipes": { $in: idarr }
+                            }
+                        });
+                    }
                     await RecipeModel.deleteMany({'author.author_id': user_id});
                     frm_status = {
                         message: 'All Recipes Deleted Successfully!',

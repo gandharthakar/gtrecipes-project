@@ -21,6 +21,8 @@ import DeleteAccountSettings from "../pages/website/user-area/settings/DeleteAcc
 import ViewSingleRecipe from "../pages/website/ViewSingleRecipe";
 import PageNotFound from "../pages/website/PageNotFound";
 import EditRecipe from "../pages/website/user-area/EditRecipe";
+import UserProfileSR from "../pages/website/user-area/UserProfileSR";
+
 
 const WebRoutes = createBrowserRouter([
     {
@@ -66,6 +68,10 @@ const WebRoutes = createBrowserRouter([
             {
                 path: "/user-area/categories/:id",
                 element: <UserProfileCat />
+            },
+            {
+                path: "/user-area/saved-recipes/:id",
+                element: <UserProfileSR />
             },
             {
                 path: "/create-recipe/:id",

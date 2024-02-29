@@ -76,6 +76,7 @@ const typeDefs = gql`
     type PerPageGenSet {
         category_per_page: Int!
         recipes_per_page: Int!
+        saved_recipes_per_page: Int!
     }
 
     type Query {
