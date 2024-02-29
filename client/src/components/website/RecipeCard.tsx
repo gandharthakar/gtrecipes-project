@@ -1,17 +1,49 @@
 import { MdEdit } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
-import { gql, useMutation } from "@apollo/client";
+import { NavLink, useNavigate } from "react-router-dom";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { toast, ToastContainer } from 'react-toastify';
 import { RootState } from "../../redux-service/ReduxStore";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { IoBookmark } from "react-icons/io5";
+import { IoBookmarkOutline } from "react-icons/io5";
+import { useEffect, useState } from "react";
+import Cookies from "universal-cookie";
 
 const DELETE_RECIPE = gql`
     mutation deleteRecipe($id: ID!, $user_id: String!) {
         deleteRecipe(id: $id, user_id: $user_id) {
             message,
             success
+        }
+    }
+`;
+
+const SAVE_RECIPE_USER = gql`
+    mutation saveRecipe($user_id: String!, $recipe_id: String!) {
+        saveRecipe(user_id: $user_id, recipe_id: $recipe_id) {
+            message,
+            success
+        }
+    }
+`;
+
+const UNSAVE_RECIPE_USER = gql`
+    mutation unsaveRecipe($user_id: String!, $recipe_id: String!) {
+        unsaveRecipe(user_id: $user_id, recipe_id: $recipe_id) {
+            message,
+            success
+        }
+    }
+`;
+
+const GET_USER_FOR_SAVED_RECIPES = gql`
+    query getUserByID($id: ID!) {
+        getUserByID(id: $id) {
+            saved_recipes {
+                id
+            }
         }
     }
 `;
@@ -30,15 +62,34 @@ interface CompProp {
     recipe_summary: string,
     recipe_author_id?: string,
     recipe_author_name: string,
-    actions?: boolean
+    actions?: boolean,
+    recipe_type?: string
 }
 
 const RecipeCard = (props: CompProp) => {
-    let { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false } = props;
+    let { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false, recipe_type="veg" } = props;
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
+    const AuthUser = useSelector((state: RootState) => state.user_login.isAuthenticated);
+    const navigate = useNavigate();
     const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';
-    
     const fallBackFeImg = 'images/default-feimg.svg';
+    const [compU, setCompU] = useState<boolean>(false);
+    const cookies = new Cookies();
+    const authUserID_g = cookies.get("gjtrewcipets_auth_user_id") || '';
+    const [recSaved, setRecSaved] = useState<boolean>(false);
+
+    useQuery(GET_USER_FOR_SAVED_RECIPES, {
+        variables: { id: authUserID_g },
+        onCompleted: fdata => {
+            // console.log(fdata.getUserByID.saved_recipes);
+            let extdt = fdata.getUserByID.saved_recipes;
+            let arrids = extdt.map((item: any) => item.id);
+            let chsr = arrids.includes(recipe_id);
+            if(chsr) {
+                setRecSaved(true);
+            }
+        }
+    });
 
     // Delete Recipe
     let [delRec] = useMutation(DELETE_RECIPE, {
@@ -61,7 +112,43 @@ const RecipeCard = (props: CompProp) => {
                 toast.error(fdata.deleteRecipe.message, toastDefOpts);
             }
         }
-    })
+    });
+
+    // Save Recipe.
+    let [savRec] = useMutation(SAVE_RECIPE_USER, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            // const toastDefOpts = {
+            //     autoClose: 1000,
+            //     closeOnClick: true,
+            //     theme: `${ThemeMode ? 'dark' : 'light'}`
+            // };
+            // if(fdata.saveRecipe.success) {
+            //     toast.success(fdata.saveRecipe.message, toastDefOpts);
+            // } else {
+            //     toast.error(fdata.saveRecipe.message, toastDefOpts);
+            // }
+            alert(fdata.saveRecipe.message);
+        }
+    });
+
+    // Unsave Recipe.
+    let [unSavRec] = useMutation(UNSAVE_RECIPE_USER, {
+        onCompleted: fdata => {
+            // console.log(fdata);
+            // const toastDefOpts = {
+            //     autoClose: 1000,
+            //     closeOnClick: true,
+            //     theme: `${ThemeMode ? 'dark' : 'light'}`
+            // };
+            // if(fdata.unsaveRecipe.success) {
+            //     toast.success(fdata.unsaveRecipe.message, toastDefOpts);
+            // } else {
+            //     toast.error(fdata.unsaveRecipe.message, toastDefOpts);
+            // }
+            alert(fdata.unsaveRecipe.message);
+        }
+    });
     
     const handleDeleteRecipe = () => {
         let conf = confirm("Are you sure want to delete this recipe ?");
@@ -94,18 +181,95 @@ const RecipeCard = (props: CompProp) => {
         }
     }
 
+    let handleSaveChk = (e: any) => {
+        let checked = e.target.checked;
+        // console.log(AuthUser);
+        if(AuthUser) {
+            if(checked) {
+                savRec({
+                    variables: {
+                        user_id: authUserID_g,
+                        recipe_id
+                    }
+                });
+                setRecSaved(true);
+            } else {
+                unSavRec({
+                    variables: {
+                        user_id: authUserID_g,
+                        recipe_id
+                    }
+                });
+                setRecSaved(false);
+            }
+        } else {
+            navigate("/login");
+        }
+    }
+    useEffect(()=> {
+        const cookies = new Cookies();
+        // const authUser = cookies.get("gjtrewcipets_auth_user") || '';
+        const authUserID = cookies.get("gjtrewcipets_auth_user_id") || '';
+
+        if(authUserID !== '') {
+            if(recipe_author_id == authUserID) {
+                // console.log("hey");
+                setCompU(true);
+            } else {
+                setCompU(false);
+            }
+        }
+    }, []);
+
     return (
         <>
             <div className="twgtr-transition-all recipe-card twgtr-bg-white dark:twgtr-bg-slate-700">
                 <ToastContainer />
                 <div className="twgtr-flex twgtr-flex-col twgtr-min-h-[100%]">
-                    <NavLink to={`/view-recipe/${recipe_id}`} title={recipe_title}>
-                        <img src={recipe_featured_image == 'default' ? defaultFeImgPath : rfeb_URI ? rfeb_URI + '/' + recipe_featured_image : recipe_featured_image} className="twgtr-w-full" alt="photo" 
-                        onError={({ currentTarget }) => {
-                            currentTarget.onerror = null; // prevents looping
-                            currentTarget.src=fallBackFeImg;
-                          }} />
-                    </NavLink>
+                    <div className="twgtr-relative twgtr-bg-slate-300">
+                        <NavLink to={`/view-recipe/${recipe_id}`} title={recipe_title}>
+                            <img src={recipe_featured_image == 'default' ? defaultFeImgPath : rfeb_URI ? rfeb_URI + '/' + recipe_featured_image : recipe_featured_image} className="twgtr-w-full" alt="photo" 
+                            onError={({ currentTarget }) => {
+                                currentTarget.onerror = null; // prevents looping
+                                currentTarget.src=fallBackFeImg;
+                            }} />
+                        </NavLink>
+                        <div className="rcrd-bgc">
+                            {
+                                compU ? 
+                                (<></>) 
+                                : 
+                                (
+                                    <div className="rcbox-svrch-gp">
+                                        <input type="checkbox" id={`chk__${recipe_id}`} className="chkbx" onChange={handleSaveChk} checked={recSaved} />
+                                        <label htmlFor={`chk__${recipe_id}`}>
+                                            <div className="inner">
+                                                <div className="icn-bcc">
+                                                    <IoBookmarkOutline size={20} className="twgtr-w-[20px] twgtr-h-[20px] md:twgtr-w-[30px] md:twgtr-h-[30px] twgtr-text-slate-700 dark:twgtr-text-slate-100" />
+                                                </div>
+                                                <div className="icn-acc">
+                                                    <IoBookmark size={20} className="twgtr-w-[20px] twgtr-h-[20px] md:twgtr-w-[30px] md:twgtr-h-[30px] twgtr-text-slate-700 dark:twgtr-text-slate-100" />
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                )
+                            }
+                            
+                            <div>
+                                {
+                                    recipe_type == "veg" ? 
+                                    (
+                                        <img src="/veg-icon.svg" width="20px" height="20px" className="twgtr-w-[20px] twgtr-h-[20px] md:twgtr-w-[30px] md:twgtr-h-[30px]" alt="recipe-type" />
+                                    ) 
+                                    : 
+                                    (
+                                        <img src="/nonveg-icon.svg" width="20px" height="20px" className="twgtr-w-[20px] twgtr-h-[20px] md:twgtr-w-[30px] md:twgtr-h-[30px]" alt="recipe-type" />
+                                    )
+                                }
+                            </div>
+                        </div>                        
+                    </div>
                     <div className="twgtr-hidden">{recipe_author_id}</div>
                     <div className="twgtr-w-full">
                         <div className="twgtr-pb-1 twgtr-pt-4 twgtr-px-[15px] md:twgtr-px-[20px] twgtr-hidden">

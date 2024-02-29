@@ -66,6 +66,7 @@ const GET_USER_FULL_NAME = gql`
 const CREATE_NEW_RECIPE = gql`
     mutation createNewRecipe(
             $recipe_title: String!, 
+            $recipe_type: String!, 
             $recipe_featured_image: String!, 
             $recipe_categories: [String!], 
             $recipe_summary: String!, 
@@ -73,10 +74,14 @@ const CREATE_NEW_RECIPE = gql`
             $recipe_ingradients: [String!], 
             $recipe_author: String!, 
             $recipe_author_id: String!, 
+            $recipe_prep_time: String,
+            $recipe_cook_time: String,
+            $recipe_total_time: String,
             $recipe_created_at: String!
         ) {
         createNewRecipe(
             recipe_title: $recipe_title, 
+            recipe_type: $recipe_type,
             recipe_featured_image: $recipe_featured_image, 
             recipe_categories: $recipe_categories,
             recipe_summary: $recipe_summary,
@@ -84,6 +89,9 @@ const CREATE_NEW_RECIPE = gql`
             recipe_ingradients: $recipe_ingradients, 
             recipe_author: $recipe_author,
             recipe_author_id: $recipe_author_id,
+            recipe_prep_time: $recipe_prep_time,
+            recipe_cook_time: $recipe_cook_time,
+            recipe_total_time: $recipe_total_time,
             recipe_created_at: $recipe_created_at
         ) {
             message,
@@ -119,6 +127,17 @@ const CreateRecipe = () => {
     const [hasFeImage, setHasFeImage] = useState<boolean>(false);
     const [imgFIle, setImgFile] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [recType, setRecType] = useState<string>('veg');
+    interface timeMatricks {
+        cook_time: string,
+        prep_time: string,
+        total_time: string
+    }
+    const [tmMat, setTmMat] = useState<timeMatricks>({
+        cook_time: '',
+        prep_time: '',
+        total_time: ''
+    });
 
     useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id },
@@ -162,6 +181,16 @@ const CreateRecipe = () => {
             }
         }
     });
+
+    const  handleTMInputsCh = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let { name, value } = e.target;
+        setTmMat((prev) => {
+            return {
+                ...prev,
+                [name]: value
+            }
+        })
+    }
 
     const removeFeImage = () => {
         setHasFeImage(false);
@@ -225,6 +254,7 @@ const CreateRecipe = () => {
 
         type RecData = {
             recipe_title: string,
+            recipe_type: string,
             recipe_summary: string,
             recipe_content: string,
             recipe_ingradients: string[],
@@ -232,11 +262,15 @@ const CreateRecipe = () => {
             recipe_categories: string[],
             recipe_author: string,
             recipe_author_id: string,
+            recipe_prep_time: string,
+            recipe_cook_time: string,
+            recipe_total_time: string,
             recipe_created_at: string
         }
 
         let data: RecData = {
             recipe_title: '',
+            recipe_type: '',
             recipe_summary: '',
             recipe_content: '',
             recipe_ingradients: [],
@@ -244,6 +278,9 @@ const CreateRecipe = () => {
             recipe_categories: [],
             recipe_author: '',
             recipe_author_id: '',
+            recipe_prep_time: '',
+            recipe_cook_time: '',
+            recipe_total_time: '',
             recipe_created_at: ''
         };
         let ingradients: string[] = [];
@@ -261,6 +298,7 @@ const CreateRecipe = () => {
             toast.error("Required fields is empty.", toastDefOpts);
             data = {
                 recipe_title: '',
+                recipe_type: '',
                 recipe_summary: '',
                 recipe_content: '',
                 recipe_ingradients: [],
@@ -268,11 +306,15 @@ const CreateRecipe = () => {
                 recipe_categories: [],
                 recipe_author: '',
                 recipe_author_id: '',
+                recipe_prep_time: '',
+                recipe_cook_time: '',
+                recipe_total_time: '',
                 recipe_created_at: ''
             };
         } else {
             data = {
                 recipe_title: recipeTitle,
+                recipe_type: recType,
                 recipe_summary: recipeSummary,
                 recipe_content: editorContent,
                 recipe_ingradients: ingradients ? ingradients : [],
@@ -280,6 +322,9 @@ const CreateRecipe = () => {
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : [],
                 recipe_author: authorName,
                 recipe_author_id: id ? id: '',
+                recipe_prep_time: tmMat.prep_time,
+                recipe_cook_time: tmMat.cook_time,
+                recipe_total_time: tmMat.total_time,
                 recipe_created_at: getDateTimeString()
             }
             
@@ -288,6 +333,7 @@ const CreateRecipe = () => {
             });
         }
 
+        // console.log(data);
 
         if(fnam !== defaultFeImgPath) {
             const file = new File([imgFIle], newFileName);
@@ -363,6 +409,21 @@ const CreateRecipe = () => {
                                         onChange={(e) => setRecipeTitle(e.target.value)}
                                         value={recipeTitle}
 									/>
+                                </div>
+                                <div className="twgtr-pb-4">
+                                    <label htmlFor="rttpe" className="twgtr-transition-all twgtr-inline-block after:twgtr-content-['*'] after:twgtr-ml-0.5 after:twgtr-text-theme-color-4 twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
+                                        Recipe Type
+                                    </label>
+                                    <select 
+                                        name="recipe_type" 
+                                        id="rttpe"
+                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                        onChange={(e) => setRecType(e.target.value)}
+                                        value={recType} 
+                                    >
+                                        <option value="veg">Veg</option>
+                                        <option value="non-veg">NonVeg</option>
+                                    </select>
                                 </div>
                                 <div className="twgtr-pb-4">
                                     <label htmlFor="recsum" className="twgtr-transition-all twgtr-inline-block after:twgtr-content-['*'] after:twgtr-ml-0.5 after:twgtr-text-theme-color-4 twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
@@ -468,6 +529,51 @@ const CreateRecipe = () => {
                                             </>
                                         )
                                     }
+                                </div>
+                                <div className="twgtr-pb-4">
+                                    <label htmlFor="recprptm" className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
+                                        Prep Time
+                                    </label>
+                                    <input 
+										type="text" 
+										name="prep_time" 
+                                        id="recprptm"
+										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+										placeholder="Eg. 15 Mins." 
+										autoComplete="off" 
+                                        value={tmMat.prep_time} 
+                                        onChange={handleTMInputsCh}
+									/>
+                                </div>
+                                <div className="twgtr-pb-4">
+                                    <label htmlFor="reccootm" className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
+                                        Cook Time
+                                    </label>
+                                    <input 
+										type="text" 
+										name="cook_time" 
+                                        id="reccootm"
+										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+										placeholder="Eg. 15 Mins." 
+										autoComplete="off" 
+                                        value={tmMat.cook_time} 
+                                        onChange={handleTMInputsCh}
+									/>
+                                </div>
+                                <div className="twgtr-pb-4">
+                                    <label htmlFor="reccootm" className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
+                                        Total Time
+                                    </label>
+                                    <input 
+										type="text" 
+										name="total_time" 
+                                        id="reccootm"
+										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+										placeholder="Eg. 30 Mins." 
+										autoComplete="off"
+                                        value={tmMat.total_time} 
+                                        onChange={handleTMInputsCh}
+									/>
                                 </div>
                                 <div className="twgtr-pb-8">
                                     <label className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">

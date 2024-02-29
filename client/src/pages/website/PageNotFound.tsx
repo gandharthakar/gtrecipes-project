@@ -4,7 +4,13 @@ import { set_dark_mode, unset_dark_mode } from "../../redux-service/website/Site
 import { PiCookingPot } from "react-icons/pi";
 import { NavLink } from "react-router-dom";
 
-const PageNotFound = () => {
+interface CompProp {
+    page_message: string
+}
+
+const PageNotFound = (props: CompProp) => {
+
+    let { page_message } = props;
 
     const dispatch = useDispatch();
 
@@ -31,7 +37,7 @@ const PageNotFound = () => {
                     </div>
                     <div className="twgtr-pb-[20px]">
                         <h1 className="twgtr-transition-all twgtr-inline-block twgtr-font-bold twgtr-font-ubuntu twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-theme-color-2 dark:twgtr-text-slate-200">
-                            404 Page Not Found.
+                            {page_message}
                         </h1>
                     </div>
                     <div>

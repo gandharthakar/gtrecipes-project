@@ -23,6 +23,7 @@ const GET_ALL_RECIPES = gql`
         getAllRecipes(id: $id) {
             id,
             recipe_title,
+            recipe_type,
             recipe_featured_image,
             recipe_categories {
                 id,
@@ -60,6 +61,7 @@ const UserRecipes = (props:any) => {
     interface AllRecipesType {
         id: string,
         recipe_title: string,
+        recipe_type: string,
         recipe_featured_image: string,
         recipe_summary: string,
         recipe_content: string,

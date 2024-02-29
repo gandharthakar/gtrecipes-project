@@ -34,12 +34,13 @@ const Recipes = () => {
 					<div className="twgtr-pb-[50px]">
 						<div className="twgtr-grid twgtr-grid-cols-1 md:twgtr-grid-cols-2 lg:twgtr-grid-cols-3 twgtr-gap-[20px]">
 							<RecipeCard 
-								recipe_id={"2"} 
+								recipe_id={"65df1b8d777171770af5703d"} 
 								recipe_featured_image="/images/food-dummy.jpg" 
 								categories={SiteConstants[0].static_cats} 
 								recipe_title="This is title for this recipe box"
 								recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente illum nisi mollitia recusandae ipsum "
-								recipe_author_name="Author Name"
+								recipe_author_name="Gandhar Thakar" 
+								recipe_author_id="65dedf807cc4e88439bcf216" 
 								actions={false}
 							/>
 							<RecipeCard 
@@ -48,6 +49,7 @@ const Recipes = () => {
 								categories={SiteConstants[0].static_cats} 
 								recipe_title="This is title for this recipe box This is title for this recipe box"
 								recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente illum nisi mollitia recusandae ipsum"
+								recipe_author_id="65dfff52f69c34fbc23b49b3" 
 								recipe_author_name="Author Name"
 								actions={false}
 							/>

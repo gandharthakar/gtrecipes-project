@@ -34,6 +34,7 @@
     "@reduxjs/toolkit": "^2.1.0",
     "axios": "^1.6.7",
     "copy-to-clipboard": "^3.3.3",
+    "html-react-parser": "^5.1.8",
     "jodit": "^4.0.6",
     "jodit-react-ts": "^0.9.0",
     "react": "^18.2.0",

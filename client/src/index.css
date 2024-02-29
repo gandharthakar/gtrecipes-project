@@ -327,3 +327,128 @@
                transform: rotate(1turn);
     }
  }
+
+ .ssvc-gp {
+    position: relative;
+ }
+
+ .ssvc-igp {
+    display: flex;
+    align-items: center;
+    gap: 0px 5px;
+    border: 2px solid #1e293b;
+    padding: 0px 10px 0px 5px;
+    cursor: pointer;
+ }
+
+ .ssvc-gp .chkbx {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    z-index: -1;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+ }
+
+ .lbl-befc, .lbl-aftc {
+    display: inline-block;
+    padding: 0px;
+    margin: 0px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    color: #1e293b;
+ }
+
+ .lbl-aftc {
+    display: none;
+ }
+
+ .icon-befc, .icon-aftc {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    color: #1e293b;
+    transform: translateY(3px);
+ }
+
+ .icon-aftc {
+    display: none;
+ }
+
+ .ssvc-gp .chkbx:checked + label .icon-befc {
+    display: none;
+ }
+
+ .ssvc-gp .chkbx:checked + label .icon-aftc {
+    display: inline-block;
+ }
+
+ .ssvc-gp .chkbx:checked + label .lbl-befc {
+    display: none;
+ }
+
+ .ssvc-gp .chkbx:checked + label .lbl-aftc {
+    display: inline-block;
+ }
+
+ .twgtr-dark .ssvc-igp {
+    border-color: #cbd5e1;
+ }
+
+ .twgtr-dark .lbl-befc, .twgtr-dark .lbl-aftc {
+    color: #cbd5e1;
+ }
+
+ .twgtr-dark .icon-befc, .twgtr-dark .icon-aftc {
+    color: #cbd5e1;
+ }
+
+ .rcrd-bgc {
+    display: flex;
+    align-items: center;
+    gap: 5px 10px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    padding: 5px 10px;
+    /* background-color: rgba(255, 255, 255, 0.80); */
+    background-color: #ffffff;
+    z-index: 3;
+ }
+
+ .twgtr-dark .rcrd-bgc {
+    background-color: #334155;
+ }
+
+ .rcbox-svrch-gp {
+    position: relative;
+ }
+
+ .rcbox-svrch-gp .chkbx {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    z-index: -1;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+ }
+
+ .rcbox-svrch-gp .inner {
+    cursor: pointer;
+    height: 30px;
+ }
+
+ .rcbox-svrch-gp .icn-acc {
+    display: none;
+    /* transform: translateY(3px); */
+ }
+
+ .rcbox-svrch-gp .chkbx:checked + label .icn-acc {
+    display: inline-block;
+ }
+
+ .rcbox-svrch-gp .chkbx:checked + label .icn-bcc {
+    display: none;
+ }

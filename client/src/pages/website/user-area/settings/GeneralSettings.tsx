@@ -19,14 +19,15 @@ const GET_USER_DETAILS = gql`
             user_name,
             user_email,
             ripp,
-            cipp
+            cipp,
+            sripp
         }
     }
 `;
 
 const UPDATE_USER_DETAILS = gql`
-    mutation updateGeneralSettings($id: ID!, $user_name: String!, $user_email: String!, $ripp: Int!, $cipp: Int!) {
-        updateGeneralSettings(id: $id, user_name: $user_name, user_email: $user_email, ripp: $ripp, cipp: $cipp) {
+    mutation updateGeneralSettings($id: ID!, $user_name: String!, $user_email: String!, $ripp: Int!, $cipp: Int!, $sripp: Int!) {
+        updateGeneralSettings(id: $id, user_name: $user_name, user_email: $user_email, ripp: $ripp, cipp: $cipp, sripp: $sripp) {
             message,
             success
         }
@@ -80,6 +81,11 @@ const GeneralSettings = () => {
             invalid_type_error: "Value must be typed in numbers."
         }).max(20, {message: "You can put numbers upto 20."}).min(1),
 
+        savedRecipeItemsPerPage: z.number({
+            required_error: "Please enter the number.",
+            invalid_type_error: "Value must be typed in numbers."
+        }).max(20, {message: "You can put numbers upto 20."}).min(1),
+
         categoryItemsPerPage: z.number({
             required_error: "Please enter the number.",
             invalid_type_error: "Value must be typed in numbers."
@@ -122,7 +128,8 @@ const GeneralSettings = () => {
                 user_name: formData.userFullName,
                 user_email: formData.userEmail,
                 ripp: formData.recipeItemsPerPage,
-                cipp: formData.categoryItemsPerPage
+                cipp: formData.categoryItemsPerPage,
+                sripp: formData.savedRecipeItemsPerPage
             }
         });
     }
@@ -154,6 +161,7 @@ const GeneralSettings = () => {
             setValue("userEmail", data?.getGeneralSettings.user_email);
             setValue("recipeItemsPerPage", data?.getGeneralSettings.ripp);
             setValue("categoryItemsPerPage", data?.getGeneralSettings.cipp);
+            setValue("savedRecipeItemsPerPage", data?.getGeneralSettings.sripp);
         }
     }, [data, loading, setValue]);
 
@@ -214,6 +222,21 @@ const GeneralSettings = () => {
                                         />
                                     </div>
                                     {errors.recipeItemsPerPage && (<p className="site-form-error">{errors.recipeItemsPerPage?.message}</p>)}
+                                </div>
+                                <div className="twgtr-pb-4">
+                                    <label htmlFor="ripsr" className="twgtr-transition-all twgtr-inline-block after:twgtr-content-['*'] after:twgtr-ml-0.5 after:twgtr-text-theme-color-4 twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-slate-700 dark:twgtr-text-slate-200">
+                                        Saved Recipe Items Per Page
+                                    </label>
+                                    <div className="twgtr-max-w-[80px]">
+                                        <input 
+                                            type="number" 
+                                            id="ripsr"
+                                            className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                            placeholder="Eg. 5" 
+                                            autoComplete="off"
+                                            {...register("savedRecipeItemsPerPage", { valueAsNumber: true })}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="twgtr-pb-4">
                                     <label htmlFor="cipfrm" className="twgtr-transition-all twgtr-inline-block after:twgtr-content-['*'] after:twgtr-ml-0.5 after:twgtr-text-theme-color-4 twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-slate-700 dark:twgtr-text-slate-200">

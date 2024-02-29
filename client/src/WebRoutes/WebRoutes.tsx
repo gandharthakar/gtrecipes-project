@@ -25,7 +25,7 @@ import EditRecipe from "../pages/website/user-area/EditRecipe";
 const WebRoutes = createBrowserRouter([
     {
         path: "*",
-        element: <PageNotFound />
+        element: <PageNotFound page_message="404 Page Not Found!" />
     },
     {
         path: "/",
@@ -104,7 +104,11 @@ const WebRoutes = createBrowserRouter([
     {
         path: "/register",
         element: <Register />
-    }
+    },
+    {
+        path: "/recipe-not-found",
+        element: <PageNotFound page_message="Recipe Not Found!" />
+    },
 // ], { basename: '/' });
 ]);
 
