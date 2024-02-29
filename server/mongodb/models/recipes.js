@@ -17,6 +17,10 @@ const recipeSchema = new Schema({
         type: String,
         required: true
     },
+    recipe_type: {
+        type: String,
+        required: true
+    },
     recipe_featured_image: {
         type: String,
     },
@@ -32,6 +36,15 @@ const recipeSchema = new Schema({
     recipe_ingradients: [String],
     author: {
         type: authorSchema
+    },
+    recipe_prep_time: {
+        type: String
+    },
+    recipe_cook_time: {
+        type: String
+    },
+    recipe_total_time: {
+        type: String
     },
     recipe_created_at: {
         type: String,

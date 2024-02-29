@@ -36,8 +36,9 @@ const resolvers = {
             let respdata = {
                 user_name: '',
                 user_email: '',
-                ripp: 6,
-                cipp: 5
+                ripp: 0,
+                cipp: 0,
+                sripp: 0,
             };
             try {
                 const user = await SiteUserModel.findOne({_id: args.id});
@@ -46,7 +47,8 @@ const resolvers = {
                         user_name: user.user_full_name,
                         user_email: user.user_email,
                         ripp: user.user_recipe_items_per_page,
-                        cipp: user.user_categories_items_per_page
+                        cipp: user.user_categories_items_per_page,
+                        sripp: user.user_saved_recipes_items_per_page
                     };
                 }
             } catch (error) {
@@ -144,6 +146,7 @@ const resolvers = {
                             let obj = {
                                 id: rec._id.toString(),
                                 recipe_title: rec.recipe_title,
+                                recipe_type: rec.recipe_type,
                                 recipe_featured_image: rec.recipe_featured_image,
                                 recipe_categories: rec.recipe_categories,
                                 recipe_summary: rec.recipe_summary,
@@ -153,6 +156,9 @@ const resolvers = {
                                     author_name: rec.author.author_name,
                                     author_id: rec.author.author_id,
                                 },
+                                recipe_prep_time: rec.recipe_prep_time,
+                                recipe_cook_time: rec.recipe_cook_time,
+                                recipe_total_time: rec.recipe_total_time,
                                 recipe_created_at: rec.recipe_created_at
                             }
                             await response_data.push(obj);
@@ -182,6 +188,7 @@ const resolvers = {
                         let obj = {
                             id: rec._id.toString(),
                             recipe_title: rec.recipe_title,
+                            recipe_type: rec.recipe_type,
                             recipe_featured_image: rec.recipe_featured_image,
                             recipe_categories: rec.recipe_categories,
                             recipe_summary: rec.recipe_summary,
@@ -191,6 +198,9 @@ const resolvers = {
                                 author_name: rec.author.author_name,
                                 author_id: rec.author.author_id,
                             },
+                            recipe_prep_time: rec.recipe_prep_time,
+                            recipe_cook_time: rec.recipe_cook_time,
+                            recipe_total_time: rec.recipe_total_time,
                             recipe_created_at: rec.recipe_created_at
                         }
                         await response_data.push(obj);
@@ -205,6 +215,88 @@ const resolvers = {
 
             return response_data;
         },
+        getUserByID: async (parent, args) => {
+            // console.log(args);
+            let resp = {
+                user_id: '',
+                user_name: '',
+                user_email: '',
+                user_photo: '',
+                ripp: 0,
+                cipp: 0,
+                sripp: 0,
+                saved_recipes: []
+            }
+
+            let { id } = args;
+            let user = await SiteUserModel.find({_id: id});
+            if(user.length > 0) {
+                let gsr = user[0].saved_recipes;
+                let arr = [];
+                if(gsr.length > 0) {
+                    let rps = await RecipeModel.find({ '_id': { $in: gsr } });
+                    arr = rps;
+                }
+                // console.log(arr);
+                resp = {
+                    user_id: user[0]._id,
+                    user_name: user[0].user_full_name,
+                    user_email: user[0].user_email,
+                    user_photo: user[0].user_profile_photo,
+                    ripp: user[0].user_recipe_items_per_page,
+                    cipp: user[0].user_categories_items_per_page,
+                    sripp: user[0].user_saved_recipes_items_per_page,
+                    saved_recipes: arr
+                }
+            }
+
+            return resp;
+        },
+        getSIngleRecipeByID: async (parent, args) => {
+            // console.log(args);
+            let response_data = {
+                id: '',
+                recipe_title: '',
+                recipe_type: '',
+                recipe_summary: '',
+                recipe_content: '',
+                recipe_ingradients: [],
+                recipe_featured_image: '',
+                recipe_categories: [],
+                author: {
+                    author_id: '',
+                    author_name: ''
+                },
+                recipe_prep_time: '',
+                recipe_cook_time: '',
+                recipe_total_time: '',
+                recipe_created_at: ''
+            };
+
+            let grcp = await RecipeModel.find({_id: args.id});
+            if(grcp.length > 0) {
+                let dt = grcp[0];
+                response_data = {
+                    id: dt._id.toString(),
+                    recipe_title: dt.recipe_title,
+                    recipe_type: dt.recipe_type,
+                    recipe_summary: dt.recipe_summary,
+                    recipe_content: dt.recipe_content,
+                    recipe_ingradients: dt.recipe_ingradients,
+                    recipe_featured_image: dt.recipe_featured_image,
+                    recipe_categories: dt.recipe_categories,
+                    author: {
+                        author_id: dt.author.author_id,
+                        author_name: dt.author.author_name
+                    },
+                    recipe_prep_time: dt.recipe_prep_time,
+                    recipe_cook_time: dt.recipe_cook_time,
+                    recipe_total_time: dt.recipe_total_time,
+                    recipe_created_at: dt.recipe_created_at
+                };
+            }
+            return response_data;
+        }
     },
     Mutation: {
         registerNewUser: async (parent, args) => {
@@ -234,7 +326,9 @@ const resolvers = {
                                 user_profile_photo: '', 
                                 user_password: hashPwd,
                                 user_recipe_items_per_page: 4,
-                                user_categories_items_per_page: 6
+                                user_categories_items_per_page: 6,
+                                user_saved_recipes_items_per_page: 4,
+                                saved_recipes: [],
                             });
                             await doc.save();
                         } catch (error) {
@@ -330,7 +424,7 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let {id, user_name, user_email, ripp, cipp} = args;
+            let {id, user_name, user_email, ripp, cipp, sripp} = args;
             const user = await SiteUserModel.findOne({_id: id});
             if(user) {
                 if(user_name && user_email && ripp && cipp) {
@@ -339,7 +433,8 @@ const resolvers = {
                             user_full_name: user_name,
                             user_email,
                             user_recipe_items_per_page: ripp,
-                            user_categories_items_per_page: cipp
+                            user_categories_items_per_page: cipp,
+                            user_saved_recipes_items_per_page: sripp
                         }, {
                             new: true
                         });
@@ -689,6 +784,7 @@ const resolvers = {
             }
             let { 
                 recipe_title, 
+                recipe_type,
                 recipe_featured_image, 
                 recipe_categories, 
                 recipe_summary, 
@@ -696,6 +792,9 @@ const resolvers = {
                 recipe_ingradients,
                 recipe_author, 
                 recipe_author_id, 
+                recipe_prep_time, 
+                recipe_cook_time, 
+                recipe_total_time, 
                 recipe_created_at, 
             } = args;
 
@@ -704,6 +803,7 @@ const resolvers = {
                 try {
                     let doc = new RecipeModel({
                         recipe_title,
+                        recipe_type, 
                         recipe_featured_image,
                         recipe_categories,
                         recipe_summary,
@@ -713,6 +813,9 @@ const resolvers = {
                             author_name: recipe_author,
                             author_id: recipe_author_id
                         },
+                        recipe_prep_time, 
+                        recipe_cook_time, 
+                        recipe_total_time, 
                         recipe_created_at
                     });
                     await doc.save();
@@ -742,7 +845,20 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let { id, user_id,  recipe_title, recipe_featured_image, recipe_categories, recipe_summary, recipe_content, recipe_ingradients } = args;
+            let { 
+                id, 
+                user_id, 
+                recipe_title, 
+                recipe_type, 
+                recipe_featured_image, 
+                recipe_categories, 
+                recipe_summary, 
+                recipe_content, 
+                recipe_ingradients, 
+                recipe_prep_time, 
+                recipe_cook_time, 
+                recipe_total_time 
+            } = args;
             let user = await SiteUserModel.findOne({_id: user_id});
             if(user) {
                 let recipe = await RecipeModel.find({_id: id});
@@ -751,11 +867,15 @@ const resolvers = {
                     try {
                         await RecipeModel.findByIdAndUpdate({_id: id}, {
                             recipe_title,
+                            recipe_type,
                             recipe_featured_image,
                             recipe_categories,
                             recipe_summary,
                             recipe_content,
-                            recipe_ingradients
+                            recipe_ingradients, 
+                            recipe_prep_time, 
+                            recipe_cook_time, 
+                            recipe_total_time, 
                         }, { new: true });
                         frm_status = {
                             message: 'Recipe Updated Successfully!',
@@ -888,7 +1008,95 @@ const resolvers = {
                 }
             }
             return frm_status;
-        }
+        },
+        saveRecipe: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let { user_id, recipe_id } = args;
+            let user = await SiteUserModel.find({_id: user_id});
+            if(user.length > 0) {
+                let chkrc = await RecipeModel.find({_id: recipe_id});
+                if(chkrc.length > 0) {
+                    await SiteUserModel.findOneAndUpdate({_id: user_id}, {
+                        $push: {
+                            saved_recipes: recipe_id
+                        }
+                    });                
+                    frm_status = {
+                        message: 'Recipe Saved Successfully!',
+                        success: true
+                    }
+                } else {
+                    frm_status = {
+                        message: 'Recipe Not Found!',
+                        success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: 'Unable To Find User.',
+                    success: false
+                }
+            }
+            return frm_status;
+        },
+        unsaveRecipe: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let { user_id, recipe_id } = args;
+            let user = await SiteUserModel.find({_id: user_id});
+            if(user.length > 0) {
+                let chkrc = await RecipeModel.find({_id: recipe_id});
+                if(chkrc.length > 0) {
+                    await SiteUserModel.findOneAndUpdate({_id: user_id}, {
+                        $pull: {
+                            saved_recipes: recipe_id
+                        }
+                    });                
+                    frm_status = {
+                        message: 'Recipe Removed From Save Successfully!',
+                        success: true
+                    }
+                } else {
+                    frm_status = {
+                        message: 'Recipe Not Found!',
+                        success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: 'Unable To Find User.',
+                    success: false
+                }
+            }
+            return frm_status;
+        },
+        checkRecipeInRecords: async(parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let rp = await RecipeModel.find({_id: args.rid});
+            if(rp.length > 0) {
+                frm_status = {
+                    message: 'Recipe Found!',
+                    success: true
+                }
+            } else {
+                frm_status = {
+                    message: 'Recipe Not Found!',
+                    success: false
+                }
+            }
+            return frm_status;
+        },
     },
     RecipeType: {
         recipe_categories: async (data) => {

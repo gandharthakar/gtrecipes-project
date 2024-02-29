@@ -46,6 +46,8 @@ const typeDefs = gql`
         user_photo: String
         ripp: Int!
         cipp: Int!
+        sripp: Int!
+        saved_recipes: [RecipeType]
     }
 
     type RecipeCategories {
@@ -58,12 +60,16 @@ const typeDefs = gql`
     type RecipeType {
         id: ID!
         recipe_title: String!
+        recipe_type: String!
         recipe_featured_image: String!
         recipe_categories: [RecipeCategories]
         recipe_summary: String!
         recipe_content: String!
         recipe_ingradients: [String]
         author: AuthorType!
+        recipe_prep_time: String
+        recipe_cook_time: String
+        recipe_total_time: String
         recipe_created_at: String!
     }
 
@@ -79,6 +85,7 @@ const typeDefs = gql`
         getProfilePicture(id: ID!): SiteUser
         getPerPagesCount(id: ID!): PerPageGenSet
         getUserFullName(id: ID!): SiteUser
+        getUserByID(id: ID): SiteUser
 
         # Categories Queries.
         getAllRecipeCategories(id: ID!): [RecipeCategories]
@@ -86,29 +93,33 @@ const typeDefs = gql`
         # Recipe Queries.
         getAllRecipes(id: ID!): [RecipeType]
         getSingleRecipe(id: ID!, user_id: String!): [RecipeType]
-        getSIngleRecipeByID(id: ID!): [RecipeType]
+        getSIngleRecipeByID(id: ID!): RecipeType
     }
 
     type Mutation {
         # Site Users Mutations.
         registerNewUser(full_name: String!, email: String!, password: String!, confirm_password: String!): CommonStatus!
         loginUser(email: String!, password: String!): LogStatus!
-        updateGeneralSettings(id: ID!, user_name: String!, user_email: String!, ripp: Int!, cipp: Int!): CommonStatus!
+        updateGeneralSettings(id: ID!, user_name: String!, user_email: String!, ripp: Int!, cipp: Int!, sripp: Int!): CommonStatus!
         updatePassword(id: ID!, password: String!, confirm_password: String!): CommonStatus!
         updateProfilePicture(id: ID!, user_photo: String): CommonStatus!
         deleteAccount(id: ID!): DeleteAccountType!
+        saveRecipe(user_id: String!, recipe_id: String!): CommonStatus!
+        unsaveRecipe(user_id: String!, recipe_id: String!): CommonStatus!
 
         # Categories Mutations.
         createRecipeCategories(recipe_category_name: String!, recipe_category_slug: String!, recipe_category_author_id: String!, recipe_category_author_name: String!): CommonStatus!
         updateRecipeCategories(recipe_category_name: String!, category_name_old: String!, recipe_category_slug: String!, recipe_category_author_id: String!): CommonStatus!
         deleteRecipeCategory(id: ID!, user_id: String!): CommonStatus!
         deleteAllRecipeCategory(user_id: String!): CommonStatus!
+        checkRecipeInRecords(rid: String!): CommonStatus!
 
         # Recipe Mutations.
-        createNewRecipe(recipe_title: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String], recipe_author: String!, recipe_author_id: String!, recipe_created_at: String!): CommonStatus!
-        updateRecipe(id: ID!, user_id: String!, recipe_title: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String]): CommonStatus!
+        createNewRecipe(recipe_title: String!, recipe_type: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String], recipe_author: String!, recipe_author_id: String!, recipe_prep_time: String, recipe_cook_time: String, recipe_total_time: String, recipe_created_at: String!): CommonStatus!
+        updateRecipe(id: ID!, user_id: String!, recipe_title: String!, recipe_type: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String], recipe_prep_time: String, recipe_cook_time: String, recipe_total_time: String): CommonStatus!
         deleteRecipe(id: ID!, user_id: String!): CommonStatus!
         deleteAllRecipes(user_id: String!): DeleteRecipesType
+        
     }
 `;
 

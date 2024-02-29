@@ -31,7 +31,14 @@ const siteUsersSchema = new Schema({
         min: 1,
         max: 20,
         required: true
-    }
+    },
+    user_saved_recipes_items_per_page: {
+        type: Number,
+        min: 1,
+        max: 20,
+        required: true
+    },
+    saved_recipes: [String]
 })
 
 const SiteUserModel = models.site_users || model('site_users', siteUsersSchema);
