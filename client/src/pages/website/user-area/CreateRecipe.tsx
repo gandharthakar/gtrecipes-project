@@ -422,7 +422,7 @@ const CreateRecipe = () => {
                                         value={recType} 
                                     >
                                         <option value="veg">Veg</option>
-                                        <option value="non-veg">NonVeg</option>
+                                        <option value="nonveg">NonVeg</option>
                                     </select>
                                 </div>
                                 <div className="twgtr-pb-4">

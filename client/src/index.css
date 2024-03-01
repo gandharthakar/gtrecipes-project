@@ -452,3 +452,86 @@
  .rcbox-svrch-gp .chkbx:checked + label .icn-bcc {
     display: none;
  }
+
+ .gtr-flitem {
+    --filter-label-hover: #e2e8f0;
+    --filter-radio-color: #1e293b;
+    --filter-label-color: #1e293b;
+    position: relative;
+ }
+
+ .gtr-flitem .radio {
+    display: none;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    visibility: hidden;
+    z-index: -1;
+ }
+
+ .gtr-flitem .label {
+     display: block;
+    padding: 13px 15px;
+    cursor: pointer;
+    transition: 0.5s;
+ }
+
+ .gtr-flitem .label:hover {
+    background-color: var(--filter-label-hover);
+ }
+
+ .gtr-firof {
+    display: flex;
+    align-items: center;
+    gap: 0px 15px;
+ }
+
+ .radio-circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+    border-radius: 50px;
+    transform: 0.5s;
+    position: relative;
+    z-index: 4;
+ }
+
+ .radio-circle::after {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: -3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50px;
+    border: 1px solid var(--filter-radio-color);
+    z-index: -1;
+ }
+
+ .gtr-flitem .radio:checked + .label .radio-circle {
+    background-color: var(--filter-radio-color);
+ }
+
+ .gtr-firif {
+    display: flex;
+    align-items: center;
+    gap: 0px 10px;
+ }
+
+ .gtr-firif .vicon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+ }
+
+ .gtr-firif .gtr-filbl {
+    color: var(--filter-label-color);
+    font-family: 'Ubuntu', sans-serif;
+ }
+
+ .twgtr-dark .gtr-flitem {
+    --filter-label-hover: #1e293b;
+    --filter-radio-color: #e2e8f0;
+    --filter-label-color: #e2e8f0;
+ }

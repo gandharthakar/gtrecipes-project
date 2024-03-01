@@ -190,9 +190,12 @@ const HeaderProfileDropdown = () => {
                 : 
                 (
                     <>
-                        <div className="twgtr-py-4 twgtr-pr-3">
-                            <NavLink to="/login" title="Login" className="twgtr-transition-all twgtr-border-2 twgtr-font-open_sans twgtr-font-bold twgtr-text-sm twgtr-border-theme-color-2 twgtr-py-[7px] twgtr-px-3 twgtr-text-theme-color-2 hover:twgtr-bg-theme-color-2 hover:twgtr-text-slate-200 md:twgtr-text-base md:twgtr-px-5 dark:twgtr-border-theme-color-4 dark:twgtr-text-theme-color-4 dark:hover:twgtr-bg-theme-color-4 dark:hover:twgtr-text-slate-200">
+                        <div className="twgtr-py-4 twgtr-pr-3 lg:twgtr-py-3">
+                            <NavLink to="/login" title="Login" className="twgtr-transition-all twgtr-border-2 twgtr-font-open_sans twgtr-font-bold twgtr-text-sm twgtr-border-theme-color-2 twgtr-py-[7px] twgtr-px-3 twgtr-text-slate-100 twgtr-bg-theme-color-2 dark:twgtr-bg-theme-color-4 hover:twgtr-bg-theme-color-2-hover-dark hover:twgtr-text-slate-200 md:twgtr-text-base md:twgtr-px-5 dark:twgtr-border-theme-color-4 dark:twgtr-text-slate-100 dark:hover:twgtr-border-theme-color-4-hover-dark dark:hover:twgtr-bg-theme-color-4-hover-dark dark:hover:twgtr-text-slate-200">
                                 Login
+                            </NavLink>
+                            <NavLink to="/register" title="Register" className="twgtr-transition-all twgtr-hidden lg:twgtr-inline-block twgtr-ml-[15px] twgtr-border-2 twgtr-font-open_sans twgtr-font-bold twgtr-text-sm twgtr-border-theme-color-2 twgtr-py-[7px] twgtr-px-3 twgtr-text-theme-color-2 hover:twgtr-bg-theme-color-2 hover:twgtr-text-slate-200 md:twgtr-text-base md:twgtr-px-5 dark:twgtr-border-theme-color-4 dark:twgtr-text-theme-color-4 dark:hover:twgtr-bg-theme-color-4 dark:hover:twgtr-text-slate-200">
+                                Register
                             </NavLink>
                         </div>
                     </>

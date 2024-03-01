@@ -331,9 +331,11 @@ const ViewSingleRecipe = () => {
                             <h1 className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[25px] md:twgtr-text-[30px] lg:twgtr-text-[40px] twgtr-font-bold twgtr-text-theme-color-2 dark:twgtr-text-theme-color-3">
                                 {recTtl}
                             </h1>
-                            <h2 className="twgtr-transition-all twgtr-block twgtr-font-open_sans twgtr-text-slate-800 twgtr-text-[16px] md:twgtr-text-[18px]">
-                                {recSum}
-                            </h2>
+                            <div className="twgtr-max-w-[1000px] twgtr-mx-auto">
+                                <h2 className="twgtr-transition-all twgtr-block twgtr-font-open_sans twgtr-text-slate-800 twgtr-text-[16px] md:twgtr-text-[18px]">
+                                    {recSum}
+                                </h2>
+                            </div>
                         </div>
                         <div className="twgtr-pb-[30px] twgtr-text-center">
                             <h4 className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[12px] md:twgtr-text-[14px] twgtr-text-slate-400 dark:twgtr-text-slate-500">
@@ -491,45 +493,47 @@ const ViewSingleRecipe = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-280px)] twgtr-border twgtr-border-solid twgtr-p-[20px] twgtr-bg-white dark:twgtr-bg-slate-800 dark:twgtr-border-slate-600">
-                                <div className="recipe-content">
-                                    {recCont !== '' ? parse(recCont) : (<h6>No Content Added By Author.</h6>)}
-                                </div>
-                                <div className="twgtr-pt-[30px]">
-                                    <div className="twgtr-pt-[20px] twgtr-border-t twgtr-border-solid twgtr-border-slate-300">
-                                        <div className="twgtr-text-center">
-                                            <div className="twgtr-flex twgtr-flex-wrap twgtr-items-center twgtr-gap-x-[15px] twgtr-gap-y-[5px]">
-                                                <div className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-slate-700 dark:twgtr-text-slate-200">
-                                                    Share :
-                                                </div>
-                                                <div>
-                                                    <NavLink to={`https://api.whatsapp.com/send?text=${share_uri}`} title="Share on WhatsApp" target="_blank">
-                                                        <img src="/social-media/whatsapp.svg" className="twgtr-inline-block twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[35px] md:twgtr-h-[35px]" alt="WhatsApp" />
-                                                    </NavLink>
-                                                </div>
-                                                <div>
-                                                    <NavLink to={`https://www.facebook.com/sharer/sharer.php?u=${share_uri}`} title="Share on Facebook" target="_blank">
-                                                        <img src="/social-media/facebook.svg" className="twgtr-inline-block twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[35px] md:twgtr-h-[35px]" alt="Facebook" />
-                                                    </NavLink>
-                                                </div>
-                                                <div>
-                                                    <NavLink to={`https://twitter.com/intent/tweet?text=${recTtl}&url=${share_uri}`} title="Share on Twitter" target="_blank">
-                                                        <img src="/social-media/twitter-x.svg" className="twgtr-inline-block twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[35px] md:twgtr-h-[35px]" alt="Twitter" />
-                                                    </NavLink>
-                                                </div>
-                                                <div>
-                                                    <button type="button" title="Copy Link" onClick={copyURI}>
-                                                        <svg width="100" height="100" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg" className="twgtr-inline-block twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[35px] md:twgtr-h-[35px]">
-                                                            <g clipPath="url(#clip0_2009_9684)">
-                                                                <path fill="#284218" className="twgtr-transition-all twgtr-fill-slate-700 dark:twgtr-fill-slate-400" d="M5.83333 5.49984V2.99984C5.83333 2.77882 5.92113 2.56686 6.07741 2.41058C6.23369 2.2543 6.44565 2.1665 6.66667 2.1665H16.6667C16.8877 2.1665 17.0996 2.2543 17.2559 2.41058C17.4122 2.56686 17.5 2.77882 17.5 2.99984V14.6665C17.5 14.8875 17.4122 15.0995 17.2559 15.2558C17.0996 15.412 16.8877 15.4998 16.6667 15.4998H14.1667V17.9998C14.1667 18.4598 13.7917 18.8332 13.3275 18.8332H3.33917C3.22927 18.8338 3.12033 18.8128 3.0186 18.7712C2.91687 18.7296 2.82436 18.6684 2.74638 18.5909C2.6684 18.5135 2.60649 18.4214 2.56421 18.32C2.52193 18.2185 2.50011 18.1097 2.5 17.9998L2.5025 6.33317C2.5025 5.87317 2.8775 5.49984 3.34167 5.49984H5.83333ZM4.16917 7.1665L4.16667 17.1665H12.5V7.1665H4.16917ZM7.5 5.49984H14.1667V13.8332H15.8333V3.83317H7.5V5.49984Z"/>
-                                                            </g>
-                                                            <defs>
-                                                                <clipPath id="clip0_2009_9684">
-                                                                    <rect width="20" height="20" fill="white" transform="translate(0 0.5)"/>
-                                                                </clipPath>
-                                                            </defs>
-                                                        </svg>
-                                                    </button>
+                            <div className="twgtr-w-full lg:twgtr-w-[calc(100%-280px)]">
+                                <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full twgtr-border twgtr-border-solid twgtr-p-[20px] twgtr-bg-white dark:twgtr-bg-slate-800 dark:twgtr-border-slate-600">
+                                    <div className="recipe-content">
+                                        {recCont !== '' ? parse(recCont) : (<h6>No Content Added By Author.</h6>)}
+                                    </div>
+                                    <div className="twgtr-pt-[30px]">
+                                        <div className="twgtr-pt-[20px] twgtr-border-t twgtr-border-solid twgtr-border-slate-300">
+                                            <div className="twgtr-text-center">
+                                                <div className="twgtr-flex twgtr-flex-wrap twgtr-items-center twgtr-gap-x-[15px] twgtr-gap-y-[5px]">
+                                                    <div className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-slate-700 dark:twgtr-text-slate-200">
+                                                        Share :
+                                                    </div>
+                                                    <div>
+                                                        <NavLink to={`https://api.whatsapp.com/send?text=${share_uri}`} title="Share on WhatsApp" target="_blank">
+                                                            <img src="/social-media/whatsapp.svg" className="twgtr-inline-block twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[35px] md:twgtr-h-[35px]" alt="WhatsApp" />
+                                                        </NavLink>
+                                                    </div>
+                                                    <div>
+                                                        <NavLink to={`https://www.facebook.com/sharer/sharer.php?u=${share_uri}`} title="Share on Facebook" target="_blank">
+                                                            <img src="/social-media/facebook.svg" className="twgtr-inline-block twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[35px] md:twgtr-h-[35px]" alt="Facebook" />
+                                                        </NavLink>
+                                                    </div>
+                                                    <div>
+                                                        <NavLink to={`https://twitter.com/intent/tweet?text=${recTtl}&url=${share_uri}`} title="Share on Twitter" target="_blank">
+                                                            <img src="/social-media/twitter-x.svg" className="twgtr-inline-block twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[35px] md:twgtr-h-[35px]" alt="Twitter" />
+                                                        </NavLink>
+                                                    </div>
+                                                    <div>
+                                                        <button type="button" title="Copy Link" onClick={copyURI}>
+                                                            <svg width="100" height="100" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg" className="twgtr-inline-block twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[35px] md:twgtr-h-[35px]">
+                                                                <g clipPath="url(#clip0_2009_9684)">
+                                                                    <path fill="#284218" className="twgtr-transition-all twgtr-fill-slate-700 dark:twgtr-fill-slate-400" d="M5.83333 5.49984V2.99984C5.83333 2.77882 5.92113 2.56686 6.07741 2.41058C6.23369 2.2543 6.44565 2.1665 6.66667 2.1665H16.6667C16.8877 2.1665 17.0996 2.2543 17.2559 2.41058C17.4122 2.56686 17.5 2.77882 17.5 2.99984V14.6665C17.5 14.8875 17.4122 15.0995 17.2559 15.2558C17.0996 15.412 16.8877 15.4998 16.6667 15.4998H14.1667V17.9998C14.1667 18.4598 13.7917 18.8332 13.3275 18.8332H3.33917C3.22927 18.8338 3.12033 18.8128 3.0186 18.7712C2.91687 18.7296 2.82436 18.6684 2.74638 18.5909C2.6684 18.5135 2.60649 18.4214 2.56421 18.32C2.52193 18.2185 2.50011 18.1097 2.5 17.9998L2.5025 6.33317C2.5025 5.87317 2.8775 5.49984 3.34167 5.49984H5.83333ZM4.16917 7.1665L4.16667 17.1665H12.5V7.1665H4.16917ZM7.5 5.49984H14.1667V13.8332H15.8333V3.83317H7.5V5.49984Z"/>
+                                                                </g>
+                                                                <defs>
+                                                                    <clipPath id="clip0_2009_9684">
+                                                                        <rect width="20" height="20" fill="white" transform="translate(0 0.5)"/>
+                                                                    </clipPath>
+                                                                </defs>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

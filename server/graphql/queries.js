@@ -95,6 +95,7 @@ const typeDefs = gql`
         getAllRecipes(id: ID!): [RecipeType]
         getSingleRecipe(id: ID!, user_id: String!): [RecipeType]
         getSIngleRecipeByID(id: ID!): RecipeType
+        getAggrRecipes: [RecipeType!]
     }
 
     type Mutation {
@@ -110,7 +111,7 @@ const typeDefs = gql`
 
         # Categories Mutations.
         createRecipeCategories(recipe_category_name: String!, recipe_category_slug: String!, recipe_category_author_id: String!, recipe_category_author_name: String!): CommonStatus!
-        updateRecipeCategories(recipe_category_name: String!, category_name_old: String!, recipe_category_slug: String!, recipe_category_author_id: String!): CommonStatus!
+        updateRecipeCategories(cat_id: ID!, recipe_category_name: String!, category_name_old: String!, recipe_category_slug: String!, recipe_category_author_id: String!): CommonStatus!
         deleteRecipeCategory(id: ID!, user_id: String!): CommonStatus!
         deleteAllRecipeCategory(user_id: String!): CommonStatus!
         checkRecipeInRecords(rid: String!): CommonStatus!

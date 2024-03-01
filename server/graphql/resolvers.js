@@ -298,6 +298,12 @@ const resolvers = {
                 };
             }
             return response_data;
+        },
+        getAggrRecipes: async () => {
+            let recips = await RecipeModel.find({});
+            if(recips.length > 0) {
+                return recips;
+            }
         }
     },
     Mutation: {
@@ -635,13 +641,30 @@ const resolvers = {
             const user = await SiteUserModel.find({_id: recipe_category_author_id});
             // console.log(user);
             if(user) {
-                const cats = await recipeCategoriesModel.find({recipe_category_name: recipe_category_name});
+                const cats = await recipeCategoriesModel.find({'author.author_id': recipe_category_author_id}).select("recipe_category_name");
                 // console.log(cats);
                 if(cats.length > 0) {
-                    frm_status = {
-                        message: 'Category Already Exist.',
-                        success: false
+                    let ctar = cats.map((itm) => itm.recipe_category_name);
+                    // console.log(ctar);
+                    if(recipe_category_name.includes(ctar)) {
+                        console.log("hey");
+                        frm_status = {
+                            message: 'Category Already Exist.',
+                            success: false
+                        }
+                    } else {
+                        // console.log("hey else");
+                        const doc = new recipeCategoriesModel({
+                            recipe_category_name,
+                            recipe_category_slug,
+                            author: {
+                                author_id: recipe_category_author_id,
+                                author_name: recipe_category_author_name
+                            }
+                        });
+                        await doc.save();
                     }
+                        
                 } else {
                     try {
                         const doc = new recipeCategoriesModel({
@@ -666,27 +689,6 @@ const resolvers = {
                     message: "Unable To Find User",
                     success: false
                 }
-                // try {
-                //     const doc = new recipeCategoriesModel({
-                //         recipe_category_name,
-                //         recipe_category_slug,
-                //         author: {
-                //             author_id: recipe_category_author_id,
-                //             author_name: recipe_category_author_name
-                //         }
-                //     });
-                //     await doc.save();
-                //     // frm_status = {
-                //     //     message: 'Category Created Successfully!',
-                //     //     success: true
-                //     // }
-                // } catch (error) {
-                //     console.log(error.message);
-                //     frm_status = {
-                //         message: "Unable To Create Category",
-                //         success: false
-                //     }
-                // }
             }
             return frm_status;
         },
@@ -696,7 +698,7 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let { recipe_category_name, category_name_old, recipe_category_slug, recipe_category_author_id } = args;
+            let { cat_id, recipe_category_name, category_name_old, recipe_category_slug, recipe_category_author_id } = args;
             const user = await SiteUserModel.find({_id: recipe_category_author_id});
             // console.log(user);
             if(user) {
@@ -710,7 +712,7 @@ const resolvers = {
                         }
                     } else {
                         try {
-                            await recipeCategoriesModel.findOneAndUpdate({recipe_category_name: category_name_old}, {
+                            await recipeCategoriesModel.findOneAndUpdate({_id: cat_id}, {
                                 recipe_category_name,
                                 recipe_category_slug,
                             }, {

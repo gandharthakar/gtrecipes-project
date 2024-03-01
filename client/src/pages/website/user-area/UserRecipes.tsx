@@ -180,7 +180,8 @@ const UserRecipes = (props:any) => {
                 item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 
                 item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase());
+                item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) || 
+				item.recipe_type.toLowerCase().includes(searchTerm.toLowerCase());
                 return srch_res;
             });
 

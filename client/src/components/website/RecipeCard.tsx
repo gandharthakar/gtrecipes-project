@@ -68,7 +68,7 @@ interface CompProp {
 }
 
 const RecipeCard = (props: CompProp) => {
-    let { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false, recipe_type="veg", page_reload_on_unsave=false } = props;
+    let { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false, recipe_type, page_reload_on_unsave=false } = props;
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const AuthUser = useSelector((state: RootState) => state.user_login.isAuthenticated);
     const navigate = useNavigate();
