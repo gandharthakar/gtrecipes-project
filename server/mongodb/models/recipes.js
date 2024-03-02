@@ -37,6 +37,9 @@ const recipeSchema = new Schema({
     author: {
         type: authorSchema
     },
+    recipe_makes_servings: {
+        type: String
+    },
     recipe_prep_time: {
         type: String
     },

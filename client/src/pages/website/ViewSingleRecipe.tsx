@@ -1,6 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import SiteBreadcrumb from "../../components/website/SiteBreadcrumb";
-import SiteConstants from "../../constants/SiteConstants";
 import { CgBowl } from "react-icons/cg";
 import { useParams } from "react-router-dom";
 import copy from "copy-to-clipboard";
@@ -61,6 +60,7 @@ const GET_RECIPE_DETAILS = gql`
                 author_id,
                 author_name
             },
+            recipe_makes_servings,
             recipe_prep_time,
             recipe_cook_time,
             recipe_total_time,
@@ -75,6 +75,26 @@ const GET_USER_FOR_SAVED_RECIPES = gql`
             saved_recipes {
                 id
             }
+        }
+    }
+`;
+
+const GET_RANDOM_RECIPES = gql`
+    query getAggrRec3($exc_id: ID!) {
+        getAggrRec3(exc_id: $exc_id) {
+            id,
+            recipe_title,
+            recipe_type,
+            recipe_featured_image,
+            recipe_summary,
+            recipe_categories {
+                id,
+                recipe_category_name
+            },
+            author {
+                author_id,
+                author_name
+            },
         }
     }
 `;
@@ -126,6 +146,32 @@ const ViewSingleRecipe = () => {
     const [recPrpTm, setRecPrpTm] = useState<string>('NA');
     const [recCokTm, setRecCokTm] = useState<string>('NA');
     const [recTotTm, setRecTotTm] = useState<string>('NA');
+    const [recSrv, setRecSrv] = useState<string>('NA');
+    interface AllRecipesType {
+        id: string,
+        recipe_title: string,
+        recipe_type: string,
+        recipe_featured_image: string,
+        recipe_summary: string,
+        recipe_categories: [Cats],
+        author: {
+            author_id: string,
+            author_name: string
+        },
+    }
+    const [randRec, setRandRec] = useState<AllRecipesType[]>([]);
+    const baseURIFeImg = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
+
+    useQuery(GET_RANDOM_RECIPES, {
+        variables: {
+            exc_id: id,
+        },
+        onCompleted: fdata => {
+            // console.log(fdata.getAggrRec3);
+            // console.log(fdata.getAggrRecipes[fdata.getAggrRecipes.length - 2]);
+            setRandRec(fdata.getAggrRec3);
+        }
+    })
 
     // Check Recipe Validity.
     let [chkRec] = useMutation(CHECK_RECIPE_VALIDITY, {
@@ -211,10 +257,15 @@ const ViewSingleRecipe = () => {
             setRecSum(mdata.recipe_summary);
             // Set Recipe Categories
             let ctdata = mdata.recipe_categories;
-            let ctarr = ctdata.map((item: Cats) => {
-                return { id: item.id, recipe_category_name: item.recipe_category_name}
-            });
-            setRecCats(ctarr);
+            if(ctdata.length > 0) {
+                let ctarr = ctdata.map((item: Cats) => {
+                    return { id: item.id, recipe_category_name: item.recipe_category_name }
+                });
+                setRecCats(ctarr);
+            } else {
+                let nularr = [{ id: "uncat_2", recipe_category_name: "Uncategorized" }];
+                setRecCats(nularr);
+            }
             // Set Recipe Created At.
             setRecCrat(mdata.recipe_created_at);
             // Set Recipe Author Name.
@@ -227,6 +278,8 @@ const ViewSingleRecipe = () => {
             setRecIngs(ingarr);
             // Set Recipe Content.
             setRecCont(mdata.recipe_content);
+            // Set Recipe Servings.
+            setRecSrv(mdata.recipe_makes_servings);
             // Set Recipe Prep Time.
             setRecPrpTm(mdata.recipe_prep_time);
             // Set Recipe Cook Time.
@@ -328,9 +381,11 @@ const ViewSingleRecipe = () => {
                             </ul>
                         </div>
                         <div className="twgtr-pb-6 twgtr-text-center">
-                            <h1 className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[25px] md:twgtr-text-[30px] lg:twgtr-text-[40px] twgtr-font-bold twgtr-text-theme-color-2 dark:twgtr-text-theme-color-3">
-                                {recTtl}
-                            </h1>
+                            <div className="twgtr-max-w-[1200px] twgtr-mx-auto">
+                                <h1 className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[25px] md:twgtr-text-[30px] lg:twgtr-text-[40px] twgtr-font-bold twgtr-text-theme-color-2 dark:twgtr-text-theme-color-3">
+                                    {recTtl}
+                                </h1>
+                            </div>
                             <div className="twgtr-max-w-[1000px] twgtr-mx-auto">
                                 <h2 className="twgtr-transition-all twgtr-block twgtr-font-open_sans twgtr-text-slate-800 twgtr-text-[16px] md:twgtr-text-[18px]">
                                     {recSum}
@@ -467,6 +522,14 @@ const ViewSingleRecipe = () => {
                                         <div className="twgtr-transition-all twgtr-border twgtr-border-solid twgtr-border-slate-300 twgtr-w-full twgtr-bg-white dark:twgtr-bg-slate-800 dark:twgtr-border-slate-600">
                                             <div className="twgtr-transition-all last:twgtr-border-b-0 twgtr-border-b twgtr-border-solid twgtr-border-slate-300 dark:twgtr-border-slate-600 twgtr-p-[20px]">
                                                 <h5 className="twgtr-transition-all twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[12px] md:twgtr-text-[14px] twgtr-text-theme-color-5 dark:twgtr-text-slate-300">
+                                                    Makes (Servings)
+                                                </h5>
+                                                <h6 className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-slate-800 dark:twgtr-text-slate-300">
+                                                    {recSrv == '' ? 'NA' : recSrv}
+                                                </h6>
+                                            </div>
+                                            <div className="twgtr-transition-all last:twgtr-border-b-0 twgtr-border-b twgtr-border-solid twgtr-border-slate-300 dark:twgtr-border-slate-600 twgtr-p-[20px]">
+                                                <h5 className="twgtr-transition-all twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[12px] md:twgtr-text-[14px] twgtr-text-theme-color-5 dark:twgtr-text-slate-300">
                                                     Prep Time
                                                 </h5>
                                                 <h6 className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-slate-800 dark:twgtr-text-slate-300">
@@ -552,33 +615,31 @@ const ViewSingleRecipe = () => {
                             </div>
 
                             <div className="twgtr-grid twgtr-grid-cols-1 md:twgtr-grid-cols-2 lg:twgtr-grid-cols-3 twgtr-gap-[20px]">
-                                <RecipeCard 
-                                    recipe_id={"1"} 
-                                    recipe_featured_image="/images/food-dummy.jpg" 
-                                    categories={SiteConstants[0].static_cats} 
-                                    recipe_title="Test Recipe 1"
-                                    recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente illum nisi mollitia recusandae ipsum"
-                                    recipe_author_name="Author Name"
-                                    actions={false}
-                                />
-                                <RecipeCard 
-                                    recipe_id={"2"} 
-                                    recipe_featured_image="/images/food-dummy.jpg" 
-                                    categories={SiteConstants[0].static_cats} 
-                                    recipe_title="Test Recipe 2"
-                                    recipe_summary=""
-                                    recipe_author_name="Author Name"
-                                    actions={false}
-                                />
-                                <RecipeCard 
-                                    recipe_id={"3"} 
-                                    recipe_featured_image="/images/food-dummy.jpg" 
-                                    categories={SiteConstants[0].static_cats} 
-                                    recipe_title="Test Recipe 3"
-                                    recipe_summary="Lorem, ipsum dolor sit amet consectetur adipisicing elit."
-                                    recipe_author_name="Author Name"
-                                    actions={false}
-                                />
+                                {
+                                    randRec.length > 0 ? 
+                                    (
+                                        <>
+                                            {
+                                                randRec.map((item) => (
+                                                    <RecipeCard 
+                                                        key={item.id}
+                                                        recipe_id={item.id} 
+                                                        rfeb_URI={baseURIFeImg}
+                                                        recipe_type={item.recipe_type} 
+                                                        recipe_featured_image={item.recipe_featured_image} 
+                                                        categories={item.recipe_categories} 
+                                                        recipe_title={item.recipe_title}
+                                                        recipe_summary={item.recipe_summary}
+                                                        recipe_author_id={item.author.author_id}
+                                                        recipe_author_name={item.author.author_name}
+                                                    />
+                                                ))
+                                            }
+                                        </>
+                                    ) 
+                                    : 
+                                    (<h5>No Records Found</h5>)
+                                }
                             </div>
                         </div>
                     </div>

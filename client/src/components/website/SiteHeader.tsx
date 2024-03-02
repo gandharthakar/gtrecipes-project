@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { IoMdMenu } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import ThemeModeSwitch from "./ThemeModeSwitch";
@@ -7,8 +7,11 @@ import HeaderProfileDropdown from "./HeaderProfileDropdown";
 import { useEffect, useRef, useState } from "react";
 
 const SiteHeader = () => {
+	const path = useLocation();
 	const [menuToggle, setToggleMenu] = useState<boolean>(false);
 	const menuRef = useRef<HTMLDivElement>(null);
+	const [homeActive, setHomeActive] = useState<string>('');
+
 	const toggleSIteMenu = () => {
 		setToggleMenu(!menuToggle);
 	}
@@ -23,6 +26,12 @@ const SiteHeader = () => {
         };
 
         document.addEventListener('mousedown', menuHandler);
+
+		if(path.pathname == "/") {
+            setHomeActive("active");
+        } else {
+            setHomeActive("");
+        }
 	}, []);
 
 	return (
@@ -30,6 +39,11 @@ const SiteHeader = () => {
 			<div className="twgtr-transition-all twgtr-relative twgtr-border-b twgtr-border-slate-300 twgtr-border-solid twgtr-px-4 twgtr-bg-white dark:twgtr-bg-slate-900 dark:twgtr-border-slate-600">
 				<header className="twgtr-flex twgtr-items-center twgtr-gap-x-4">
 					<div className="twgtr-mr-auto">
+						<div style={{display: 'none'}}>
+							<a href="/" title="Home" className={``}>
+								<SiteLogo />
+							</a>
+						</div>
 						<NavLink to="/" title="Home">
 							<SiteLogo />
 						</NavLink>
@@ -38,6 +52,11 @@ const SiteHeader = () => {
 						<nav ref={menuRef} className={`site-header lg:twgtr-block twgtr-pr-0 lg:twgtr-pr-2 ${menuToggle ? 'twgtr-block' : 'twgtr-hidden'}`}>
 							<ul className="twgtr-flex twgtr-items-center twgtr-flex-col lg:twgtr-flex-row lg:twgtr-items-start twgtr-flex-wrap twgtr-gap-x-6 twgtr-font-ubuntu twgtr-absolute lg:twgtr-relative twgtr-left-0 twgtr-top-[57px] twgtr-z-20 lg:twgtr-top-0 lg:twgtr-w-auto twgtr-w-full twgtr-bg-white lg:twgtr-bg-transparent">
 								<li className="twgtr-px-3 lg:twgtr-px-0 twgtr-w-full lg:twgtr-w-auto twgtr-py-3 lg:twgtr-py-0 twgtr-border-b-[1px] twgtr-border-slate-300 lg:twgtr-border-0 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-700">
+									<div style={{display: 'none'}}>
+										<a href="/" title="Home" className={`twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 ${homeActive}`}>
+											Home
+										</a>
+									</div>
 									<NavLink to="/" title="Home" className="twgtr-transition-all twgtr-font-medium twgtr-text-slate-700 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4" onClick={toggleSIteMenu}>
 										Home
 									</NavLink>

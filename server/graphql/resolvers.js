@@ -158,6 +158,7 @@ const resolvers = {
                                     author_name: rec.author.author_name,
                                     author_id: rec.author.author_id,
                                 },
+                                recipe_makes_servings: rec.recipe_makes_servings,
                                 recipe_prep_time: rec.recipe_prep_time,
                                 recipe_cook_time: rec.recipe_cook_time,
                                 recipe_total_time: rec.recipe_total_time,
@@ -200,6 +201,7 @@ const resolvers = {
                                 author_name: rec.author.author_name,
                                 author_id: rec.author.author_id,
                             },
+                            recipe_makes_servings: rec.recipe_makes_servings,
                             recipe_prep_time: rec.recipe_prep_time,
                             recipe_cook_time: rec.recipe_cook_time,
                             recipe_total_time: rec.recipe_total_time,
@@ -269,6 +271,7 @@ const resolvers = {
                     author_id: '',
                     author_name: ''
                 },
+                recipe_makes_servings: '',
                 recipe_prep_time: '',
                 recipe_cook_time: '',
                 recipe_total_time: '',
@@ -291,6 +294,7 @@ const resolvers = {
                         author_id: dt.author.author_id,
                         author_name: dt.author.author_name
                     },
+                    recipe_makes_servings: dt.recipe_makes_servings,
                     recipe_prep_time: dt.recipe_prep_time,
                     recipe_cook_time: dt.recipe_cook_time,
                     recipe_total_time: dt.recipe_total_time,
@@ -304,6 +308,36 @@ const resolvers = {
             if(recips.length > 0) {
                 return recips;
             }
+        },
+        getAggrRec3: async (parent, args) => {
+            let resp = await RecipeModel.find({});
+            let resarr = [];
+            if(resp.length > 0) {
+                const filter = resp.filter(itm => itm.id !== args.exc_id);
+                // console.log(filter.length);
+                let spltarr = filter.sort(() => Math.random() - Math.random()).slice(0, 3)
+                resarr = spltarr.map((dt) => {
+                    let resp_obj = {
+                        id: dt._id.toString(),
+                        recipe_title: dt.recipe_title,
+                        recipe_type: dt.recipe_type,
+                        recipe_featured_image: dt.recipe_featured_image,
+                        recipe_categories: dt.recipe_categories,
+                        recipe_summary: dt.recipe_summary,
+                        recipe_content: dt.recipe_content,
+                        recipe_ingradients: dt.recipe_ingradients,
+                        author: dt.author,
+                        recipe_makes_servings: dt.recipe_makes_servings,
+                        recipe_prep_time: dt.recipe_prep_time,
+                        recipe_cook_time: dt.recipe_cook_time,
+                        recipe_total_time: dt.recipe_total_time,
+                        recipe_created_at: dt.recipe_created_at
+                    }
+                    return resp_obj;
+                });
+            }
+            // console.log(resarr);
+            return resarr;
         }
     },
     Mutation: {
@@ -796,6 +830,7 @@ const resolvers = {
                 recipe_ingradients,
                 recipe_author, 
                 recipe_author_id, 
+                recipe_makes_servings, 
                 recipe_prep_time, 
                 recipe_cook_time, 
                 recipe_total_time, 
@@ -817,6 +852,7 @@ const resolvers = {
                             author_name: recipe_author,
                             author_id: recipe_author_id
                         },
+                        recipe_makes_servings, 
                         recipe_prep_time, 
                         recipe_cook_time, 
                         recipe_total_time, 
@@ -859,6 +895,7 @@ const resolvers = {
                 recipe_summary, 
                 recipe_content, 
                 recipe_ingradients, 
+                recipe_makes_servings, 
                 recipe_prep_time, 
                 recipe_cook_time, 
                 recipe_total_time 
@@ -877,6 +914,7 @@ const resolvers = {
                             recipe_summary,
                             recipe_content,
                             recipe_ingradients, 
+                            recipe_makes_servings, 
                             recipe_prep_time, 
                             recipe_cook_time, 
                             recipe_total_time, 

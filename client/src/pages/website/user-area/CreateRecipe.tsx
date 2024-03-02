@@ -74,6 +74,7 @@ const CREATE_NEW_RECIPE = gql`
             $recipe_ingradients: [String!], 
             $recipe_author: String!, 
             $recipe_author_id: String!, 
+            $recipe_makes_servings: String,
             $recipe_prep_time: String,
             $recipe_cook_time: String,
             $recipe_total_time: String,
@@ -89,6 +90,7 @@ const CREATE_NEW_RECIPE = gql`
             recipe_ingradients: $recipe_ingradients, 
             recipe_author: $recipe_author,
             recipe_author_id: $recipe_author_id,
+            recipe_makes_servings: $recipe_makes_servings,
             recipe_prep_time: $recipe_prep_time,
             recipe_cook_time: $recipe_cook_time,
             recipe_total_time: $recipe_total_time,
@@ -138,6 +140,7 @@ const CreateRecipe = () => {
         prep_time: '',
         total_time: ''
     });
+    const [recSer, setRecSer] = useState<string>('');
 
     useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id },
@@ -262,6 +265,7 @@ const CreateRecipe = () => {
             recipe_categories: string[],
             recipe_author: string,
             recipe_author_id: string,
+            recipe_makes_servings: string,
             recipe_prep_time: string,
             recipe_cook_time: string,
             recipe_total_time: string,
@@ -278,6 +282,7 @@ const CreateRecipe = () => {
             recipe_categories: [],
             recipe_author: '',
             recipe_author_id: '',
+            recipe_makes_servings: '',
             recipe_prep_time: '',
             recipe_cook_time: '',
             recipe_total_time: '',
@@ -306,6 +311,7 @@ const CreateRecipe = () => {
                 recipe_categories: [],
                 recipe_author: '',
                 recipe_author_id: '',
+                recipe_makes_servings: '',
                 recipe_prep_time: '',
                 recipe_cook_time: '',
                 recipe_total_time: '',
@@ -322,6 +328,7 @@ const CreateRecipe = () => {
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : [],
                 recipe_author: authorName,
                 recipe_author_id: id ? id: '',
+                recipe_makes_servings: recSer,
                 recipe_prep_time: tmMat.prep_time,
                 recipe_cook_time: tmMat.cook_time,
                 recipe_total_time: tmMat.total_time,
@@ -417,7 +424,7 @@ const CreateRecipe = () => {
                                     <select 
                                         name="recipe_type" 
                                         id="rttpe"
-                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+                                        className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
                                         onChange={(e) => setRecType(e.target.value)}
                                         value={recType} 
                                     >
@@ -538,7 +545,7 @@ const CreateRecipe = () => {
 										type="text" 
 										name="prep_time" 
                                         id="recprptm"
-										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
 										placeholder="Eg. 15 Mins." 
 										autoComplete="off" 
                                         value={tmMat.prep_time} 
@@ -553,7 +560,7 @@ const CreateRecipe = () => {
 										type="text" 
 										name="cook_time" 
                                         id="reccootm"
-										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
 										placeholder="Eg. 15 Mins." 
 										autoComplete="off" 
                                         value={tmMat.cook_time} 
@@ -568,11 +575,26 @@ const CreateRecipe = () => {
 										type="text" 
 										name="total_time" 
                                         id="reccootm"
-										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
 										placeholder="Eg. 30 Mins." 
 										autoComplete="off"
                                         value={tmMat.total_time} 
                                         onChange={handleTMInputsCh}
+									/>
+                                </div>
+                                <div className="twgtr-pb-4">
+                                    <label htmlFor="recserv" className="twgtr-transition-all twgtr-inline-block twgtr-pb-2 twgtr-font-ubuntu twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[18px] twgtr-text-theme-color-4 dark:twgtr-text-slate-200">
+                                        Makes (Servings)
+                                    </label>
+                                    <input 
+										type="text" 
+										name="makes_servings" 
+                                        id="recserv"
+										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
+										placeholder="Eg. 2 Servings" 
+										autoComplete="off"
+                                        value={recSer} 
+                                        onChange={(e) => setRecSer(e.target.value)}
 									/>
                                 </div>
                                 <div className="twgtr-pb-8">
@@ -592,6 +614,7 @@ const CreateRecipe = () => {
                                             menuButton: () => (`flex text-sm text-gray-500 border border-gray-300 rounded shadow-sm transition-all duration-300 focus:outline-none bg-white hover:border-gray-400 focus:border-indigo-500 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200`),
                                             tagItem: () => (`bg-gray-200 border rounded-sm flex space-x-1 pl-1 dark:[&>p.select-none]:!twgtr-text-slate-200 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-700 dark:twgtr-text-slate-200`),
                                             menu: `absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700 dark:twgtr-bg-slate-800 dark:twgtr-border-slate-600`,
+                                            list: `twgtr-max-h-[190px] twgtr-overflow-y-auto`,
                                             listItem: () => (`block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded text-gray-500 hover:bg-indigo-100 hover:text-indigo-500 dark:hover:twgtr-bg-slate-500 dark:hover:twgtr-text-slate-200`),
                                             searchBox: `w-full py-2 pl-8 text-sm text-gray-500 bg-gray-100 border border-gray-200 rounded focus:border-gray-200 focus:ring-0 focus:outline-none dark:twgtr-bg-slate-600 dark:twgtr-border-slate-500 dark:twgtr-text-slate-200 dark:placeholder:twgtr-text-slate-200`,
                                             searchIcon: `absolute w-5 h-5 mt-2.5 pb-0.5 ml-2 text-gray-500 dark:twgtr-text-slate-200`,

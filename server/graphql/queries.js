@@ -67,6 +67,7 @@ const typeDefs = gql`
         recipe_content: String!
         recipe_ingradients: [String]
         author: AuthorType!
+        recipe_makes_servings: String
         recipe_prep_time: String
         recipe_cook_time: String
         recipe_total_time: String
@@ -96,6 +97,7 @@ const typeDefs = gql`
         getSingleRecipe(id: ID!, user_id: String!): [RecipeType]
         getSIngleRecipeByID(id: ID!): RecipeType
         getAggrRecipes: [RecipeType!]
+        getAggrRec3(exc_id: ID!): [RecipeType!]
     }
 
     type Mutation {
@@ -117,8 +119,8 @@ const typeDefs = gql`
         checkRecipeInRecords(rid: String!): CommonStatus!
 
         # Recipe Mutations.
-        createNewRecipe(recipe_title: String!, recipe_type: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String], recipe_author: String!, recipe_author_id: String!, recipe_prep_time: String, recipe_cook_time: String, recipe_total_time: String, recipe_created_at: String!): CommonStatus!
-        updateRecipe(id: ID!, user_id: String!, recipe_title: String!, recipe_type: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String], recipe_prep_time: String, recipe_cook_time: String, recipe_total_time: String): CommonStatus!
+        createNewRecipe(recipe_title: String!, recipe_type: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String], recipe_author: String!, recipe_author_id: String!, recipe_makes_servings: String, recipe_prep_time: String, recipe_cook_time: String, recipe_total_time: String, recipe_created_at: String!): CommonStatus!
+        updateRecipe(id: ID!, user_id: String!, recipe_title: String!, recipe_type: String!, recipe_featured_image: String!, recipe_categories: [String], recipe_summary: String!, recipe_content: String!, recipe_ingradients: [String], recipe_makes_servings: String, recipe_prep_time: String, recipe_cook_time: String, recipe_total_time: String): CommonStatus!
         deleteRecipe(id: ID!, user_id: String!): CommonStatus!
         deleteAllRecipes(user_id: String!): DeleteRecipesType
         

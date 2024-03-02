@@ -1,15 +1,23 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { FaFacebook } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaWhatsapp } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import ThemeModeSwitchFooter from "./ThemeModeSwitchFooter";
+import { useEffect, useState } from "react";
 
 const SiteFooter = () => {
 
-    // let activeFlink = () => {
-    //     return ({ isActive }: any) => isActive ? 'active' : '';
-    // }
+    const path = useLocation();
+    const [homeActive, setHomeActive] = useState<string>('');
+
+    useEffect(() => {
+        if(path.pathname == "/") {
+            setHomeActive("active");
+        } else {
+            setHomeActive("");
+        }
+    }, []);
 
     return (
         <footer className="twgtr-font-ubuntu site-footer">
@@ -26,6 +34,11 @@ const SiteFooter = () => {
                                 <div>
                                     <ul>
                                         <li className="twgtr-pb-1">
+                                            <div style={{display: 'none'}}>
+                                                <a href="/" title="Home" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2 ${homeActive}`}>
+                                                    Home
+                                                </a>
+                                            </div>
                                             <NavLink to="/" title="Home" className={`twgtr-transition-all twgtr-text-theme-color-1 twgtr-text-[14px] md:twgtr-text-[16px] twgtr-font-medium hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-400 dark:hover:twgtr-text-theme-color-2`}>
                                                 Home
                                             </NavLink>
