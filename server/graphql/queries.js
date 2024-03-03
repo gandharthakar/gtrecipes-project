@@ -110,6 +110,8 @@ const typeDefs = gql`
         deleteAccount(id: ID!): DeleteAccountType!
         saveRecipe(user_id: String!, recipe_id: String!): CommonStatus!
         unsaveRecipe(user_id: String!, recipe_id: String!): CommonStatus!
+        forgotPassword(email: String!): CommonStatus!
+        resetUserPassword(password: String!, confirm_password: String!, user_id: String!, token: String!): CommonStatus!
 
         # Categories Mutations.
         createRecipeCategories(recipe_category_name: String!, recipe_category_slug: String!, recipe_category_author_id: String!, recipe_category_author_name: String!): CommonStatus!

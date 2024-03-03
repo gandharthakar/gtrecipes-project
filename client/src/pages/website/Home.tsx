@@ -111,7 +111,15 @@ function Home() {
 					}
 				}
 			} else {
-				obj = defRec1_data
+				obj = {
+					id: r1.id,
+					recipe_title: r1.recipe_title,
+					recipe_featured_image: defaultFeImgPath,
+					recipe_summary: r1.recipe_summary,
+					author: {
+						author_name: r1.author.author_name
+					}
+				}
 			}
 			setRec1(obj);
 
@@ -130,7 +138,11 @@ function Home() {
 					recipe_featured_image:`${baseURIFeImg}/${r2.recipe_featured_image}`,
 				}
 			} else {
-				obj_0 = defRec2_data;
+				obj_0 = {
+					id: r2.id,
+					recipe_title: r2.recipe_title,
+					recipe_featured_image: defaultFeImgPath,
+				}
 			}
 			setRec2(obj_0);
 
@@ -149,7 +161,11 @@ function Home() {
 					recipe_featured_image:`${baseURIFeImg}/${r3.recipe_featured_image}`,
 				}
 			} else {
-				obj_1 = defRec3_data;
+				obj_1 = {
+					id: r3.id,
+					recipe_title: r3.recipe_title,
+					recipe_featured_image: defaultFeImgPath
+				}
 			}
 			setRec3(obj_1);
 
@@ -168,7 +184,11 @@ function Home() {
 					recipe_featured_image:`${baseURIFeImg}/${r4.recipe_featured_image}`,
 				}
 			} else {
-				obj_2 = defRec4_data;
+				obj_2 = {
+					id: r4.id,
+					recipe_title: r4.recipe_title,
+					recipe_featured_image: defaultFeImgPath
+				}
 			}
 			setRec4(obj_2);
 
@@ -187,7 +207,11 @@ function Home() {
 					recipe_featured_image:`${baseURIFeImg}/${r5.recipe_featured_image}`,
 				}
 			} else {
-				obj_3 = defRec5_data;
+				obj_3 = {
+					id: r5.id,
+					recipe_title: r5.recipe_title,
+					recipe_featured_image: defaultFeImgPath
+				}
 			}
 			setRec5(obj_3);
 
@@ -206,7 +230,11 @@ function Home() {
 					recipe_featured_image:`${baseURIFeImg}/${r6.recipe_featured_image}`,
 				}
 			} else {
-				obj_4 = defRec6_data;
+				obj_4 = {
+					id: r6.id,
+					recipe_title: r6.recipe_title,
+					recipe_featured_image: defaultFeImgPath
+				}
 			}
 			setRec6(obj_4);
 		}

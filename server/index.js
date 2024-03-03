@@ -39,7 +39,12 @@ async function startApolloServer(typeDefs, resolvers){
     gtrecipes_mdb();
 
     // const server = new ApolloServer({typeDefs, resolvers, csrfPrevention: true})
-    const server = new ApolloServer({typeDefs, resolvers})
+    const server = new ApolloServer({
+        typeDefs, 
+        resolvers,
+        introspection: false,
+        playground: false,
+    })
     const app = express();
     app.use(cors());
     app.use(express.json());

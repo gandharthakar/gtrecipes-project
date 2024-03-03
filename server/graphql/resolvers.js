@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const SiteUserModel = require("../mongodb/models/siteUsers.js");
 const recipeCategoriesModel = require("../mongodb/models/recipeCategories.js");
 const RecipeModel = require("../mongodb/models/recipes.js");
+const emailTransporter = require("../nodemailer/emailConfig.js");
+require('dotenv').config();
 
 const resolvers = {
     Query: {
@@ -1147,7 +1149,7 @@ const resolvers = {
             }
             return frm_status;
         },
-        checkRecipeInRecords: async(parent, args) => {
+        checkRecipeInRecords: async (parent, args) => {
             // console.log(args);
             let frm_status = {
                 message: '',
@@ -1167,6 +1169,101 @@ const resolvers = {
             }
             return frm_status;
         },
+        forgotPassword: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let { email } = args;
+            if(email) {
+                let user = await SiteUserModel.find({user_email: email});
+                if(user.length > 0) {
+                    let id = user[0]._id.toString();
+                    const sec = id + process.env.JWT_SEC;
+                    const token = jwt.sign({userID: id}, sec, { expiresIn: '10m' })
+                    const link = `${process.env.FRONTEND_CLIENT_URI}/reset-password/${id}/${token}`;
+                    // console.log(link);
+                    // Send Email
+                    let info = await emailTransporter.sendMail({
+                        from: process.env.EMAIL_FROM,
+                        to: user[0].user_email, // list of receivers
+                        subject: "GTRecipes - Password Reset Link.", // Subject line
+                        html:`<h4 style="font-family: 'Arial'; font-size: 20px; color: #575757; margin: 0px; padding: 0px; padding-bottom: 10px;">Dear User</h4><h5 style="font-family: 'Arial'; font-size: 16px; font-weight: 400; color: #575757; margin: 0px; padding: 0px; padding-bottom: 10px;">Below is your password reset link. This link is valid for 10 Mins.</h5><h5 style="font-family: 'Arial'; font-size: 16px; font-weight: 400; color: #575757; margin: 0px; padding: 0px;"><b>Password Reset Link :- </b> <a href="${link}" title="Click Here" target="_blank">Click Here</a></h5>`
+                    });
+                    // console.log(info);
+                    frm_status = {
+                        message: 'Password reset Email Sent... Please Check Your Email.',
+                        success: true
+                    }
+                } else {
+                    frm_status = {
+                        message: 'User Not Registered With This Email Address.',
+                        success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: 'Please Provide Email Address.',
+                    success: false
+                }
+            }
+            return frm_status;
+        },
+        resetUserPassword: async (parent, args) => {
+            // console.log(args);
+            let frm_status = {
+                message: '',
+                success: false
+            }
+            let {password, confirm_password, user_id, token} = args;
+            if(password && confirm_password && user_id && token) {
+                if(password === confirm_password) {
+                    const user = await SiteUserModel.findById(user_id);
+                    // console.log(user);
+                    if(user) {
+                        const new_token = user.id.toString() + process.env.JWT_SEC;
+                        try {
+                            jwt.verify(token, new_token);
+                            const salt = await bcrypt.genSalt(10);
+                            const hashPwd = await bcrypt.hash(password, salt);
+                            await SiteUserModel.findOneAndUpdate({_id: user_id}, {
+                                user_password: hashPwd
+                            }, {
+                                new: true
+                            });
+                            frm_status = {
+                                message: "Password Changed Successfully!",
+                                success: true
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                            frm_status = {
+                                message: "Token Expired. Please Make New Request.",
+                                success: false
+                            }
+                        }
+                    } else {
+                        frm_status = {
+                            message: "Unable To Find User",
+                            success: false
+                        }
+                    }
+                    
+                } else {
+                    frm_status = {
+                        message: "Password & Confirm Password Doesn't Match.",
+                        success: false
+                    }
+                }
+            } else {
+                frm_status = {
+                    message: 'Missing Required Fields.',
+                    success: false
+                }
+            }
+            return frm_status;
+        }
     },
     RecipeType: {
         recipe_categories: async (data) => {

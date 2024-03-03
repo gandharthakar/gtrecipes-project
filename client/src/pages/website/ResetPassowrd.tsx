@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import SiteLogo from "../../components/website/SiteLogo";
 import { FaRegEye } from "react-icons/fa6";
@@ -13,55 +13,45 @@ import "react-toastify/dist/ReactToastify.css";
 import { useMutation, gql } from "@apollo/client";
 import { set_dark_mode, unset_dark_mode } from "../../redux-service/website/SiteThemeModeReducer";
 
-const REGISTER_USER = gql`
-	mutation registerNewUser($full_name: String!, $email: String!, $password: String!, $confirm_password: String!) {
-		registerNewUser(full_name: $full_name, email: $email, password: $password, confirm_password: $confirm_password) {
+const RESET_PASSWORD = gql`
+	mutation resetUserPassword($password: String!, $confirm_password: String!, $user_id: String!, $token: String!) {
+		resetUserPassword(password: $password, confirm_password: $confirm_password, user_id: $user_id, token: $token) {
 			message,
 			success
 		}
 	}
 `;
 
-const Register = () => {
+const ResetPassowrd = () => {
+	let { id, token } = useParams();
+
 	const navigate = useNavigate();
 	const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
 	const dispatch = useDispatch();
 	const[showPassword, setShowPassword] = useState<boolean>(false);
 	const[showConfPassword, setShowConfPassword] = useState<boolean>(false);
 
-	const [registerUser] = useMutation(REGISTER_USER, {
+	const [rstPwd] = useMutation(RESET_PASSWORD, {
 		onCompleted: data => {
 			const toastDefOpts = {
 				autoClose: 2000,
 				closeOnClick: true,
 				theme: `${ThemeMode ? 'dark' : 'light'}`
 			}
-			if(data.registerNewUser.success) {
-				toast.success("Registered Successfully.", toastDefOpts);
+			if(data.resetUserPassword.success) {
+				toast.success(data.resetUserPassword.message, toastDefOpts);
 				let ss = setTimeout(function(){
-					navigate("/login");
+					navigate("/");
 					clearTimeout(ss);
 				}, 2000);
 			} else {
-				toast.error(data.registerNewUser.message, toastDefOpts);
+				toast.error(data.resetUserPassword.message, toastDefOpts);
 			}
 			// console.log(data.registerNewUser.message);
 		},
 	})
 
 	const validationSchema = z.object({
-		fullName: z.string({
-			required_error: "Please enter Full Name",
-			invalid_type_error: "Full Name must be in string format."
-		}).min(6, {message: "Full name must be contains at least 6 characters."}),
-	
-		email: z.string({
-			required_error: "Please enter email address.",
-			invalid_type_error: "Email must be in string format."
-		}).email({
-			message: "Please enter valid email address."
-		}).min(1),
-	
 		password: z.string({
 			invalid_type_error: "Password must be in string format."
 		}).min(8).max(16),
@@ -82,12 +72,12 @@ const Register = () => {
 	});
 	
 	const handleFormSubmit: SubmitHandler<validationSchema> = (formdata) => {
-		registerUser({
+		rstPwd({
 			variables: {
-				full_name: formdata.fullName,
-				email: formdata.email,
 				password: formdata.password,
-				confirm_password: formdata.confirmPassword
+				confirm_password: formdata.confirmPassword,
+				user_id: id,
+				token
 			}
 		});
 		// Reset Form
@@ -125,36 +115,16 @@ const Register = () => {
 							</div>
 							<div className="twgtr-block twgtr-pb-6 md:twgtr-pb-8">
 								<h1 className="twgtr-transition-all twgtr-text-[25px] md:twgtr-text-[30px] twgtr-text-slate-800 twgtr-font-ubuntu dark:twgtr-text-slate-200">
-									User Registration
+									Reset Password
 								</h1>
 							</div>
 							<form onSubmit={handleSubmit(handleFormSubmit)}>
-								<div className="twgtr-pb-6 twgtr-text-left">
-									<input 
-										type="text" 
-										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-700 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
-										placeholder="Full Name" 
-										autoComplete="off"
-										{...register("fullName")}
-									/>
-									{errors.fullName && (<p className="site-form-error">{errors.fullName?.message}</p>)}
-								</div>
-								<div className="twgtr-pb-6 twgtr-text-left">
-									<input 
-										type="email" 
-										className="twgtr-transition-all twgtr-w-full twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-700 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
-										placeholder="Email" 
-										autoComplete="off"
-										{...register("email")}
-									/>
-									{errors.email && (<p className="site-form-error">{errors.email?.message}</p>)}
-								</div>
 								<div className="twgtr-pb-6 twgtr-text-left">
 									<div className="twgtr-relative">
 										<input 
 											type={`${showPassword ? 'text' : 'password'}`}
 											className="twgtr-transition-all twgtr-w-full twgtr-pl-2 md:twgtr-pl-4 twgtr-pr-[45px] twgtr-py-1 md:twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-700 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
-											placeholder="Password" 
+											placeholder="New Password" 
 											autoComplete="off"
 											{...register("password")}
 										/>
@@ -206,19 +176,11 @@ const Register = () => {
 									{errors.confirmPassword && (<p className="site-form-error">{errors.confirmPassword?.message}</p>)}
 								</div>
 								<div>
-									<button type="submit" title="Register" className="twgtr-transition-all twgtr-w-full twgtr-px-4 twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-theme-color-2 twgtr-bg-theme-color-2 twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[18px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2-hover-dark hover:twgtr-border-theme-color-2-hover-dark">
-										Register
+									<button type="submit" title="Submit" className="twgtr-transition-all twgtr-w-full twgtr-px-4 twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-theme-color-2 twgtr-bg-theme-color-2 twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[18px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2-hover-dark hover:twgtr-border-theme-color-2-hover-dark">
+										Submit
 									</button>
 								</div>
 							</form>
-							<div className="twgtr-block twgtr-text-center twgtr-pt-4">
-								<h6 className="twgtr-font-open_sans twgtr-text-[14px] twgtr-text-slate-800 dark:twgtr-text-slate-300">
-									Already have an account ?&nbsp;
-									<NavLink to="/login" title="Please Login" className="twgtr-font-semibold twgtr-text-theme-color-2 hover:twgtr-text-theme-color-4">
-										Please Login
-									</NavLink>
-								</h6>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -227,4 +189,4 @@ const Register = () => {
 	)
 }
 
-export default Register;
+export default ResetPassowrd;

@@ -22,7 +22,8 @@ import ViewSingleRecipe from "../pages/website/ViewSingleRecipe";
 import PageNotFound from "../pages/website/PageNotFound";
 import EditRecipe from "../pages/website/user-area/EditRecipe";
 import UserProfileSR from "../pages/website/user-area/UserProfileSR";
-
+import ForgotPassword from "../pages/website/ForgotPassword";
+import ResetPassowrd from "../pages/website/ResetPassowrd";
 
 const WebRoutes = createBrowserRouter([
     {
@@ -110,6 +111,14 @@ const WebRoutes = createBrowserRouter([
     {
         path: "/register",
         element: <Register />
+    },
+    {
+        path: "/forgot-password",
+        element: <ForgotPassword />
+    },
+    {
+        path: "/reset-password/:id/:token",
+        element: <ResetPassowrd />
     },
     {
         path: "/recipe-not-found",

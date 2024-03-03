@@ -607,14 +607,14 @@ const ViewSingleRecipe = () => {
                     </div>
 
                     <div className="twgtr-transition-all twgtr-px-4 twgtr-pt-[25px] twgtr-pb-[50px] twgtr-bg-slate-200 dark:twgtr-bg-slate-800">
-                        <div className="twgtr-max-w-[1240px] twgtr-mx-auto twgtr-w-full md:twgtr-px-[20px] twgtr-relative twgtr-z-[5]">
+                        <div className="twgtr-max-w-[1240px] twgtr-mx-auto twgtr-w-full twgtr-relative twgtr-z-[5]">
                             <div className="twgtr-pb-[25px]">
                                 <h4 className="twgtr-transition-all twgtr-font-ubuntu twgtr-text-[20px] md:twgtr-text-[25px] twgtr-font-bold twgtr-text-theme-color-1 dark:twgtr-text-theme-color-3">
                                     You May Also Like
                                 </h4>
                             </div>
 
-                            <div className="twgtr-grid twgtr-grid-cols-1 md:twgtr-grid-cols-2 lg:twgtr-grid-cols-3 twgtr-gap-[20px]">
+                            <div className="also-like">
                                 {
                                     randRec.length > 0 ? 
                                     (

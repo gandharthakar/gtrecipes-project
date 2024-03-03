@@ -440,6 +440,12 @@
     height: 30px;
  }
 
+ @media (max-width: 767px) {
+    .rcbox-svrch-gp .inner {
+        height: 20px;
+    }
+ }
+
  .rcbox-svrch-gp .icn-acc {
     display: none;
     /* transform: translateY(3px); */
@@ -534,4 +540,28 @@
     --filter-label-hover: #1e293b;
     --filter-radio-color: #e2e8f0;
     --filter-label-color: #e2e8f0;
+ }
+
+ .also-like {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+ }
+
+ .also-like .recipe-card {
+    flex: 1;
+ }
+
+ @media (max-width: 1024px) {
+    .also-like .recipe-card {
+        flex: none;
+        width: calc(50% - 10px);
+    }
+ }
+
+ @media (max-width: 767px) {
+    .also-like .recipe-card {
+        width: 100%;
+    }
  }
