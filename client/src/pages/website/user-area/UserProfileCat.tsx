@@ -63,7 +63,7 @@ const UserProfileCat = () => {
     //     },
     // ];
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
-    const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
+    // const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
     const [showModal, setShowModal] = useState<boolean>(false);
     const [createCat, setCreateCat] = useState<string>('');
     const [createCatSlug, setCreateCatSlug] = useState<string>('');
@@ -261,7 +261,8 @@ const UserProfileCat = () => {
                                     profilePhoto !== '' ? 
                                     (
                                         <>
-                                            <img src={`${pp_path}${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} />
+                                            {/* <img src={`${pp_path}${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} /> */}
+                                            <img src={`${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} />
                                         </>
                                     ) 
                                     : 

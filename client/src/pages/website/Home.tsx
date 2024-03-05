@@ -29,7 +29,7 @@ function Home() {
 
 	const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';
     const fallBackFeImg = 'images/default-feimg.svg';
-	const baseURIFeImg = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
+	// const baseURIFeImg = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
 
 	interface RecType {
 		id: string,
@@ -100,25 +100,14 @@ function Home() {
 				recipe_featured_image: '',
 			};
 			let cl = r1.recipe_featured_image;
-			if(cl !== 'default') {
-				obj = {
-					id: r1.id,
-					recipe_title: r1.recipe_title,
-					recipe_featured_image: `${baseURIFeImg}/${r1.recipe_featured_image}`,
-					recipe_summary: r1.recipe_summary,
-					author: {
-						author_name: r1.author.author_name
-					}
-				}
-			} else {
-				obj = {
-					id: r1.id,
-					recipe_title: r1.recipe_title,
-					recipe_featured_image: defaultFeImgPath,
-					recipe_summary: r1.recipe_summary,
-					author: {
-						author_name: r1.author.author_name
-					}
+			let feimg_1 = cl == 'default' ? defaultFeImgPath : cl;
+			obj = {
+				id: r1.id,
+				recipe_title: r1.recipe_title,
+				recipe_featured_image: feimg_1,
+				recipe_summary: r1.recipe_summary,
+				author: {
+					author_name: r1.author.author_name
 				}
 			}
 			setRec1(obj);
@@ -131,18 +120,11 @@ function Home() {
 				recipe_featured_image: '',
 			};
 			let cl_0 = r2.recipe_featured_image;
-			if(cl_0 !== 'default') {
-				obj_0 = {
-					id: r2.id,
-					recipe_title: r2.recipe_title,
-					recipe_featured_image:`${baseURIFeImg}/${r2.recipe_featured_image}`,
-				}
-			} else {
-				obj_0 = {
-					id: r2.id,
-					recipe_title: r2.recipe_title,
-					recipe_featured_image: defaultFeImgPath,
-				}
+			let feimg_2 = cl_0 == 'default' ? defaultFeImgPath : cl_0;
+			obj_0 = {
+				id: r2.id,
+				recipe_title: r2.recipe_title,
+				recipe_featured_image: feimg_2,
 			}
 			setRec2(obj_0);
 
@@ -154,18 +136,11 @@ function Home() {
 				recipe_featured_image: '',
 			};
 			let cl_1 = r3.recipe_featured_image;
-			if(cl_1 !== 'default') {
-				obj_1 = {
-					id: r3.id,
-					recipe_title: r3.recipe_title,
-					recipe_featured_image:`${baseURIFeImg}/${r3.recipe_featured_image}`,
-				}
-			} else {
-				obj_1 = {
-					id: r3.id,
-					recipe_title: r3.recipe_title,
-					recipe_featured_image: defaultFeImgPath
-				}
+			let feimg_3 = cl_1 == 'default' ? defaultFeImgPath : cl_1;
+			obj_1 = {
+				id: r3.id,
+				recipe_title: r3.recipe_title,
+				recipe_featured_image: feimg_3,
 			}
 			setRec3(obj_1);
 
@@ -177,18 +152,11 @@ function Home() {
 				recipe_featured_image: '',
 			};
 			let cl_2 = r4.recipe_featured_image;
-			if(cl_2 !== 'default') {
-				obj_2 = {
-					id: r4.id,
-					recipe_title: r4.recipe_title,
-					recipe_featured_image:`${baseURIFeImg}/${r4.recipe_featured_image}`,
-				}
-			} else {
-				obj_2 = {
-					id: r4.id,
-					recipe_title: r4.recipe_title,
-					recipe_featured_image: defaultFeImgPath
-				}
+			let feimg_4 = cl_2 == 'default' ? defaultFeImgPath : cl_2;
+			obj_2 = {
+				id: r4.id,
+				recipe_title: r4.recipe_title,
+				recipe_featured_image: feimg_4,
 			}
 			setRec4(obj_2);
 
@@ -200,18 +168,11 @@ function Home() {
 				recipe_featured_image: '',
 			};
 			let cl_3 = r5.recipe_featured_image;
-			if(cl_3 !== 'default') {
-				obj_3 = {
-					id: r5.id,
-					recipe_title: r5.recipe_title,
-					recipe_featured_image:`${baseURIFeImg}/${r5.recipe_featured_image}`,
-				}
-			} else {
-				obj_3 = {
-					id: r5.id,
-					recipe_title: r5.recipe_title,
-					recipe_featured_image: defaultFeImgPath
-				}
+			let feimg_5 = cl_3 == 'default' ? defaultFeImgPath : cl_3;
+			obj_3 = {
+				id: r5.id,
+				recipe_title: r5.recipe_title,
+				recipe_featured_image: feimg_5,
 			}
 			setRec5(obj_3);
 
@@ -223,18 +184,11 @@ function Home() {
 				recipe_featured_image: '',
 			};
 			let cl_4 = r6.recipe_featured_image;
-			if(cl_4 !== 'default') {
-				obj_4 = {
-					id: r6.id,
-					recipe_title: r6.recipe_title,
-					recipe_featured_image:`${baseURIFeImg}/${r6.recipe_featured_image}`,
-				}
-			} else {
-				obj_4 = {
-					id: r6.id,
-					recipe_title: r6.recipe_title,
-					recipe_featured_image: defaultFeImgPath
-				}
+			let feimg_6 = cl_4 == 'default' ? defaultFeImgPath : cl_4;
+			obj_4 = {
+				id: r6.id,
+				recipe_title: r6.recipe_title,
+				recipe_featured_image: feimg_6,
 			}
 			setRec6(obj_4);
 		}

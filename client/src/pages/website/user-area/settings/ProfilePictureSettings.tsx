@@ -10,19 +10,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import axios from "axios";
+// import axios from "axios";
 
-function makeid(length:any) {
-	let result = '';
-	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	const charactersLength = characters.length;
-	let counter = 0;
-	while (counter < length) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		counter += 1;
-	}
-	return result;
-}
+// function makeid(length:any) {
+// 	let result = '';
+// 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// 	const charactersLength = characters.length;
+// 	let counter = 0;
+// 	while (counter < length) {
+// 		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+// 		counter += 1;
+// 	}
+// 	return result;
+// }
 
 const GET_USER_PROFILE_PHOTO = gql`
     query getProfilePicture($id: ID!) {
@@ -68,7 +68,7 @@ const ProfilePictureSettings = () => {
     ];
 
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
-    const pp_path = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/site-user-profile-photos/`;
+    // const pp_path = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/site-user-profile-photos/`;
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const defaultFeImgPath = 'https://placehold.co/500x500?text=Profile.';
@@ -79,14 +79,16 @@ const ProfilePictureSettings = () => {
     const [fileDimensions, setFileDimensions] = useState<boolean>(false);
 
     // Get Profile Photo.
-    let {data} = useQuery(GET_USER_PROFILE_PHOTO, {
+    // let {data} = useQuery(GET_USER_PROFILE_PHOTO, {
+    useQuery(GET_USER_PROFILE_PHOTO, {
         variables: {id: id},
         onCompleted: fdata => {
             // console.log(fdata);
             if(fdata?.getProfilePicture.user_photo == '') {
                 setImage(defaultFeImgPath);
             } else {
-                setImage(pp_path + fdata?.getProfilePicture.user_photo);
+                // setImage(pp_path + fdata?.getProfilePicture.user_photo);
+                setImage(fdata?.getProfilePicture.user_photo);
             }
         }
     });
@@ -107,7 +109,22 @@ const ProfilePictureSettings = () => {
         }
     })
 
-    const handleFileChange = (e:any) => {
+    const convertBase64 = (file:any) => {
+        return new Promise<string>((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                typeof fileReader.result === "string" ?
+                resolve(fileReader.result)
+                : reject("Unexpected type received from FileReader");
+            }
+            fileReader.onerror = (error) => {
+                reject(error);
+            }
+        })
+    }
+
+    const handleFileChange = async (e:any) => {
         let file = e.target.files[0];
         if(!file) {
             setProfile('');
@@ -115,7 +132,7 @@ const ProfilePictureSettings = () => {
             let gfnext = file.name;
             let fext = gfnext.split('.').pop();
             setFileExt(fext);
-            setProfile(file);
+            // setProfile(file);
             setImage(URL.createObjectURL(file));
         
             if (file.size > 500 * 1024) {
@@ -137,6 +154,9 @@ const ProfilePictureSettings = () => {
                 URL.revokeObjectURL(objectURL);
             }
         }
+
+        const base64 = await convertBase64(file);
+        setProfile(base64);
     }
 
     const resetForm = () => {
@@ -146,25 +166,36 @@ const ProfilePictureSettings = () => {
         setFileSize(false);
         setFileDimensions(false);
 
-        if(data?.getProfilePicture.user_photo !== '') {
-            // console.log('hey');
-            let fileName = data?.getProfilePicture.user_photo;
-            axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName})
-            .then(() => {
-                // console.log(res);
-                updProPic({
-                    variables: {
-                        id: id,
-                        user_photo: ''
-                    }
-                });
-                let ss = setTimeout(function(){
-                    window.location.reload();
-                    clearTimeout(ss);
-                }, 300);
-            })
-            .catch(err => console.log(err));
-        }
+        updProPic({
+            variables: {
+                id: id,
+                user_photo: ''
+            }
+        });
+        let ss = setTimeout(function(){
+            window.location.reload();
+            clearTimeout(ss);
+        }, 300);
+
+        // if(data?.getProfilePicture.user_photo !== '') {
+        //     // console.log('hey');
+        //     let fileName = data?.getProfilePicture.user_photo;
+        //     axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName})
+        //     .then(() => {
+        //         // console.log(res);
+        //         updProPic({
+        //             variables: {
+        //                 id: id,
+        //                 user_photo: ''
+        //             }
+        //         });
+        //         let ss = setTimeout(function(){
+        //             window.location.reload();
+        //             clearTimeout(ss);
+        //         }, 300);
+        //     })
+        //     .catch(err => console.log(err));
+        // }
     }
 
     const handleSubmit = async (e:any) => {
@@ -191,32 +222,36 @@ const ProfilePictureSettings = () => {
                     if(!fileDimensions) {
                         toast.error("Image size is expected 500px x 500px. (square size)", toastDefOpts);
                     } else {
-                        const newFileName = `${makeid(12)}-${Date.now()}.${fileext}`;
-                        const file = new File([profile], newFileName);
+                        // const newFileName = `${makeid(12)}-${Date.now()}.${fileext}`;
+                        // const file = new File([profile], newFileName);
 
                         updProPic({
                             variables: {
                                 id: id,
-                                user_photo: newFileName
+                                user_photo: profile
                             }
                         });
 
-                        const fData = new FormData();
-                        fData.append('file', file);
-                        axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/site-uploads/site-user-profile-photos`, fData)
-                        .then((res) => {
-                            // console.log(res);
-                            if(res.status === 200) {
-                                //toast.success("Photo Updated Successfully!", toastDefOpts);
-                                let ss = setTimeout(function(){
-                                    window.location.reload();
-                                    clearTimeout(ss);
-                                }, 300);
-                            } else {
-                                toast.error("Something Is Wrong!", toastDefOpts);
-                            }
-                        })
-                        .catch(err => toast.error(err.message, toastDefOpts));
+                        let ss = setTimeout(function(){
+                            window.location.reload();
+                            clearTimeout(ss);
+                        }, 300);
+                        // const fData = new FormData();
+                        // fData.append('file', file);
+                        // axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/site-uploads/site-user-profile-photos`, fData)
+                        // .then((res) => {
+                        //     // console.log(res);
+                        //     if(res.status === 200) {
+                        //         //toast.success("Photo Updated Successfully!", toastDefOpts);
+                        //         let ss = setTimeout(function(){
+                        //             window.location.reload();
+                        //             clearTimeout(ss);
+                        //         }, 300);
+                        //     } else {
+                        //         toast.error("Something Is Wrong!", toastDefOpts);
+                        //     }
+                        // })
+                        // .catch(err => toast.error(err.message, toastDefOpts));
                     }
                 }
             }

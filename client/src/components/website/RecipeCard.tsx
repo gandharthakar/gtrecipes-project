@@ -5,7 +5,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { toast, ToastContainer } from 'react-toastify';
 import { RootState } from "../../redux-service/ReduxStore";
 import { useSelector } from "react-redux";
-import axios from "axios";
+// import axios from "axios";
 import { IoBookmark } from "react-icons/io5";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
@@ -154,31 +154,41 @@ const RecipeCard = (props: CompProp) => {
     const handleDeleteRecipe = () => {
         let conf = confirm("Are you sure want to delete this recipe ?");
         if(conf) {
-            if(recipe_featured_image !== 'default') {
-                axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: recipe_featured_image})
-                .then((resp) => {
-                    // console.log(resp);
-                    if(resp.status === 200) {
-                        delRec({
-                            variables: {
-                                id: recipe_id,
-                                user_id: recipe_author_id
-                            }
-                        });
-                        let suctmr = setTimeout(function(){
-                            window.location.reload();
-                            clearTimeout(suctmr);
-                        }, 1500);
-                    }
-                }).catch(err => console.log(err));
-            } else {
-                delRec({
-                    variables: {
-                        id: recipe_id,
-                        user_id: recipe_author_id
-                    }
-                });
-            }
+            // if(recipe_featured_image !== 'default') {
+            //     axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: recipe_featured_image})
+            //     .then((resp) => {
+            //         // console.log(resp);
+            //         if(resp.status === 200) {
+            //             delRec({
+            //                 variables: {
+            //                     id: recipe_id,
+            //                     user_id: recipe_author_id
+            //                 }
+            //             });
+            //             let suctmr = setTimeout(function(){
+            //                 window.location.reload();
+            //                 clearTimeout(suctmr);
+            //             }, 1500);
+            //         }
+            //     }).catch(err => console.log(err));
+            // } else {
+            //     delRec({
+            //         variables: {
+            //             id: recipe_id,
+            //             user_id: recipe_author_id
+            //         }
+            //     });
+            // }
+            delRec({
+                variables: {
+                    id: recipe_id,
+                    user_id: recipe_author_id
+                }
+            });
+            let suctmr = setTimeout(function(){
+                window.location.reload();
+                clearTimeout(suctmr);
+            }, 1500);
         }
     }
 

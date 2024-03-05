@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router';
 import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
 import { gql, useMutation } from "@apollo/client";
-import axios from "axios";
+// import axios from "axios";
 
 const DELETE_USER = gql`
     mutation deleteAccount($id: ID!) {
@@ -57,7 +57,7 @@ const DeleteAccountSettings = () => {
     let [delAcc] = useMutation(DELETE_USER, {
         onCompleted: fdata => {
             // console.log(fdata);
-            let feimgs = fdata.deleteAccount.recipe_featured_image;
+            // let feimgs = fdata.deleteAccount.recipe_featured_image;
 
             const toastDefOpts = {
                 autoClose: 1000,
@@ -66,32 +66,32 @@ const DeleteAccountSettings = () => {
             };
             if(fdata.deleteAccount.success) {
                 toast.success(fdata.deleteAccount.message, toastDefOpts);
-                if(feimgs.length > 0) {
-                    feimgs.forEach((img:string) => {
-                        // console.log(img);
-                        axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: img})
-                        .then((resp) => {
-                            // console.log(resp);
-                            if(resp.status === 200) {
-                                let pp = fdata.deleteAccount.profile_photo;
-                                if(pp !== '') {
-                                    axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName: pp})
-                                    .then(() => {
-                                        // Do Stuff Here ....
-                                    }).catch(err => console.log(err));
-                                }
-                            }
-                        }).catch(err => console.log(err));
-                    });
-                } else {
-                    let pp = fdata.deleteAccount.profile_photo;
-                    if(pp !== '') {
-                        axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName: pp})
-                        .then(() => {
-                            // Do Stuff Here ....
-                        }).catch(err => console.log(err));
-                    }
-                }
+                // if(feimgs.length > 0) {
+                //     feimgs.forEach((img:string) => {
+                //         // console.log(img);
+                //         axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: img})
+                //         .then((resp) => {
+                //             // console.log(resp);
+                //             if(resp.status === 200) {
+                //                 let pp = fdata.deleteAccount.profile_photo;
+                //                 if(pp !== '') {
+                //                     axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName: pp})
+                //                     .then(() => {
+                //                         // Do Stuff Here ....
+                //                     }).catch(err => console.log(err));
+                //                 }
+                //             }
+                //         }).catch(err => console.log(err));
+                //     });
+                // } else {
+                //     let pp = fdata.deleteAccount.profile_photo;
+                //     if(pp !== '') {
+                //         axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/site-user-profile-photos`, {fileName: pp})
+                //         .then(() => {
+                //             // Do Stuff Here ....
+                //         }).catch(err => console.log(err));
+                //     }
+                // }
                 let st = setTimeout(function(){
                     dispatch(do_logout());
                     navigate("/");

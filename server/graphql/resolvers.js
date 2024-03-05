@@ -841,38 +841,44 @@ const resolvers = {
 
             const user = await SiteUserModel.find({_id: recipe_author_id});
             if(user) {
-                try {
-                    let doc = new RecipeModel({
-                        recipe_title,
-                        recipe_type, 
-                        recipe_featured_image,
-                        recipe_categories,
-                        recipe_summary,
-                        recipe_content,
-                        recipe_ingradients,
-                        author: {
-                            author_name: recipe_author,
-                            author_id: recipe_author_id
-                        },
-                        recipe_makes_servings, 
-                        recipe_prep_time, 
-                        recipe_cook_time, 
-                        recipe_total_time, 
-                        recipe_created_at
-                    });
-                    await doc.save();
-                    frm_status = {
-                        message: 'Recipe Created Successfully!',
-                        success: true
+                if(recipe_title && recipe_type && recipe_summary && recipe_content) {
+                    try {
+                        let doc = new RecipeModel({
+                            recipe_title,
+                            recipe_type, 
+                            recipe_featured_image,
+                            recipe_categories,
+                            recipe_summary,
+                            recipe_content,
+                            recipe_ingradients,
+                            author: {
+                                author_name: recipe_author,
+                                author_id: recipe_author_id
+                            },
+                            recipe_makes_servings, 
+                            recipe_prep_time, 
+                            recipe_cook_time, 
+                            recipe_total_time, 
+                            recipe_created_at
+                        });
+                        await doc.save();
+                        frm_status = {
+                            message: 'Recipe Created Successfully!',
+                            success: true
+                        }
+                    } catch (error) {
+                        console.log(error.message);
+                        frm_status = {
+                            message: 'Unable To Create New Recipe.',
+                            success: false
+                        }
                     }
-                } catch (error) {
-                    console.log(error.message);
+                } else {
                     frm_status = {
-                        message: 'Unable To Create New Recipe.',
+                        message: 'Missing Required Fields.',
                         success: false
                     }
                 }
-                    
             } else {
                 frm_status = {
                     message: 'Unable To Find User.',
@@ -907,28 +913,35 @@ const resolvers = {
                 let recipe = await RecipeModel.find({_id: id});
                 // console.log(recipe);
                 if(recipe.length > 0) {
-                    try {
-                        await RecipeModel.findByIdAndUpdate({_id: id}, {
-                            recipe_title,
-                            recipe_type,
-                            recipe_featured_image,
-                            recipe_categories,
-                            recipe_summary,
-                            recipe_content,
-                            recipe_ingradients, 
-                            recipe_makes_servings, 
-                            recipe_prep_time, 
-                            recipe_cook_time, 
-                            recipe_total_time, 
-                        }, { new: true });
-                        frm_status = {
-                            message: 'Recipe Updated Successfully!',
-                            success: true
+                    if(id && user_id && recipe_title && recipe_type && recipe_summary && recipe_content) {
+                        try {
+                            await RecipeModel.findByIdAndUpdate({_id: id}, {
+                                recipe_title,
+                                recipe_type,
+                                recipe_featured_image,
+                                recipe_categories,
+                                recipe_summary,
+                                recipe_content,
+                                recipe_ingradients, 
+                                recipe_makes_servings, 
+                                recipe_prep_time, 
+                                recipe_cook_time, 
+                                recipe_total_time, 
+                            }, { new: true });
+                            frm_status = {
+                                message: 'Recipe Updated Successfully!',
+                                success: true
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                            frm_status = {
+                                message: 'Unable To Update Recipe.',
+                                success: false
+                            }
                         }
-                    } catch (error) {
-                        console.log(error.message);
+                    } else {
                         frm_status = {
-                            message: 'Unable To Update Recipe.',
+                            message: 'Missing Required Fields.',
                             success: false
                         }
                     }

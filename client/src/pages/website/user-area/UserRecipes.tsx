@@ -8,7 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
-import axios from "axios";
+// import axios from "axios";
 
 const GET_PER_PAGE_COUNTS = gql`
     query getPerPagesCount($id: ID!) {
@@ -104,38 +104,43 @@ const UserRecipes = (props:any) => {
                 closeOnClick: true,
                 theme: `${ThemeMode ? 'dark' : 'light'}`
             };
-            let allimgs = fdata.deleteAllRecipes.recipe_featured_image;
+            // let allimgs = fdata.deleteAllRecipes.recipe_featured_image;
 
             if(fdata.deleteAllRecipes.success) {
                 // toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
-                if(allimgs.length > 0) {
+                // if(allimgs.length > 0) {
 
-                    allimgs.forEach((img:string) => {
-                        // console.log(img);
-                        axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: img})
-                        .then((resp) => {
-                            // console.log(resp);
-                            if(resp.status === 200) {
-                                // alert(fdata.deleteAllRecipes.message);
-                                toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
-                                let suctmr = setTimeout(function(){
-                                    window.location.reload();
-                                    clearTimeout(suctmr);
-                                }, 1000);
-                            }
-                        }).catch(err => console.log(err));
-                    });
+                //     allimgs.forEach((img:string) => {
+                //         // console.log(img);
+                //         axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: img})
+                //         .then((resp) => {
+                //             // console.log(resp);
+                //             if(resp.status === 200) {
+                //                 // alert(fdata.deleteAllRecipes.message);
+                //                 toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
+                //                 let suctmr = setTimeout(function(){
+                //                     window.location.reload();
+                //                     clearTimeout(suctmr);
+                //                 }, 1000);
+                //             }
+                //         }).catch(err => console.log(err));
+                //     });
 
-                } else {
-                    // alert(fdata.deleteAllRecipes.message);
-                    toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
-                    if(fdata.deleteAllRecipes.message !== "No Recipes Found.") {
-                        let suctmr = setTimeout(function(){
-                            window.location.reload();
-                            clearTimeout(suctmr);
-                        }, 1000);
-                    }
-                }
+                // } else {
+                //     // alert(fdata.deleteAllRecipes.message);
+                //     toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
+                //     if(fdata.deleteAllRecipes.message !== "No Recipes Found.") {
+                //         let suctmr = setTimeout(function(){
+                //             window.location.reload();
+                //             clearTimeout(suctmr);
+                //         }, 1000);
+                //     }
+                // }
+                toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
+                let suctmr = setTimeout(function(){
+                    window.location.reload();
+                    clearTimeout(suctmr);
+                }, 1000);
             } else {
                 alert(fdata.deleteAllRecipes.message);
             }

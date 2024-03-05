@@ -11,40 +11,46 @@
         -webkit-appearance: none;
         margin: 0;
     }
-    .recipe-content {
+    .recipe-content, .recipe-content-print {
         @apply twgtr-font-open_sans;
     }
     .recipe-content h1, h2, h3, h4, h5, h6, li {
         @apply twgtr-transition-all twgtr-text-slate-700 dark:twgtr-text-slate-200;
     }
-    .recipe-content h1 {
+    .recipe-content-print h1, h2, h3, h4, h5, h6, li {
+        @apply twgtr-transition-all twgtr-text-slate-700 dark:twgtr-text-slate-200;
+    }
+    .recipe-content h1, .recipe-content-print h1 {
         @apply twgtr-font-bold twgtr-my-4 twgtr-text-[30px] md:twgtr-text-[40px];
     }
-    .recipe-content h2 {
+    .recipe-content h2, .recipe-content-print h2 {
         @apply twgtr-font-bold twgtr-my-4 twgtr-text-[28px] md:twgtr-text-[38px];
     }
-    .recipe-content h3 {
+    .recipe-content h3, .recipe-content-print h3 {
         @apply twgtr-font-bold twgtr-my-4 twgtr-text-[26px] md:twgtr-text-[36px];
     }
-    .recipe-content h4 {
+    .recipe-content h4, .recipe-content-print h4 {
         @apply twgtr-font-bold twgtr-my-4 twgtr-text-[24px] md:twgtr-text-[34px];
     }
-    .recipe-content h5 {
+    .recipe-content h5, .recipe-content-print h5 {
         @apply twgtr-font-bold twgtr-my-4 twgtr-text-[22px] md:twgtr-text-[32px];
     }
-    .recipe-content h6 {
+    .recipe-content h6, .recipe-content-print h6 {
         @apply twgtr-font-bold twgtr-my-4 twgtr-text-[20px] md:twgtr-text-[30px];
     }
     .recipe-content p {
         @apply twgtr-transition-all twgtr-text-slate-700 dark:twgtr-text-slate-200 twgtr-my-4 twgtr-text-[14px] md:twgtr-text-[16px];
     }
-    .recipe-content img {
+    .recipe-content-print p {
+        @apply twgtr-transition-all twgtr-text-slate-700 dark:twgtr-text-slate-200 twgtr-my-4 twgtr-text-[16px];
+    }
+    .recipe-content img, .recipe-content-print img {
         @apply twgtr-w-full twgtr-py-4;
     }
-    .recipe-content ul {
+    .recipe-content ul, .recipe-content-print ul {
         @apply  twgtr-pl-[22px] twgtr-list-disc;
     }
-    .recipe-content ul li {
+    .recipe-content ul li, .recipe-content-print ul li {
         @apply twgtr-transition-all twgtr-pb-2 last:twgtr-pb-0 twgtr-text-slate-700 dark:twgtr-text-slate-200 twgtr-text-[14px] md:twgtr-text-[16px];
     }
 }

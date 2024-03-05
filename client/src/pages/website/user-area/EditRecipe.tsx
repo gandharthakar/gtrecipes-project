@@ -6,7 +6,7 @@ import 'react-tailwindcss-select/dist/index.css';
 // import 'jodit/build/jodit.min.css';
 // import './../../../jodit.min.css';
 import SiteBreadcrumb from "../../../components/website/SiteBreadcrumb";
-import axios from "axios";
+// import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from '../../../redux-service/ReduxStore';
@@ -110,7 +110,7 @@ const EditRecipe = () => {
     const dispatch = useDispatch();
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';
-    const feImgBasePath = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
+    // const feImgBasePath = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
     const fallBackFeImg = 'images/default-feimg.svg';
 
     const [recipeTitle, setRecipeTitle] = useState<string>('');
@@ -203,8 +203,10 @@ const EditRecipe = () => {
                 setFeaturedImage('default');
             } else {
                 setHasFeImage(true);
-                setFeaturedImage(feImgBasePath + '/' + allfeimg);
+                // setFeaturedImage(feImgBasePath + '/' + allfeimg);
+                setFeaturedImage(allfeimg);
                 setDumpImg(allfeimg);
+                setImgFile(allfeimg);
                 let fe = allfeimg.split('.');
                 setFileExt(fe[1]);
             }
@@ -255,10 +257,12 @@ const EditRecipe = () => {
                 toast.success(fdata.updateRecipe.message, toastDefOpts);
                 setIsLoading(true);
                 if(featuredImage == 'default') {
-                    setTimeout(function(){
-                        // navigate(`/user-area/profile/${id}`);
-                        window.location.href = `/user-area/profile/${uid}`;
-                    }, 1500);
+                    if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
+                        setTimeout(function(){
+                            // navigate(`/user-area/profile/${id}`);
+                            window.location.href = `/user-area/profile/${uid}`;
+                        }, 1500);
+                    }
                 }
             } else {
                 toast.error(fdata.updateRecipe.message, toastDefOpts);
@@ -285,15 +289,20 @@ const EditRecipe = () => {
         if(featuredImage !== 'default') {
             let conf = confirm("If you remove this image then it will also gets removed from server. Are you sure you want remove ?");
             if(conf) {
-                axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: dumpImg})
-                .then((resp) => {
-                    if(resp.status === 200) {
-                        setHasFeImage(false);
-                        setFeaturedImage('default');
-                        toast.success("Image Removed Successfully!", toastDefOpts);
-                        setDumpImg('');
-                    }
-                }).catch(err => console.log(err));
+                setHasFeImage(false);
+                setFeaturedImage('default');
+                toast.success("Image Removed Successfully!", toastDefOpts);
+                setDumpImg('');
+                setImgFile('');
+                // axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: dumpImg})
+                // .then((resp) => {
+                //     if(resp.status === 200) {
+                //         setHasFeImage(false);
+                //         setFeaturedImage('default');
+                //         toast.success("Image Removed Successfully!", toastDefOpts);
+                //         setDumpImg('');
+                //     }
+                // }).catch(err => console.log(err));
             }
         }
     }
@@ -315,15 +324,18 @@ const EditRecipe = () => {
         setRecins(newArray);
     };
 
-    const handleFeImgChange = (e:any) => {
+    const handleFeImgChange = async (e:any) => {
         const file = e.target.files[0];
         if(!file) return
 
         let gfnext = file.name;
 		let fext = gfnext.split('.').pop();
-        setImgFile(file);
+        // setImgFile(file);
 		setFileExt(fext);
         setFeaturedImage(URL.createObjectURL(file));
+
+        const base64 = await convertBase64(file);
+        setImgFile(base64);
     }
 
     const clearFeImageInput = () => {
@@ -334,6 +346,29 @@ const EditRecipe = () => {
     const handleCategoryChange = (value:any) => {
         setCategory(value);
         // console.log("value:", value);
+    }
+
+    const convertBase64 = (file:any) => {
+        return new Promise<string>((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                typeof fileReader.result === "string" ?
+                resolve(fileReader.result)
+                : reject("Unexpected type received from FileReader");
+            }
+            fileReader.onerror = (error) => {
+                reject(error);
+            }
+        })
+    }
+
+    const handleEditorContent = (cont:any) => {
+        if (cont === '<p><br></p>') {
+            setEditorContent('');
+        } else {
+            setEditorContent(cont);
+        }
     }
 
     const handleSubmit = (e:any) => {
@@ -394,7 +429,7 @@ const EditRecipe = () => {
         });
         // console.log(ingradients);
 
-        if(recipeTitle == '' || editorContent == '' || recipeSummary == '') {
+        if(recipeTitle == '' && editorContent == '' && recipeSummary == '') {
             toast.error("Required fields is empty.", toastDefOpts);
             data = {
                 id: '',
@@ -420,7 +455,7 @@ const EditRecipe = () => {
                 recipe_summary: recipeSummary,
                 recipe_content: editorContent,
                 recipe_ingradients: ingradients ? ingradients : [],
-                recipe_featured_image: newFileName,
+                recipe_featured_image: imgFIle == '' ? 'default' : imgFIle,
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : [],
                 recipe_makes_servings: recSer,
                 recipe_prep_time: tmMat.prep_time,
@@ -434,31 +469,40 @@ const EditRecipe = () => {
         }
         // console.log(data);
 
-        if(fnam !== 'default') {
-            const file = new File([imgFIle], newFileName);
-            const fData = new FormData();
-            fData.append('file', file);
-            if(file.name !== dumpImg) {
-                axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/site-uploads/recipe-featured-images`, fData)
-                .then((res) => {
-                    // console.log(res);
-                    if(res.status === 200) {
-                        setTimeout(function(){
-                            // navigate(`/user-area/profile/${id}`);
-                            window.location.href = `/user-area/profile/${uid}`;
-                        }, 1500);
-                    }  else {
-                        toast.error("Something Is Wrong!", toastDefOpts);
-                    }
-                })
-                .catch(err => toast.error(err.message, toastDefOpts));
-            } else {
+        if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
+            if(newFileName !== "Default") {
                 setTimeout(function(){
                     // navigate(`/user-area/profile/${id}`);
                     window.location.href = `/user-area/profile/${uid}`;
                 }, 1500);
             }
         }
+
+        // if(fnam !== 'default') {
+        //     const file = new File([imgFIle], newFileName);
+        //     const fData = new FormData();
+        //     fData.append('file', file);
+        //     if(file.name !== dumpImg) {
+        //         axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/site-uploads/recipe-featured-images`, fData)
+        //         .then((res) => {
+        //             // console.log(res);
+        //             if(res.status === 200) {
+        //                 setTimeout(function(){
+        //                     // navigate(`/user-area/profile/${id}`);
+        //                     window.location.href = `/user-area/profile/${uid}`;
+        //                 }, 1500);
+        //             }  else {
+        //                 toast.error("Something Is Wrong!", toastDefOpts);
+        //             }
+        //         })
+        //         .catch(err => toast.error(err.message, toastDefOpts));
+        //     } else {
+        //         setTimeout(function(){
+        //             // navigate(`/user-area/profile/${id}`);
+        //             window.location.href = `/user-area/profile/${uid}`;
+        //         }, 1500);
+        //     }
+        // }
     }
 
     useEffect(() => {
@@ -558,7 +602,7 @@ const EditRecipe = () => {
                                     </label>
                                     <div className='site-joedit-adj'>
                                         <JoditReact 
-                                            onChange={(content) => setEditorContent(content)} 
+                                            onChange={(content) => handleEditorContent(content)} 
                                             defaultValue={eContent}
                                             config={config}
                                         />

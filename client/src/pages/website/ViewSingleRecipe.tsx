@@ -7,13 +7,16 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from "../../redux-service/ReduxStore";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RecipeCard from "../../components/website/RecipeCard";
 import { IoBookmark } from "react-icons/io5";
 import { IoBookmarkOutline } from "react-icons/io5";
 import Cookies from "universal-cookie";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import parse from 'html-react-parser';
+import RecipeToPrint from "./RecipeToPrint";
+import { useReactToPrint } from 'react-to-print';
+import { HiMiniPrinter } from "react-icons/hi2";
 
 const CHECK_RECIPE_VALIDITY = gql`
     mutation checkRecipeInRecords($rid: String!) {
@@ -118,7 +121,7 @@ const ViewSingleRecipe = () => {
     const [compU, setCompU] = useState<boolean>(false);
     const cookies = new Cookies();
     const authUserID_g = cookies.get("gjtrewcipets_auth_user_id") || '';
-    const uplimgpath = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
+    // const uplimgpath = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
 
     const [recTtl, setRecTtl] = useState<string>('');
     const [recTyp, setRecTyp] = useState<string>('veg');
@@ -160,7 +163,35 @@ const ViewSingleRecipe = () => {
         },
     }
     const [randRec, setRandRec] = useState<AllRecipesType[]>([]);
-    const baseURIFeImg = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
+    // const baseURIFeImg = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
+    const componentRef = useRef<HTMLDivElement>(null);
+    const pageStyle = `
+    @page {
+        // size: 80mm 50mm;
+        margin: 30px 40px;
+    }
+
+    body{
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+    }
+
+    @media all {
+        .pagebreak {
+            display: none;
+        }
+    }
+
+    @media print {
+        .pagebreak {
+            page-break-before: always;
+        }
+    }
+    `;
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+        pageStyle
+    });
 
     useQuery(GET_RANDOM_RECIPES, {
         variables: {
@@ -438,46 +469,72 @@ const ViewSingleRecipe = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {
-                                    compU ? 
-                                    (<></>) 
-                                    : 
-                                    (
-                                        <div>
-                                            <div className="ssvc-gp">
-                                                <input type="checkbox" id="1" name="save_recipe" className="chkbx" onChange={handleSaveChk} checked={recSaved} />
-                                                <label htmlFor="1">
-                                                    <div className="ssvc-igp">
-                                                        <div>
-                                                            <div className="icon-befc">
-                                                                <IoBookmarkOutline size={20} />
+                                <div className="twgtr-flex twgtr-items-center twgtr-flex-wrap twgtr-gap-x-[15px]">
+                                    {
+                                        compU ? 
+                                        (<></>) 
+                                        : 
+                                        (
+                                            <div>
+                                                <div className="ssvc-gp">
+                                                    <input type="checkbox" id="1" name="save_recipe" className="chkbx" onChange={handleSaveChk} checked={recSaved} />
+                                                    <label htmlFor="1">
+                                                        <div className="ssvc-igp">
+                                                            <div>
+                                                                <div className="icon-befc">
+                                                                    <IoBookmarkOutline size={20} />
+                                                                </div>
+                                                                <div className="icon-aftc">
+                                                                    <IoBookmark size={20} />
+                                                                </div>
                                                             </div>
-                                                            <div className="icon-aftc">
-                                                                <IoBookmark size={20} />
+                                                            <div>
+                                                                <div className="lbl-befc">
+                                                                    Save
+                                                                </div>
+                                                                <div className="lbl-aftc">
+                                                                    Saved
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div>
-                                                            <div className="lbl-befc">
-                                                                Save
-                                                            </div>
-                                                            <div className="lbl-aftc">
-                                                                Saved
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </label>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                }
+                                        )
+                                    }
+                                    <div>
+                                        <button type="button" title="Print" className="twgtr-transition-all twgtr-py-[0px] twgtr-px-[10px] twgtr-font-open_sans twgtr-text-[20px] twgtr-text-slate-800 twgtr-border-2 twgtr-border-slate-800 dark:twgtr-text-slate-300 dark:twgtr-border-slate-300" onClick={handlePrint}>
+                                            <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[10px]">
+                                                <HiMiniPrinter size={20} className="" />
+                                                Print
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="twgtr-bg-slate-100 dark:twgtr-bg-slate-700">
 				    <div className="twgtr-max-w-[1240px] twgtr-px-4 twgtr-mx-auto twgtr-w-full md:twgtr-px-[20px] twgtr-relative twgtr-z-[5]">
-                        <div className="twgtr-pb-4 md:twgtr-pb-8">
-                            <img src={recFeImg == 'default' ? defaultFeImgPath : uplimgpath + '/' + recFeImg} className="twgtr-w-full" alt="featured image" onError={({ currentTarget }) => {
+                        <div className="twgtr-relative" style={{height: '1px', zIndex: '-10', visibility: 'hidden'}}>
+                            <div ref={componentRef}>
+                                <RecipeToPrint 
+                                    recipe_title={recTtl}
+                                    recipe_type= {recTyp}
+                                    recipe_summary={recSum}
+                                    recipe_content={recCont} 
+                                    recipe_serving={recSrv} 
+                                    recipe_prep_time={recPrpTm} 
+                                    recipe_cook_time={recCokTm} 
+                                    recipe_total_time={recTotTm} 
+                                    recipe_featured_image={recFeImg} 
+                                    recipe_ingredients={recIngs}
+                                />
+                            </div>
+                        </div>
+                        <div className="twgtr-pb-4 md:twgtr-pb-8 twgtr-relative">
+                            <img src={recFeImg == 'default' ? defaultFeImgPath : recFeImg} className="twgtr-w-full" alt="featured image" onError={({ currentTarget }) => {
                                 currentTarget.onerror = null; // prevents looping
                                 currentTarget.src=fallBackFeImg;
                             }} />
@@ -624,7 +681,6 @@ const ViewSingleRecipe = () => {
                                                     <RecipeCard 
                                                         key={item.id}
                                                         recipe_id={item.id} 
-                                                        rfeb_URI={baseURIFeImg}
                                                         recipe_type={item.recipe_type} 
                                                         recipe_featured_image={item.recipe_featured_image} 
                                                         categories={item.recipe_categories} 

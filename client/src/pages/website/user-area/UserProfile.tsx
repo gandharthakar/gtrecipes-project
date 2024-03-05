@@ -34,7 +34,7 @@ const UserProfile = () => {
     //         page_slug: `/user-area/categories/${id}`
     //     },
     // ];
-    const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
+    // const pp_path = 'http://localhost:48256/uploads/site-user-profile-photos/';
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [userName, setUserName] = useState<string>('Jp');
@@ -146,7 +146,8 @@ const UserProfile = () => {
                                     profilePhoto !== '' ? 
                                     (
                                         <>
-                                            <img src={`${pp_path}${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} />
+                                            {/* <img src={`${pp_path}${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} /> */}
+                                            <img src={`${profilePhoto}`} className="twgtr-absolute twgtr-left-0 twgtr-top-0 twgtr-z-[5] twgtr-w-full twgtr-h-full twgtr-rounded-full" alt={userName} />
                                         </>
                                     ) 
                                     : 
