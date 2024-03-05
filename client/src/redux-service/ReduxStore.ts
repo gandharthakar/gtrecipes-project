@@ -6,7 +6,8 @@ const ReduxStore = configureStore({
     reducer: {
         site_theme_mode: SiteThemeModeReducer,
         user_login: userLoginReducer
-    }
+    },
+    devTools: false,
 });
 
 export default ReduxStore;

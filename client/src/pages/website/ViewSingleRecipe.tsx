@@ -190,7 +190,8 @@ const ViewSingleRecipe = () => {
     `;
     const handlePrint = useReactToPrint({
         content: () => componentRef.current,
-        pageStyle
+        pageStyle,
+        documentTitle: `GTRecipes Print Recipe - ${recTtl}`
     });
 
     useQuery(GET_RANDOM_RECIPES, {

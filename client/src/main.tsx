@@ -10,6 +10,15 @@ import {
 } from "react-router-dom";
 import ReduxStore from './redux-service/ReduxStore';
 import { Provider } from 'react-redux';
+import { disableReactDevTools } from '@fvilers/disable-react-devtools';
+
+if (process.env.NODE_ENV === 'production') {
+	disableReactDevTools();
+}
+
+if (import.meta.env.NODE_ENV === 'production') {
+	disableReactDevTools();
+}
 
 const apolloClient = new ApolloClient({
 	uri: `${import.meta.env.VITE_BACKEND_URI_BASE}/graphql`,
