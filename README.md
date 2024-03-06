@@ -42,7 +42,7 @@ GTRecipes is the platform where you can create various recipes and various categ
 
 ### Project Demo / View Link
 
-Here is the link --> <a href="" title="Click Here" target="_blank">Click Here</a>
+Here is the link --> <a href="https://65e88b6d83bbba0008114ac7--gtrecipes.netlify.app/" title="Click Here" target="_blank">Click Here</a>
 
 ### Fetures Of Project
 
