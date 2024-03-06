@@ -4,7 +4,6 @@ import WebRoutes from './WebRoutes/WebRoutes';
 import './index.css';
 import './jodit.min.css';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
-
 import {
 	RouterProvider
 } from "react-router-dom";
