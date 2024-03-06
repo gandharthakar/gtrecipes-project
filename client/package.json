@@ -1,7 +1,7 @@
 {
   "name": "gtrecipes-server",
   "version": "1.0.0",
-  "description": "GT Recipes is the project built with MERN Stack. In this project you can create recipes of your choice and showcase you talent.",
+  "description": "GTRecipes is the platform where you can create various recipes and various categories to showcase you cooking talent.",
   "keywords": [
     "MERN",
     "ReactJS",

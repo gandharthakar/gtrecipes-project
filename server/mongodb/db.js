@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
-const { GQLTESTDB_LOCAL, GTRECIPES_LOCAL } = process.env;
+const { GQLTESTDB_LOCAL, GTRECIPES_LOCAL, GTRECIPES_ATLAS } = process.env;
 
 const gql_mdb_conn = async () => {
     mongoose.connect(GQLTESTDB_LOCAL)
@@ -9,7 +9,7 @@ const gql_mdb_conn = async () => {
 };
 
 const gtrecipes_mdb = async () => {
-    mongoose.connect(GTRECIPES_LOCAL)
+    mongoose.connect(GTRECIPES_ATLAS)
     .then((data) => console.log('Database Connected Successfully.'))
     .catch((err)=>console.log(err));
 };

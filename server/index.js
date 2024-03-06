@@ -44,6 +44,7 @@ async function startApolloServer(typeDefs, resolvers){
         resolvers,
         introspection: false,
         playground: false,
+        persistedQueries: false,
     })
     const app = express();
     app.use(cors());
