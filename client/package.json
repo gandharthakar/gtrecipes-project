@@ -51,16 +51,16 @@
     "swiper": "^11.0.6",
     "universal-cookie": "^7.0.2",
     "zod": "^3.22.4",
-    "typescript": "^5.3.3"
-  },
-  "devDependencies": {
+    "typescript": "^5.3.3",
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.54",
     "@types/react-dom": "^18.2.18",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^4.2.1"
+  },
+  "devDependencies": {
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
