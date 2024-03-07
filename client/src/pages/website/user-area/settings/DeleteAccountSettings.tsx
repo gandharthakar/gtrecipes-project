@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router';
 import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
 import { gql, useMutation } from "@apollo/client";
+import NotifyBar from "../../NotifyBar";
 // import axios from "axios";
 
 const DELETE_USER = gql`
@@ -53,6 +54,9 @@ const DeleteAccountSettings = () => {
     const dispatch = useDispatch();
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [pros, setPros] = useState<boolean>(false);
+    const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
+    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
     let [delAcc] = useMutation(DELETE_USER, {
         onCompleted: fdata => {
@@ -97,10 +101,26 @@ const DeleteAccountSettings = () => {
                     navigate("/");
                     clearTimeout(st);
                 }, 1500);
+                setPros(false);
             } else {
                 toast.error(fdata.deleteAccount.message, toastDefOpts);
+                setPros(false);
             }
-        }
+            setShowNotifyBar(false);
+            setNotifyBarMsg('');
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+			setPros(false);
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+		},
     });
 
     const handleSubmit = () => {
@@ -111,6 +131,7 @@ const DeleteAccountSettings = () => {
         });
         setShowModal(false);
         // navigate("/");
+        setPros(true);
     }
 
     useEffect(() => {
@@ -139,6 +160,15 @@ const DeleteAccountSettings = () => {
         <>
             <ToastContainer />
             <SiteBreadcrumb page_name="Delete Account" page_title="User Settings" />
+            <NotifyBar 
+                notify_title="Server Error" 
+                view_notify_icon={true} 
+                message={notifyBarMsg} 
+                notify_type="error" 
+                notify_closable={true} 
+                show_bar={showNotifyBar}
+                set_show_bar={setShowNotifyBar}
+            />
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
                     <div className="twgtr-flex twgtr-flex-col lg:twgtr-flex-row twgtr-gap-4">
@@ -159,14 +189,32 @@ const DeleteAccountSettings = () => {
                                     </p>
                                 </div>
                                 <div>
-                                    <button 
-                                        type="button" 
-                                        title="Delete Account" 
-                                        className="twgtr-transition-all twgtr-py-[5px] twgtr-px-[10px] md:twgtr-px-[15px] md:twgtr-py-[7px] twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[18px] twgtr-bg-red-600 twgtr-text-white hover:twgtr-bg-red-700"
-                                        onClick={() => setShowModal(true)}
-                                    >
-                                        Delete Account
-                                    </button>
+                                    {
+                                        pros ? 
+                                        (
+                                            <div className="twgtr-flex twgtr-gap-x-[10px] twgtr-items-center">
+                                                <div>
+                                                    <div className="site-spinner !twgtr-w-[30px] !twgtr-h-[30px] md:!twgtr-w-[35px] md:!twgtr-h-[35px]"></div>
+                                                </div>
+                                                <div>
+                                                    <h6 className="twgtr-text-[16px] md:twgtr-text-[20px] twgtr-text-slate-600">
+                                                        Processing...
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        ) 
+                                        : 
+                                        (
+                                            <button 
+                                                type="button" 
+                                                title="Delete Account" 
+                                                className="twgtr-transition-all twgtr-py-[5px] twgtr-px-[10px] md:twgtr-px-[15px] md:twgtr-py-[7px] twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[18px] twgtr-bg-red-600 twgtr-text-white hover:twgtr-bg-red-700"
+                                                onClick={() => setShowModal(true)}
+                                            >
+                                                Delete Account
+                                            </button>
+                                        )
+                                    }
                                 </div>
                             </form>
                         </div>

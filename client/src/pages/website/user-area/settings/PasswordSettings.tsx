@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { do_logout } from "../../../../redux-service/website/auth/UserLoginReducer";
 import Cookies from "universal-cookie";
 import { gql, useMutation } from "@apollo/client";
+import NotifyBar from "../../NotifyBar";
 
 const UPDATE_USER_PWD = gql`
     mutation updatePassword($id: ID!, $password: String!, $confirm_password: String!) {
@@ -54,6 +55,9 @@ const PasswordSettings = () => {
     const navigate = useNavigate();
     const[showPassword, setShowPassword] = useState<boolean>(false);
 	const[showConfPassword, setShowConfPassword] = useState<boolean>(false);
+    const [pros, setPros] = useState<boolean>(false);
+    const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
+    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
     const validationSchema = z.object({
         userNewPassword: z.string({
@@ -80,13 +84,27 @@ const PasswordSettings = () => {
             };
             if(fdata.updatePassword.success) {
                 toast.success(fdata.updatePassword.message, toastDefOpts);
+                setPros(false);
             } else {
                 toast.error(fdata.updatePassword.message, toastDefOpts);
+                setPros(false);
             }
-        }
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+			setPros(false);
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+		},
     })
 
-    const { register, handleSubmit, formState: { errors }} = useForm<validationSchema>({
+    const { register, handleSubmit, reset, formState: { errors }} = useForm<validationSchema>({
         resolver: zodResolver(validationSchema)
     });
 
@@ -98,7 +116,9 @@ const PasswordSettings = () => {
                 password: formData.userNewPassword,
                 confirm_password: formData.userNewConfirmPassword
             }
-        })
+        });
+        reset();
+        setPros(true);
     }
 
     useEffect(() => {
@@ -127,6 +147,15 @@ const PasswordSettings = () => {
         <>
             <ToastContainer />
             <SiteBreadcrumb page_name="Change Password" page_title="User Settings" />
+            <NotifyBar 
+                notify_title="Server Error" 
+                view_notify_icon={true} 
+                message={notifyBarMsg} 
+                notify_type="error" 
+                notify_closable={true} 
+                show_bar={showNotifyBar}
+                set_show_bar={setShowNotifyBar}
+            />
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
                     <div className="twgtr-flex twgtr-flex-col lg:twgtr-flex-row twgtr-gap-4">
@@ -201,9 +230,27 @@ const PasswordSettings = () => {
                                 </div>
                                 
                                 <div className="twgtr-pt-4 twgtr-text-right">
-                                    <button type="submit" title="Save Changes" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 hover:twgtr-bg-theme-color-4-hover-dark twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-border-theme-color-4-hover-dark">
-                                        Save Changes
-                                    </button>
+                                    {
+                                        pros ? 
+                                        (
+                                            <div className="twgtr-flex twgtr-gap-x-[10px] twgtr-items-center twgtr-justify-end">
+                                                <div>
+                                                    <div className="site-spinner !twgtr-w-[30px] !twgtr-h-[30px] md:!twgtr-w-[35px] md:!twgtr-h-[35px]"></div>
+                                                </div>
+                                                <div>
+                                                    <h6 className="twgtr-text-[16px] md:twgtr-text-[20px] twgtr-text-slate-600">
+                                                        Processing...
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        ) 
+                                        : 
+                                        (
+                                            <button type="submit" title="Save Changes" className="twgtr-transition-all twgtr-cursor-pointer twgtr-inline-block twgtr-px-2 twgtr-py-1 md:twgtr-px-4 md:twgtr-py-2 twgtr-border-2 twgtr-border-solid twgtr-border-theme-color-4 twgtr-bg-theme-color-4 twgtr-text-slate-50 hover:twgtr-bg-theme-color-4-hover-dark twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-border-theme-color-4-hover-dark">
+                                                Save Changes
+                                            </button>
+                                        )
+                                    }
                                 </div>
                             </form>
                         </div>

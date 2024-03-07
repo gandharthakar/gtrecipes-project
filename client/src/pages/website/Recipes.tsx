@@ -7,6 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { RootState } from "../../redux-service/ReduxStore";
 import { useSelector } from "react-redux";
 import { IoFilterSharp } from "react-icons/io5";
+import NotifyBar from "./NotifyBar";
 
 const GET_RECIPES = gql`
 	query getAggrRecipes {
@@ -59,12 +60,27 @@ const Recipes = () => {
 	const menuRef = useRef<HTMLDivElement>(null);
     const [showFilterMenu, setShowFilterMenu] = useState<boolean>(false);
 	const [recType, setRecType] = useState<string>('');
+	const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
+    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
-	let {data} = useQuery(GET_RECIPES, {
+	let {data, loading} = useQuery(GET_RECIPES, {
 		onCompleted: fdata => {
 			// console.log(fdata.getAggrRecipes);
 			setAllRecipes(fdata.getAggrRecipes);
-		}
+			setShowNotifyBar(false);
+			setNotifyBarMsg('');
+		},
+		onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+			setShowNotifyBar(true);
+			setNotifyBarMsg(error.message);
+		},
 	});
 
 	const handleSearchInputChange = (e:any) => {
@@ -164,6 +180,15 @@ const Recipes = () => {
 		<>
 			<ToastContainer />
 			<SiteBreadcrumb page_name="Recipes" page_title="All Recipes" />
+			<NotifyBar 
+				notify_title="Server Error" 
+				view_notify_icon={true} 
+				message={notifyBarMsg} 
+				notify_type="error" 
+				notify_closable={true} 
+				show_bar={showNotifyBar}
+				set_show_bar={setShowNotifyBar}
+			/>
 			<div className="twgtr-bg-slate-100 twgtr-px-4 dark:twgtr-bg-slate-800">
 				<div className="site-container">
 					{/* Search */}
@@ -241,15 +266,29 @@ const Recipes = () => {
 
 					<div className="twgtr-pb-[50px]">
 						{
-							allRecipes.length > 0 ? 
+							loading ? 
 							(
-								<RecipesPg cdata={allRecipes} itemsPerPage={itemsPerPage} />
+								<h6 className="twgtr-transition-all twgtr-font-bold twgtr-font-ubuntu twgtr-text-[]">
+									Loading ...
+								</h6>
 							) 
 							: 
 							(
-								<h6>No Recipes Found.</h6>
+								<>
+									{
+										allRecipes.length > 0 ? 
+										(
+											<RecipesPg cdata={allRecipes} itemsPerPage={itemsPerPage} />
+										) 
+										: 
+										(
+											<h6>No Recipes Found.</h6>
+										)
+									}
+								</>
 							)
 						}
+						
 					</div>
 				</div>
 			</div>

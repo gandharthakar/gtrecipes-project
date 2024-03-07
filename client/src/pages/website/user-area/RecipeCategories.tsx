@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
+import NotifyBar from "../NotifyBar";
 
 const GET_RECIPE_CATEGORIES = gql`
     query getAllRecipeCategories($id: ID!) {
@@ -58,14 +59,29 @@ const RecipeCategories = (props:any) => {
     const [recipeCats, setRecipeCats] = useState<RecCats[]>([]);
     const [itemsPerPage, setItemsPerPage] = useState<number>(5);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
+    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
     // Get All Categories.
-    let {data} = useQuery(GET_RECIPE_CATEGORIES, {
+    let {data, loading} = useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata);
             setRecipeCats(grcdata?.getAllRecipeCategories);
-        }
+            setShowNotifyBar(false);
+            setNotifyBarMsg('');
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+		},
     });
 
     // Get Categories Per Page From User Settings DB.
@@ -74,7 +90,11 @@ const RecipeCategories = (props:any) => {
         onCompleted: grcdata => {
             // console.log(grcdata);
             setItemsPerPage(grcdata?.getPerPagesCount.category_per_page);
-        }
+        },
+        onError(error) {
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+        },
     });
 
     let [delAlCts] = useMutation(DELETE_ALL_CATEGORIES, {
@@ -96,7 +116,18 @@ const RecipeCategories = (props:any) => {
             } else {
                 alert(fdata.deleteAllRecipeCategory.message);
             }
-        }
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+		},
     })
 
     const handleDeleteAll = () => {
@@ -162,6 +193,17 @@ const RecipeCategories = (props:any) => {
             <ToastContainer />
             <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-250px)] 2xl:twgtr-w-[calc(100%-300px)] twgtr-border twgtr-border-solid twgtr-px-[20px] twgtr-py-[30px] lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">
                 <div className="twgtr-pb-[30px]">
+                    <div className="twgtr-pb-[20px]">
+                        <NotifyBar 
+                            notify_title="Server Error" 
+                            view_notify_icon={true} 
+                            message={notifyBarMsg} 
+                            notify_type="error" 
+                            notify_closable={true} 
+                            show_bar={showNotifyBar}
+                            set_show_bar={setShowNotifyBar}
+                        />
+                    </div>
                     <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[15px] twgtr-gap-y-[10px] twgtr-justify-between twgtr-flex-wrap">
                         <div className="md:twgtr-max-w-[300px] twgtr-w-full md:twgtr-w-auto">
                             <form onSubmit={handleSearchSubmit}>
@@ -194,29 +236,43 @@ const RecipeCategories = (props:any) => {
                 </div>
 
                 {
-                    recipeCats?.length > 0 ? 
+                    loading ? 
                     (
-                        <div>
-                            <RCSpage cdata={recipeCats} itemsPerPage={itemsPerPage} />
-                        </div>
+                        <h6 className="twgtr-transition-all twgtr-font-bold twgtr-font-ubuntu twgtr-text-[]">
+                            Loading ...
+                        </h6>
                     ) 
                     : 
                     (
-                        <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
-                            <MdOutlineCategory size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
-                            <div className="twgtr-pt-2 md:twgtr-pt-4">
-                                <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
-                                    No Categories Found
-                                </h6>
-                            </div>
-                            <div className="twgtr-pt-1">
-                                <NavLink to="#" title="+ Add New" className="twgtr-transition-all twgtr-font-open_sans twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-4" onClick={() => setShowModal(!showModal)}>
-                                    + Add New
-                                </NavLink>
-                            </div>
-                        </div>
+                        <>
+                            {
+                                recipeCats?.length > 0 ? 
+                                (
+                                    <div>
+                                        <RCSpage cdata={recipeCats} itemsPerPage={itemsPerPage} />
+                                    </div>
+                                ) 
+                                : 
+                                (
+                                    <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
+                                        <MdOutlineCategory size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
+                                        <div className="twgtr-pt-2 md:twgtr-pt-4">
+                                            <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
+                                                No Categories Found
+                                            </h6>
+                                        </div>
+                                        <div className="twgtr-pt-1">
+                                            <NavLink to="#" title="+ Add New" className="twgtr-transition-all twgtr-font-open_sans twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-4" onClick={() => setShowModal(!showModal)}>
+                                                + Add New
+                                            </NavLink>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        </>
                     )
                 }
+                
             </div>
         </>
     )

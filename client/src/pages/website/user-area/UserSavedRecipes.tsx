@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { RootState } from '../../../redux-service/ReduxStore';
 import { useSelector } from "react-redux";
 import URSSVpage from "./URSSVpage";
+import NotifyBar from "../NotifyBar";
 
 const GET_PER_PAGE_COUNTS = gql`
     query getPerPagesCount($id: ID!) {
@@ -67,6 +68,8 @@ const UserSavedRecipes = (props:any) => {
     const [allRecipes, setAllRecipes] = useState<AllRecipesType[]>([]);
     const [itemsPerPage, setItemsPerPage] = useState<number>(5);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
+    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
     // Get Recipes Per Page From User Settings DB.
     useQuery(GET_PER_PAGE_COUNTS, {
@@ -74,16 +77,33 @@ const UserSavedRecipes = (props:any) => {
         onCompleted: grcdata => {
             // console.log(grcdata);
             setItemsPerPage(grcdata?.getPerPagesCount.saved_recipes_per_page);
-        }
+        },
+        onError(error) {
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+        },
     });
 
     // Get All Recipes.
-    let {data} = useQuery(GET_ALL_RECIPES, {
+    let {data, loading} = useQuery(GET_ALL_RECIPES, {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata?.getUserByID.saved_recipes);
             setAllRecipes(grcdata?.getUserByID.saved_recipes);
-        }
+            setShowNotifyBar(false);
+            setNotifyBarMsg('');
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+		},
     });
 
     const handleSearchInputChange = (e:any) => {
@@ -145,6 +165,17 @@ const UserSavedRecipes = (props:any) => {
             <ToastContainer />
             <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-250px)] 2xl:twgtr-w-[calc(100%-300px)] twgtr-border twgtr-border-solid twgtr-px-[20px] twgtr-py-[30px] lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">
                 <div className="twgtr-pb-[30px]">
+                    <div className="twgtr-pb-[20px]">
+                        <NotifyBar 
+                            notify_title="Server Error" 
+                            view_notify_icon={true} 
+                            message={notifyBarMsg} 
+                            notify_type="error" 
+                            notify_closable={true} 
+                            show_bar={showNotifyBar}
+                            set_show_bar={setShowNotifyBar}
+                        />
+                    </div>
                     <div className="twgtr-flex twgtr-items-center twgtr-gap-x-[15px] twgtr-gap-y-[10px] twgtr-justify-between twgtr-flex-wrap">
                         <div className="md:twgtr-max-w-[300px] twgtr-w-full md:twgtr-w-auto">
                             <form onSubmit={handleSearchSubmit}>
@@ -172,24 +203,38 @@ const UserSavedRecipes = (props:any) => {
                 </div>
 
                 {
-                    allRecipes.length > 0 ? 
+                    loading ? 
                     (
-                        <div>
-                            <URSSVpage cdata={allRecipes} itemsPerPage={itemsPerPage} />
-                        </div>
+                        <h6 className="twgtr-transition-all twgtr-font-bold twgtr-font-ubuntu twgtr-text-[]">
+                            Loading ...
+                        </h6>
                     ) 
                     : 
                     (
-                        <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
-                            <PiCookingPot size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
-                            <div className="twgtr-pt-2 md:twgtr-pt-4">
-                                <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
-                                    No Recipes Found
-                                </h6>
-                            </div>
-                        </div>
+                        <>
+                            {
+                                allRecipes.length > 0 ? 
+                                (
+                                    <div>
+                                        <URSSVpage cdata={allRecipes} itemsPerPage={itemsPerPage} />
+                                    </div>
+                                ) 
+                                : 
+                                (
+                                    <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
+                                        <PiCookingPot size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
+                                        <div className="twgtr-pt-2 md:twgtr-pt-4">
+                                            <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
+                                                No Recipes Found
+                                            </h6>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        </>
                     )
                 }
+                
             </div>
         </>
     );

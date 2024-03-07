@@ -28,6 +28,7 @@ const Register = () => {
 	const dispatch = useDispatch();
 	const[showPassword, setShowPassword] = useState<boolean>(false);
 	const[showConfPassword, setShowConfPassword] = useState<boolean>(false);
+	const [pros, setPros] = useState<boolean>(false);
 
 	const [registerUser] = useMutation(REGISTER_USER, {
 		onCompleted: data => {
@@ -42,10 +43,22 @@ const Register = () => {
 					navigate("/login");
 					clearTimeout(ss);
 				}, 2000);
+				setPros(false);
 			} else {
 				toast.error(data.registerNewUser.message, toastDefOpts);
+				setPros(false);
 			}
 			// console.log(data.registerNewUser.message);
+		},
+		onError(error) {
+			// console.log(error.message);
+			const toastDefOpts = {
+				autoClose: 2000,
+				closeOnClick: true,
+				theme: `${ThemeMode ? 'dark' : 'light'}`
+			}
+			toast.error(error.message, toastDefOpts);
+			setPros(false);
 		},
 	})
 
@@ -92,6 +105,7 @@ const Register = () => {
 		});
 		// Reset Form
 		reset();
+		setPros(true);
 	}
 
 	useEffect(() => {
@@ -206,9 +220,27 @@ const Register = () => {
 									{errors.confirmPassword && (<p className="site-form-error">{errors.confirmPassword?.message}</p>)}
 								</div>
 								<div>
-									<button type="submit" title="Register" className="twgtr-transition-all twgtr-w-full twgtr-px-4 twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-theme-color-2 twgtr-bg-theme-color-2 twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[18px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2-hover-dark hover:twgtr-border-theme-color-2-hover-dark">
-										Register
-									</button>
+									{
+										pros ? 
+										(
+											<div className="twgtr-flex twgtr-gap-x-[10px] twgtr-items-center">
+                                                <div>
+                                                    <div className="site-spinner !twgtr-w-[30px] !twgtr-h-[30px] md:!twgtr-w-[35px] md:!twgtr-h-[35px]"></div>
+                                                </div>
+                                                <div>
+                                                    <h6 className="twgtr-text-[16px] md:twgtr-text-[20px] twgtr-text-slate-600">
+                                                        Processing...
+                                                    </h6>
+                                                </div>
+                                            </div>
+										) 
+										: 
+										(
+											<button type="submit" title="Register" className="twgtr-transition-all twgtr-w-full twgtr-px-4 twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-theme-color-2 twgtr-bg-theme-color-2 twgtr-text-slate-200 twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[18px] md:twgtr-text-[16px] twgtr-outline-none hover:twgtr-bg-theme-color-2-hover-dark hover:twgtr-border-theme-color-2-hover-dark">
+												Register
+											</button>
+										)
+									}
 								</div>
 							</form>
 							<div className="twgtr-block twgtr-text-center twgtr-pt-4">

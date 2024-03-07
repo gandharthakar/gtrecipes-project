@@ -53,6 +53,84 @@
     .recipe-content ul li, .recipe-content-print ul li {
         @apply twgtr-transition-all twgtr-pb-2 last:twgtr-pb-0 twgtr-text-slate-700 dark:twgtr-text-slate-200 twgtr-text-[14px] md:twgtr-text-[16px];
     }
+    .notify-bar .icon {
+        @apply twgtr-hidden twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[30px] md:twgtr-h-[30px];
+    }
+    .notify-bar.default {
+        @apply twgtr-bg-stone-100 twgtr-border-stone-600 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-100;
+    }
+    .notify-bar.default .icon-default {
+        @apply twgtr-inline-block twgtr-text-stone-600 dark:twgtr-text-slate-100;
+    }
+    .notify-bar.default .title {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.default .message {
+        @apply dark:twgtr-text-slate-200;
+    }
+    .notify-bar.default .close-x {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.info {
+        @apply twgtr-bg-blue-100 twgtr-border-blue-600 dark:twgtr-bg-slate-900 dark:twgtr-border-blue-400;
+    }
+    .notify-bar.info .icon-info {
+        @apply twgtr-inline-block twgtr-text-blue-600 dark:twgtr-text-blue-400;
+    }
+    .notify-bar.info .title {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.info .message {
+        @apply dark:twgtr-text-slate-200;
+    }
+    .notify-bar.info .close-x {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.warning {
+        @apply twgtr-bg-yellow-100 twgtr-border-yellow-600 dark:twgtr-bg-slate-900 dark:twgtr-border-yellow-400;
+    }
+    .notify-bar.warning .icon-warning {
+        @apply twgtr-inline-block twgtr-text-yellow-600 dark:twgtr-text-yellow-400;
+    }
+    .notify-bar.warning .title {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.warning .message {
+        @apply dark:twgtr-text-slate-200;
+    }
+    .notify-bar.warning .close-x {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.error {
+        @apply twgtr-bg-red-100 twgtr-border-red-600 dark:twgtr-bg-slate-900 dark:twgtr-border-red-400;
+    }
+    .notify-bar.error .icon-error {
+        @apply twgtr-inline-block twgtr-text-red-600 dark:twgtr-text-red-400;
+    }
+    .notify-bar.error .title {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.error .message {
+        @apply dark:twgtr-text-slate-200;
+    }
+    .notify-bar.error .close-x {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.success {
+        @apply twgtr-bg-green-100 twgtr-border-green-600 dark:twgtr-bg-slate-900 dark:twgtr-border-green-400;
+    }
+    .notify-bar.success .icon-success {
+        @apply twgtr-inline-block twgtr-text-green-600 dark:twgtr-text-green-400;
+    }
+    .notify-bar.success .title {
+        @apply dark:twgtr-text-slate-100;
+    }
+    .notify-bar.success .message {
+        @apply dark:twgtr-text-slate-200;
+    }
+    .notify-bar.success .close-x {
+        @apply dark:twgtr-text-slate-100;
+    }
 }
 
 @layer utilities {

@@ -19,8 +19,9 @@ import { useParams } from 'react-router';
 import Cookies from "universal-cookie";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
-const config: Jodit['options'] = { ...Jodit.defaultOptions, height: 400 }
+import NotifyBar from '../NotifyBar';
 
+const config: Jodit['options'] = { ...Jodit.defaultOptions, height: 400 }
 function makeid(length:any) {
 	let result = '';
 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -140,6 +141,8 @@ const CreateRecipe = () => {
         total_time: ''
     });
     const [recSer, setRecSer] = useState<string>('');
+    const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
+    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
     useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id },
@@ -151,7 +154,13 @@ const CreateRecipe = () => {
                 return arr.push({value: ctdata.id, label: ctdata.recipe_category_name});
             });
             setCatOpts(arr);
-        }
+            setShowNotifyBar(false);
+            setNotifyBarMsg('');
+        },
+        onError(error) {
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+        },
     });
 
     useQuery(GET_USER_FULL_NAME, {
@@ -161,7 +170,7 @@ const CreateRecipe = () => {
         }
     });
 
-    let [crtNewRec] = useMutation(CREATE_NEW_RECIPE, {
+    let [crtNewRec, {error}] = useMutation(CREATE_NEW_RECIPE, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -171,19 +180,29 @@ const CreateRecipe = () => {
             };
             if(fdata.createNewRecipe.success) {
                 toast.success(fdata.createNewRecipe.message, toastDefOpts);
-                setIsLoading(true);
                 if(featuredImage == defaultFeImgPath) {
                     if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
-                        setTimeout(function(){
-                            // navigate(`/user-area/profile/${id}`);
-                            window.location.href = `/user-area/profile/${id}`;
-                        }, 1500);
+                        if(!error) {
+                            setTimeout(function(){
+                                // navigate(`/user-area/profile/${id}`);
+                                window.location.href = `/user-area/profile/${id}`;
+                            }, 1500);
+                        } else {
+                            setShowNotifyBar(true);
+                            setNotifyBarMsg(error.message);
+                            setIsLoading(false);
+                        }
                     }
                 }
             } else {
                 toast.error(fdata.createNewRecipe.message, toastDefOpts);
+                setIsLoading(false);
             }
-        }
+        },
+        onError(error) {
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+        },
     });
 
     const  handleTMInputsCh = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -268,6 +287,7 @@ const CreateRecipe = () => {
     const handleSubmit = (e:any) => {
         e.preventDefault();
 
+        setIsLoading(true);
         const toastDefOpts = {
             autoClose: 3000,
             closeOnClick: true,
@@ -344,6 +364,7 @@ const CreateRecipe = () => {
                 recipe_total_time: '',
                 recipe_created_at: ''
             };
+            setIsLoading(false);
         } else {
             data = {
                 recipe_title: recipeTitle,
@@ -361,7 +382,6 @@ const CreateRecipe = () => {
                 recipe_total_time: tmMat.total_time,
                 recipe_created_at: getDateTimeString()
             }
-            
             crtNewRec({
                 variables: {...data}
             });
@@ -430,6 +450,15 @@ const CreateRecipe = () => {
         <>
             <ToastContainer />
             <SiteBreadcrumb page_name="New Recipe" page_title="Create New Recipe" rest_pages={rest_pages} />
+            <NotifyBar 
+                notify_title="Server Error" 
+                view_notify_icon={true} 
+                message={notifyBarMsg} 
+                notify_type="error" 
+                notify_closable={true} 
+                show_bar={showNotifyBar}
+                set_show_bar={setShowNotifyBar}
+            />
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">

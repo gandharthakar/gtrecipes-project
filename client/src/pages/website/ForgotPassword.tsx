@@ -44,7 +44,17 @@ const ForgotPassword = () => {
 			} else {
 				toast.error(data.forgotPassword.message, toastDefOpts);
 			}
-		}
+		},
+		onError(error) {
+			// console.log(error.message);
+			const toastDefOpts = {
+				autoClose: 2000,
+				closeOnClick: true,
+				theme: `${ThemeMode ? 'dark' : 'light'}`
+			}
+			toast.error(error.message, toastDefOpts);
+			setPros(false);
+		},
 	});
 
 	const validationSchema = z.object({

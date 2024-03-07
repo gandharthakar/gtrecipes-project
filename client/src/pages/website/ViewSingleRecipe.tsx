@@ -17,6 +17,7 @@ import parse from 'html-react-parser';
 import RecipeToPrint from "./RecipeToPrint";
 import { useReactToPrint } from 'react-to-print';
 import { HiMiniPrinter } from "react-icons/hi2";
+import NotifyBar from "./NotifyBar";
 
 const CHECK_RECIPE_VALIDITY = gql`
     mutation checkRecipeInRecords($rid: String!) {
@@ -163,6 +164,8 @@ const ViewSingleRecipe = () => {
         },
     }
     const [randRec, setRandRec] = useState<AllRecipesType[]>([]);
+    const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
+    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
     // const baseURIFeImg = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
     const componentRef = useRef<HTMLDivElement>(null);
     const pageStyle = `
@@ -202,7 +205,19 @@ const ViewSingleRecipe = () => {
             // console.log(fdata.getAggrRec3);
             // console.log(fdata.getAggrRecipes[fdata.getAggrRecipes.length - 2]);
             setRandRec(fdata.getAggrRec3);
-        }
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+            // alert(error.message);
+            setNotifyBarMsg(error.message);
+            setShowNotifyBar(true);
+		},
     })
 
     // Check Recipe Validity.
@@ -239,7 +254,19 @@ const ViewSingleRecipe = () => {
             //     toast.error(fdata.saveRecipe.message, toastDefOpts);
             // }
             alert(fdata.saveRecipe.message);
-        }
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+            // alert(error.message);
+            setNotifyBarMsg(error.message);
+            setShowNotifyBar(true);
+		},
     });
 
     // Unsave Recipe.
@@ -257,7 +284,19 @@ const ViewSingleRecipe = () => {
             //     toast.error(fdata.unsaveRecipe.message, toastDefOpts);
             // }
             alert(fdata.unsaveRecipe.message);
-        }
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+            // alert(error.message);
+            setNotifyBarMsg(error.message);
+            setShowNotifyBar(true);
+		},
     });
 
     useQuery(GET_USER_FOR_SAVED_RECIPES, {
@@ -270,7 +309,19 @@ const ViewSingleRecipe = () => {
             if(chsr) {
                 setRecSaved(true);
             }
-        }
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+            // alert(error.message);
+            setNotifyBarMsg(error.message);
+            setShowNotifyBar(true);
+		},
     });
 
     let {data} = useQuery(GET_RECIPE_DETAILS, {
@@ -318,7 +369,22 @@ const ViewSingleRecipe = () => {
             setRecCokTm(mdata.recipe_cook_time);
             // Set Recipe Total Time.
             setRecTotTm(mdata.recipe_total_time);
-        }
+
+            setNotifyBarMsg("");
+            setShowNotifyBar(false);
+        },
+        onError(error) {
+			// console.log(error.message);
+			// const toastDefOpts = {
+			// 	autoClose: 2000,
+			// 	closeOnClick: true,
+			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
+			// }
+			// toast.error(error.message, toastDefOpts);
+            // alert(error.message);
+            setNotifyBarMsg(error.message);
+            setShowNotifyBar(true);
+		},
     });    
 
     let handleSaveChk = (e: any) => {
@@ -381,6 +447,15 @@ const ViewSingleRecipe = () => {
         <>
             <ToastContainer />
             <SiteBreadcrumb page_name={recTtl} rest_pages={rp} page_title="Single Recipe" />
+            <NotifyBar 
+                notify_title="Server Error" 
+                view_notify_icon={true} 
+                message={notifyBarMsg} 
+                notify_type="error" 
+                notify_closable={true} 
+                show_bar={showNotifyBar}
+                set_show_bar={setShowNotifyBar}
+            />
             <article>
                 <div className="twgtr-bg-white srh-main twgtr-py-[30px] md:twgtr-py-[50px] twgtr-border-t twgtr-border-solid twgtr-border-slate-300 twgtr-px-4 dark:twgtr-bg-slate-800 dark:twgtr-border-slate-600">
                     <div className="site-container">

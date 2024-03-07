@@ -19,6 +19,7 @@ import { useParams } from 'react-router';
 import Cookies from "universal-cookie";
 import { useDispatch } from "react-redux";
 import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer";
+import NotifyBar from '../NotifyBar';
 
 const config: Jodit['options'] = { ...Jodit.defaultOptions, height: 400 }
 
@@ -146,6 +147,8 @@ const EditRecipe = () => {
         total_time: ''
     });
     const [recSer, setRecSer] = useState<string>('');
+    const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
+    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
     useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id: uid },
@@ -157,7 +160,13 @@ const EditRecipe = () => {
                 return arr.push({value: ctdata.id, label: ctdata.recipe_category_name});
             });
             setCatOpts(arr);
-        }
+            setShowNotifyBar(false);
+            setNotifyBarMsg('');
+        },
+        onError(error) {
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+        },
     });
 
     useQuery(GET_RECIPE_DETAILS, {
@@ -267,7 +276,11 @@ const EditRecipe = () => {
             } else {
                 toast.error(fdata.updateRecipe.message, toastDefOpts);
             }
-        }
+        },
+        onError(error) {
+            setShowNotifyBar(true);
+            setNotifyBarMsg(error.message);
+        },
     });
 
     const  handleTMInputsCh = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -539,6 +552,15 @@ const EditRecipe = () => {
         <>
             <ToastContainer />
             <SiteBreadcrumb page_name={brdRcName} page_title="Edit Recipe" rest_pages={rest_pages} />
+            <NotifyBar 
+                notify_title="Server Error" 
+                view_notify_icon={true} 
+                message={notifyBarMsg} 
+                notify_type="error" 
+                notify_closable={true} 
+                show_bar={showNotifyBar}
+                set_show_bar={setShowNotifyBar}
+            />
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
