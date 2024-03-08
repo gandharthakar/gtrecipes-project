@@ -27,11 +27,11 @@ const SiteBreadcrumb= (props: CompProp) => {
                     <ul className="twgtr-flex twgtr-flex-wrap twgtr-items-center twgtr-font-ubuntu">
                         <li className="twgtr-pr-2">
                             <NavLink to={home_uri ? home_uri : '/'} className="twgtr-py-0">
-                                <IoHome size={20} className="twgtr-transition-all twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4" />
+                                <IoHome size={20} className="twgtr-transition-all twgtr-text-slate-800 hover:twgtr-text-theme-color-4 dark:twgtr-text-slate-200 dark:hover:twgtr-text-theme-color-4 twgtr-w-[16px] twgtr-h-[16px] md:twgtr-w-[20px] md:twgtr-h-[20px]" />
                             </NavLink>
                         </li>
                         <li className="twgtr-px-2">
-                            <TfiAngleRight size={20} className="twgtr-text-slate-800 dark:twgtr-text-slate-200" />
+                            <TfiAngleRight size={20} className="twgtr-text-slate-800 dark:twgtr-text-slate-200 twgtr-w-[16px] twgtr-h-[16px] md:twgtr-w-[20px] md:twgtr-h-[20px]" />
                         </li>
                         {
                             rest_pages ? (
@@ -44,7 +44,7 @@ const SiteBreadcrumb= (props: CompProp) => {
                                                 </NavLink>
                                             </li>
                                             <li className="twgtr-px-2">
-                                                <TfiAngleRight size={20} className="twgtr-text-slate-800 dark:twgtr-text-slate-200" />
+                                                <TfiAngleRight size={20} className="twgtr-text-slate-800 dark:twgtr-text-slate-200 twgtr-w-[16px] twgtr-h-[16px] md:twgtr-w-[20px] md:twgtr-h-[20px]" />
                                             </li>
                                         </div>
                                     )

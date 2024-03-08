@@ -14,7 +14,7 @@ const SideBarLeftLinks = (props: CompProp) => {
 	const { nav_links_data } = props;
 	return (
 		<>
-			<ul className="ssdl-nav twgtr-flex twgtr-flex-row lg:twgtr-flex-col twgtr-gap-x-8 twgtr-flex-nowrap twgtr-overflow-x-auto">
+			<ul className="ssdl-nav twgtr-flex twgtr-flex-row lg:twgtr-flex-col twgtr-gap-x-8 twgtr-flex-nowrap twgtr-overflow-x-auto twgtr-whitespace-nowrap md:twgtr-whitespace-normal">
 				{
 					nav_links_data.map((item:any) => (
 						<li className="twgtr-flex-none last:twgtr-pb-0 lg:twgtr-pb-2" key={item.id}>

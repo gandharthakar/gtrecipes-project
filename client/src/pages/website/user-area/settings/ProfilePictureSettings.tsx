@@ -344,7 +344,7 @@ const ProfilePictureSettings = () => {
 
                                     <div className="twgtr-transition-all twgtr-border twgtr-border-dashed twgtr-border-slate-500 twgtr-bg-white twgtr-p-[20px] dark:twgtr-bg-slate-600 dark:twgtr-border-slate-400">
                                         <div className="twgtr-flex twgtr-gap-x-[15px] md:twgtr-gap-x-[20px] twgtr-items-center md:twgtr-items-start">
-                                            <div className="twgtr-min-w-[60px] twgtr-min-h-[60px] twgtr-max-h-[60px] md:twgtr-min-w-[100px] md:twgtr-min-h-[100px] md:twgtr-max-w-[100px] md:twgtr-max-h-[100px] twgtr-relative twgtr-bg-slate-200">
+                                            <div className="twgtr-min-w-[60px] twgtr-min-h-[60px] twgtr-max-w-[60px] md:twgtr-min-w-[100px] md:twgtr-min-h-[100px] md:twgtr-max-w-[100px] md:twgtr-max-h-[100px] twgtr-relative twgtr-bg-slate-200">
                                                 <img src={image} className="twgtr-w-full twgtr-h-auto" alt="photo" />
                                                 <div className="twgtr-absolute twgtr-right-[-9px] twgtr-top-[-9px] twgtr-z-[5px] md:twgtr-right-[-10px] md:twgtr-top-[-10px]">
                                                     <RiCloseCircleFill size={20} className="twgtr-transition-all twgtr-text-red-600 twgtr-cursor-pointer twgtr-w-[25px] twgtr-h-[25px] md:twgtr-w-[30px] md:twgtr-h-[30px]" onClick={resetForm} />
