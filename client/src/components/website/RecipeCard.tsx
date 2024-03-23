@@ -253,13 +253,13 @@ const RecipeCard = (props: CompProp) => {
                 <ToastContainer />
                 <div className="twgtr-flex twgtr-flex-col twgtr-min-h-[100%]">
                     <div className="twgtr-relative twgtr-bg-slate-300">
-                        <NavLink to={`/view-recipe/${recipe_id}`} title={recipe_title}>
+                        <a href={`/view-recipe/${recipe_id}`} title={recipe_title}>
                             <img src={recipe_featured_image == 'default' ? defaultFeImgPath : rfeb_URI ? rfeb_URI + '/' + recipe_featured_image : recipe_featured_image} className="twgtr-w-full" alt="photo" 
                             onError={({ currentTarget }) => {
                                 currentTarget.onerror = null; // prevents looping
                                 currentTarget.src=fallBackFeImg;
                             }} />
-                        </NavLink>
+                        </a>
                         <div className="rcrd-bgc">
                             {
                                 compU ? 
@@ -320,11 +320,11 @@ const RecipeCard = (props: CompProp) => {
                             </ul>
                         </div>
                         <div className="twgtr-px-[15px] md:twgtr-px-[20px] twgtr-pt-3 twgtr-pb-1">
-                            <NavLink to={`/view-recipe/${recipe_id}`} title={recipe_title} className="twgtr-font-ubuntu twgtr-text-[20px] md:twgtr-text-[25px] twgtr-font-semibold">
+                            <a href={`/view-recipe/${recipe_id}`} title={recipe_title} className="twgtr-font-ubuntu twgtr-text-[20px] md:twgtr-text-[25px] twgtr-font-semibold">
                                 <h5 className="twgtr-transition-all twgtr-text-theme-color-1 dark:twgtr-text-slate-200">
                                     {recipe_title}
                                 </h5>
-                            </NavLink>
+                            </a>
                         </div>
                         {
                             recipe_summary ? 

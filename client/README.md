@@ -35,4 +35,8 @@ Currently, two official plugins are available:
     <img src="https://lh3.googleusercontent.com/u/0/d/1bSi2ry1Sie7n1orTcktXzE6e_yWosZOS=w1920-h653-iv1" width="80px" height="80px" alt="Tailwind CSS" />
     &nbsp;
     <img src="https://lh3.googleusercontent.com/u/0/d/1NKOjEVAT_x-lpNILfpfc87L77NlqImVx=w1920-h653-iv1" width="80px" height="80px" alt="Redux Toolkit" />
+    &nbsp;
+    <img src="https://lh3.googleusercontent.com/u/0/d/1K3E3CVm9ouSwDOhN15u5UB0h6jcvLLdq=w1920-h953-iv1" width="80px" height="80px" alt="React Hook Form" />
+    &nbsp;
+    <img src="https://lh3.googleusercontent.com/u/0/d/1QJlNjB3cpMjzQKmGBXmzxIPZTbyb2-dH=w1920-h653-iv1" width="80px" height="80px" alt="Zod" />
 </p>

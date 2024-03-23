@@ -38,6 +38,10 @@ GTRecipes is the platform where you can create various recipes and various categ
   <img src="https://lh3.googleusercontent.com/u/0/d/1WcEZ57YEdaZ9IzgnneLRa1CcJW9FO2od=w1920-h653-iv1" width="80px" height="80px" alt="Node Mailer" />
   &nbsp;
   <img src="https://lh3.googleusercontent.com/u/0/d/1HkY6a17ZlhALhXnx-bwMFgHs26Smh7_j=w1920-h653-iv1" width="80px" height="80px" alt="Postman" />
+  &nbsp;
+  <img src="https://lh3.googleusercontent.com/u/0/d/1K3E3CVm9ouSwDOhN15u5UB0h6jcvLLdq=w1920-h953-iv1" width="80px" height="80px" alt="React Hook Form" />
+  &nbsp;
+  <img src="https://lh3.googleusercontent.com/u/0/d/1QJlNjB3cpMjzQKmGBXmzxIPZTbyb2-dH=w1920-h653-iv1" width="80px" height="80px" alt="Zod" />
 </p>
 
 ### Project Demo / View Link
@@ -49,8 +53,8 @@ Here is the link --> <a href="https://gtrecipes.netlify.app/" title="Click Here"
 - User Can Able To Register And Login For Creating recipes.
 - Create, Update, Delete & Read recipes
 - Create, Update, Delete & Read Categories
-- Dark Mode Support
-- Share Recipes With Anyone
+- Dark Mode Support.
+- Share Recipes With Anyone.
 - Print Recipes.
 - Save Your Favorite Recipes.
 - Forgot Password Functionality Added.

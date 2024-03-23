@@ -143,6 +143,8 @@ const CreateRecipe = () => {
     const [recSer, setRecSer] = useState<string>('');
     const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
     const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
+    const [filSize, setFileSize] = useState<boolean>(false);
+    const [fileDimensions, setFileDimensions] = useState<boolean>(false);
 
     useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id },
@@ -179,10 +181,11 @@ const CreateRecipe = () => {
                 theme: `${ThemeMode ? 'dark' : 'light'}`
             };
             if(fdata.createNewRecipe.success) {
-                toast.success(fdata.createNewRecipe.message, toastDefOpts);
+                const allowedFileTypes = ["jpg", "png"];
                 if(featuredImage == defaultFeImgPath) {
                     if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
                         if(!error) {
+                            toast.success(fdata.createNewRecipe.message, toastDefOpts);
                             setTimeout(function(){
                                 // navigate(`/user-area/profile/${id}`);
                                 window.location.href = `/user-area/profile/${id}`;
@@ -191,6 +194,18 @@ const CreateRecipe = () => {
                             setShowNotifyBar(true);
                             setNotifyBarMsg(error.message);
                             setIsLoading(false);
+                        }
+                    }
+
+                    if(imgFIle !== '') {
+                        if(!allowedFileTypes.includes(fileExt) || !filSize || !fileDimensions) {
+                            setIsLoading(false);
+                        } else {
+                            toast.success(fdata.updateRecipe.message, toastDefOpts);
+                            setTimeout(function(){
+                                // navigate(`/user-area/profile/${id}`);
+                                window.location.href = `/user-area/profile/${id}`;
+                            }, 1500);
                         }
                     }
                 }
@@ -249,11 +264,33 @@ const CreateRecipe = () => {
         const base64 = await convertBase64(file);
         // console.log(base64);
         setImgFile(base64);
+
+        if (file.size > 500 * 1024) {
+            setFileSize(false);
+        } else {
+            setFileSize(true);
+        }
+
+        const img = document.createElement('img');
+        const objectURL = URL.createObjectURL(file);
+        img.src = objectURL;
+        img.onload = function handleLoad() {
+            let {width, height} = img;
+            if(width <= 700 && height <= 467) {
+                setFileDimensions(true);
+            } else {
+                setFileDimensions(false);
+            }
+            URL.revokeObjectURL(objectURL);
+        }
     }
 
     const clearFeImageInput = () => {
         setFeaturedImage(defaultFeImgPath);
         setImgFile('');
+        setFileSize(false);
+        setFileDimensions(false);
+        setFileExt('');
     }
 
     const handleCategoryChange = (value:any) => {
@@ -301,6 +338,26 @@ const CreateRecipe = () => {
         } else {
             newFileName = `${makeid(12)}_${Date.now()}.${fileExt}`;
         }
+
+        // Get file extention.
+        const allowedFileTypes = ["jpg", "png"];
+        let isValidImg = false;
+        if(imgFIle !== '') {
+            if(!allowedFileTypes.includes(fileExt)) {
+                toast.error("Only .jpg and .png files are allowed.", toastDefOpts);
+            } else {
+                if(!filSize) {
+                    toast.error("Image file size is bigger than 500 kb.", toastDefOpts);
+                } else {
+                    if(!fileDimensions) {
+                        toast.error("Image size is expected 700px x 467px. (rectangular size)", toastDefOpts);
+                    } else {
+                        isValidImg = true;
+                    }
+                }
+            }
+        }
+
         // console.log(imgFIle);
 
         type RecData = {
@@ -372,7 +429,7 @@ const CreateRecipe = () => {
                 recipe_summary: recipeSummary,
                 recipe_content: editorContent,
                 recipe_ingradients: ingradients ? ingradients : [],
-                recipe_featured_image: imgFIle == '' ? 'default' : imgFIle,
+                recipe_featured_image: imgFIle == '' ? 'default' : isValidImg ? imgFIle : '',
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : [],
                 recipe_author: authorName,
                 recipe_author_id: id ? id: '',
@@ -382,17 +439,23 @@ const CreateRecipe = () => {
                 recipe_total_time: tmMat.total_time,
                 recipe_created_at: getDateTimeString()
             }
-            crtNewRec({
-                variables: {...data}
-            });
+            if(isValidImg) {
+                crtNewRec({
+                    variables: {...data}
+                });
+            }
         }
 
         if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
             if(newFileName !== "Default") {
-                setTimeout(function(){
-                    // navigate(`/user-area/profile/${id}`);
-                    window.location.href = `/user-area/profile/${id}`;
-                }, 1500);
+                if(isValidImg) {
+                    setTimeout(function(){
+                        // navigate(`/user-area/profile/${id}`);
+                        window.location.href = `/user-area/profile/${id}`;
+                    }, 1500);
+                } else {
+                    setIsLoading(false);
+                }
             }
         }
 

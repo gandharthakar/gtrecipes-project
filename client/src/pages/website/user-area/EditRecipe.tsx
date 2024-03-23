@@ -149,6 +149,8 @@ const EditRecipe = () => {
     const [recSer, setRecSer] = useState<string>('');
     const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
     const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
+    const [filSize, setFileSize] = useState<boolean>(false);
+    const [fileDimensions, setFileDimensions] = useState<boolean>(false);
 
     useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id: uid },
@@ -263,8 +265,7 @@ const EditRecipe = () => {
                 theme: `${ThemeMode ? 'dark' : 'light'}`
             };
             if(fdata.updateRecipe.success) {
-                toast.success(fdata.updateRecipe.message, toastDefOpts);
-                setIsLoading(true);
+                const allowedFileTypes = ["jpg", "png"];
                 if(featuredImage == 'default') {
                     if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
                         setTimeout(function(){
@@ -272,7 +273,19 @@ const EditRecipe = () => {
                             window.location.href = `/user-area/profile/${uid}`;
                         }, 1500);
                     }
+                    toast.success(fdata.updateRecipe.message, toastDefOpts);
+                    setIsLoading(true);
+                } 
+                // console.log(featuredImage);
+                if(imgFIle !== '') {
+                    if(!allowedFileTypes.includes(fileExt) || !filSize || !fileDimensions) {
+
+                    } else {
+                        toast.success(fdata.updateRecipe.message, toastDefOpts);
+                        setIsLoading(true);
+                    }
                 }
+                
             } else {
                 toast.error(fdata.updateRecipe.message, toastDefOpts);
             }
@@ -349,11 +362,33 @@ const EditRecipe = () => {
 
         const base64 = await convertBase64(file);
         setImgFile(base64);
+
+        if (file.size > 500 * 1024) {
+            setFileSize(false);
+        } else {
+            setFileSize(true);
+        }
+
+        const img = document.createElement('img');
+        const objectURL = URL.createObjectURL(file);
+        img.src = objectURL;
+        img.onload = function handleLoad() {
+            let {width, height} = img;
+            if(width <= 700 && height <= 467) {
+                setFileDimensions(true);
+            } else {
+                setFileDimensions(false);
+            }
+            URL.revokeObjectURL(objectURL);
+        }
     }
 
     const clearFeImageInput = () => {
         setFeaturedImage('default');
         setImgFile('');
+        setFileSize(false);
+        setFileDimensions(false);
+        setFileExt('');
     }
 
     const handleCategoryChange = (value:any) => {
@@ -399,6 +434,25 @@ const EditRecipe = () => {
             newFileName = 'default';
         } else {
             newFileName = dumpImg ? dumpImg : `${makeid(12)}_${Date.now()}.${fileExt}`;
+        }
+
+        // Get file extention.
+        const allowedFileTypes = ["jpg", "png"];
+        let isValidImg = false;
+        if(imgFIle !== '') {
+            if(!allowedFileTypes.includes(fileExt)) {
+                toast.error("Only .jpg and .png files are allowed.", toastDefOpts);
+            } else {
+                if(!filSize) {
+                    toast.error("Image file size is bigger than 500 kb.", toastDefOpts);
+                } else {
+                    if(!fileDimensions) {
+                        toast.error("Image size is expected 700px x 467px. (rectangular size)", toastDefOpts);
+                    } else {
+                        isValidImg = true;
+                    }
+                }
+            }
         }
 
         type RecData = {
@@ -468,7 +522,7 @@ const EditRecipe = () => {
                 recipe_summary: recipeSummary,
                 recipe_content: editorContent,
                 recipe_ingradients: ingradients ? ingradients : [],
-                recipe_featured_image: imgFIle == '' ? 'default' : imgFIle,
+                recipe_featured_image: imgFIle == '' ? 'default' : isValidImg ? imgFIle : '',
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : [],
                 recipe_makes_servings: recSer,
                 recipe_prep_time: tmMat.prep_time,
@@ -484,10 +538,12 @@ const EditRecipe = () => {
 
         if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
             if(newFileName !== "Default") {
-                setTimeout(function(){
-                    // navigate(`/user-area/profile/${id}`);
-                    window.location.href = `/user-area/profile/${uid}`;
-                }, 1500);
+                if(isValidImg) {
+                    setTimeout(function(){
+                        // navigate(`/user-area/profile/${id}`);
+                        window.location.href = `/user-area/profile/${uid}`;
+                    }, 1500);
+                }
             }
         }
 
