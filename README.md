@@ -42,6 +42,10 @@ GTRecipes is the platform where you can create various recipes and various categ
   <img src="https://lh3.googleusercontent.com/u/0/d/1K3E3CVm9ouSwDOhN15u5UB0h6jcvLLdq=w1920-h953-iv1" width="80px" height="80px" alt="React Hook Form" />
   &nbsp;
   <img src="https://lh3.googleusercontent.com/u/0/d/1QJlNjB3cpMjzQKmGBXmzxIPZTbyb2-dH=w1920-h653-iv1" width="80px" height="80px" alt="Zod" />
+  &nbsp;
+  <img src="https://lh3.googleusercontent.com/u/0/d/1W0Xq_ePgZR0VUGz_zuIgJz0eJwF9C-dj=w1920-h953-iv1" width="80px" height="80px" alt="Netlify" />
+  &nbsp;
+  <img src="https://lh3.googleusercontent.com/u/0/d/1-Z84rr8T9IQFfMIvZ_NEXZG6w-4b2GAJ=w1920-h653-iv1" width="80px" height="80px" alt="Render" />
 </p>
 
 ### Project Demo / View Link

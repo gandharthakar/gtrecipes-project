@@ -39,4 +39,6 @@ Currently, two official plugins are available:
     <img src="https://lh3.googleusercontent.com/u/0/d/1K3E3CVm9ouSwDOhN15u5UB0h6jcvLLdq=w1920-h953-iv1" width="80px" height="80px" alt="React Hook Form" />
     &nbsp;
     <img src="https://lh3.googleusercontent.com/u/0/d/1QJlNjB3cpMjzQKmGBXmzxIPZTbyb2-dH=w1920-h653-iv1" width="80px" height="80px" alt="Zod" />
+    &nbsp;
+    <img src="https://lh3.googleusercontent.com/u/0/d/1W0Xq_ePgZR0VUGz_zuIgJz0eJwF9C-dj=w1920-h953-iv1" width="80px" height="80px" alt="Netlify" />
 </p>
