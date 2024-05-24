@@ -30,6 +30,7 @@ const DELETE_CATEGORY = gql`
 function convertToSlug( str:string ) {
     
     //replace all special characters | symbols with a space
+    //eslint-disable-next-line
     str = str.replace(/[`~!@#$%^&*()_\-+=\[\]{};:'"\\|\/,.<>?\s]/g, ' ')
              .toLowerCase();
       
@@ -52,12 +53,12 @@ interface CompProps {
 const CategoryCard = (props: CompProps) => {
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const [showModal, setShowModal] = useState<boolean>(false);
-    let { user_id, user_name, category_id, category_name, category_slug } = props;
+    const { user_id, user_name, category_id, category_name, category_slug } = props;
     const [createCat, setCreateCat] = useState<string>(category_name);
     const [createCatSlug, setCreateCatSlug] = useState<string>(category_slug);
 
     // Update Category.
-    let [updCat] = useMutation(UPDATE_CATEGORY, {
+    const [updCat] = useMutation(UPDATE_CATEGORY, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -67,7 +68,7 @@ const CategoryCard = (props: CompProps) => {
             };
             if(fdata.updateRecipeCategories.success) {
                 toast.success(fdata.updateRecipeCategories.message, toastDefOpts);
-                let suctmr = setTimeout(function(){
+                const suctmr = setTimeout(function(){
                     window.location.reload();
                     clearTimeout(suctmr);
                 }, 1000);
@@ -82,7 +83,7 @@ const CategoryCard = (props: CompProps) => {
     });
 
     // Delete Category.
-    let [delCat] = useMutation(DELETE_CATEGORY, {
+    const [delCat] = useMutation(DELETE_CATEGORY, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -92,7 +93,7 @@ const CategoryCard = (props: CompProps) => {
             };
             if(fdata.deleteRecipeCategory.success) {
                 toast.success(fdata.deleteRecipeCategory.message, toastDefOpts);
-                let suctmr = setTimeout(function(){
+                const suctmr = setTimeout(function(){
                     window.location.reload();
                     clearTimeout(suctmr);
                 }, 1000);

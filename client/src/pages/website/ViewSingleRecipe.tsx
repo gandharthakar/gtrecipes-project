@@ -104,7 +104,7 @@ const GET_RANDOM_RECIPES = gql`
 `;
 
 const ViewSingleRecipe = () => {
-    let { id } = useParams();
+    const { id } = useParams();
     const rp = [
         {
             id: 1,
@@ -114,7 +114,7 @@ const ViewSingleRecipe = () => {
     ];
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const AuthUser = useSelector((state: RootState) => state.user_login.isAuthenticated);
-    let share_uri = window.location.origin + "/view-recipe/" + id;
+    const share_uri = window.location.origin + "/view-recipe/" + id;
     // const [recipeTitle, setRecipeTitle] = useState('This is title for this recipe box This is title for this recipe box');
     const navigate = useNavigate();
     const defaultFeImgPath = 'https://placehold.co/1200x600?text=Featured+Image.';
@@ -221,7 +221,7 @@ const ViewSingleRecipe = () => {
     })
 
     // Check Recipe Validity.
-    let [chkRec] = useMutation(CHECK_RECIPE_VALIDITY, {
+    const [chkRec] = useMutation(CHECK_RECIPE_VALIDITY, {
         onCompleted: fdata => {
             // console.log(fdata.checkRecipeInRecords);
             if(!fdata.checkRecipeInRecords.success) {
@@ -240,7 +240,7 @@ const ViewSingleRecipe = () => {
     });
 
     // Save Recipe.
-    let [savRec] = useMutation(SAVE_RECIPE_USER, {
+    const [savRec] = useMutation(SAVE_RECIPE_USER, {
         onCompleted: fdata => {
             // console.log(fdata);
             // const toastDefOpts = {
@@ -270,7 +270,7 @@ const ViewSingleRecipe = () => {
     });
 
     // Unsave Recipe.
-    let [unSavRec] = useMutation(UNSAVE_RECIPE_USER, {
+    const [unSavRec] = useMutation(UNSAVE_RECIPE_USER, {
         onCompleted: fdata => {
             // console.log(fdata);
             // const toastDefOpts = {
@@ -303,9 +303,9 @@ const ViewSingleRecipe = () => {
         variables: { id: authUserID_g },
         onCompleted: fdata => {
             // console.log(fdata.getUserByID.saved_recipes);
-            let extdt = fdata.getUserByID.saved_recipes;
-            let arrids = extdt.map((item: any) => item.id);
-            let chsr = arrids.includes(id);
+            const extdt = fdata.getUserByID.saved_recipes;
+            const arrids = extdt.map((item: any) => item.id);
+            const chsr = arrids.includes(id);
             if(chsr) {
                 setRecSaved(true);
             }
@@ -324,11 +324,11 @@ const ViewSingleRecipe = () => {
 		},
     });
 
-    let {data, loading, error} = useQuery(GET_RECIPE_DETAILS, {
+    const {data, loading, error} = useQuery(GET_RECIPE_DETAILS, {
         variables: { id },
         onCompleted: fdata => {
             // console.log(fdata.getSIngleRecipeByID);
-            let mdata = fdata.getSIngleRecipeByID;
+            const mdata = fdata.getSIngleRecipeByID;
 
             // Set Recipe Title.
             setRecTtl(mdata.recipe_title);
@@ -339,14 +339,14 @@ const ViewSingleRecipe = () => {
             // Set Recipe Summary.
             setRecSum(mdata.recipe_summary);
             // Set Recipe Categories
-            let ctdata = mdata.recipe_categories;
+            const ctdata = mdata.recipe_categories;
             if(ctdata.length > 0) {
-                let ctarr = ctdata.map((item: Cats) => {
+                const ctarr = ctdata.map((item: Cats) => {
                     return { id: item.id, recipe_category_name: item.recipe_category_name }
                 });
                 setRecCats(ctarr);
             } else {
-                let nularr = [{ id: "uncat_2", recipe_category_name: "Uncategorized" }];
+                const nularr = [{ id: "uncat_2", recipe_category_name: "Uncategorized" }];
                 setRecCats(nularr);
             }
             // Set Recipe Created At.
@@ -354,8 +354,8 @@ const ViewSingleRecipe = () => {
             // Set Recipe Author Name.
             setRecAuthNm(mdata.author.author_name);
             // Set Recipe Ingradients.
-            let grings = mdata.recipe_ingradients;
-            let ingarr = grings.map((itm:string, idx:number) => {
+            const grings = mdata.recipe_ingradients;
+            const ingarr = grings.map((itm:string, idx:number) => {
                 return { id: idx, ingredient_item: itm }
             });
             setRecIngs(ingarr);
@@ -387,8 +387,8 @@ const ViewSingleRecipe = () => {
 		},
     });    
 
-    let handleSaveChk = (e: any) => {
-        let checked = e.target.checked;
+    const handleSaveChk = (e: any) => {
+        const checked = e.target.checked;
         // console.log(AuthUser);
         if(AuthUser) {
             if(checked) {
@@ -441,6 +441,7 @@ const ViewSingleRecipe = () => {
                 rid: id
             }
         })
+    //eslint-disable-next-line
     }, [data]);
 
     return (
@@ -627,7 +628,7 @@ const ViewSingleRecipe = () => {
                     </div>
                 </div>
                 <div className="twgtr-bg-slate-100 dark:twgtr-bg-slate-700">
-				    <div className="twgtr-max-w-[1240px] twgtr-px-4 twgtr-mx-auto twgtr-w-full md:twgtr-px-[20px] twgtr-relative twgtr-z-[5]">
+                    <div className="twgtr-max-w-[1240px] twgtr-px-4 twgtr-mx-auto twgtr-w-full md:twgtr-px-[20px] twgtr-relative twgtr-z-[5]">
                         {
                             loading ? 
                             (

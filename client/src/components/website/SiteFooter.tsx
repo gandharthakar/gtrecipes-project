@@ -17,6 +17,7 @@ const SiteFooter = () => {
         } else {
             setHomeActive("");
         }
+    //eslint-disable-next-line
     }, []);
 
     return (

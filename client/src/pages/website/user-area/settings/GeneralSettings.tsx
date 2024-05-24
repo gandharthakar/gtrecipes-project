@@ -36,7 +36,7 @@ const UPDATE_USER_DETAILS = gql`
 `;
 
 const GeneralSettings = () => {
-    let { id } = useParams();
+    const { id } = useParams();
     const sideBarLinks = [
         {
             id: "1",
@@ -100,7 +100,7 @@ const GeneralSettings = () => {
     type validationSchema = z.infer<typeof validationSchema>;
 
     // Get values from DB.
-    let {loading, data} = useQuery(GET_USER_DETAILS, {
+    const {loading, data} = useQuery(GET_USER_DETAILS, {
         variables: { id: authUserID },
         onError(error) {
 			// console.log(error.message);
@@ -117,7 +117,7 @@ const GeneralSettings = () => {
     });
 
     // Update Values
-    let [uGenSet] = useMutation(UPDATE_USER_DETAILS, {
+    const [uGenSet] = useMutation(UPDATE_USER_DETAILS, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -172,7 +172,7 @@ const GeneralSettings = () => {
         if(id !== authUserID) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
@@ -181,7 +181,7 @@ const GeneralSettings = () => {
         if(authUserID !== id) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
@@ -195,6 +195,7 @@ const GeneralSettings = () => {
             setValue("categoryItemsPerPage", data?.getGeneralSettings.cipp);
             setValue("savedRecipeItemsPerPage", data?.getGeneralSettings.sripp);
         }
+    //eslint-disable-next-line
     }, [data, loading, setValue]);
 
     return (
@@ -223,8 +224,8 @@ const GeneralSettings = () => {
                                 loading ? 
                                 (
                                     <h6 className="twgtr-transition-all twgtr-font-bold twgtr-font-ubuntu twgtr-text-[]">
-									    Loading ...
-								    </h6>
+                                        Loading ...
+                                    </h6>
                                 ) 
                                 : 
                                 (

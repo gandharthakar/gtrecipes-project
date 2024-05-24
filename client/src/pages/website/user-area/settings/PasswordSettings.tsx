@@ -26,7 +26,7 @@ const UPDATE_USER_PWD = gql`
 `;
 
 const PasswordSettings = () => {
-    let { id } = useParams();
+    const { id } = useParams();
     const sideBarLinks = [
         {
             id: "1",
@@ -74,7 +74,7 @@ const PasswordSettings = () => {
     type validationSchema = z.infer<typeof validationSchema>;
 
     // Update Password
-    let [updPwd] = useMutation(UPDATE_USER_PWD, {
+    const [updPwd] = useMutation(UPDATE_USER_PWD, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -127,7 +127,7 @@ const PasswordSettings = () => {
         if(id !== authUserID) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
@@ -136,11 +136,12 @@ const PasswordSettings = () => {
         if(authUserID !== id) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
         }
+    //eslint-disable-next-line
     }, []);
 
     return (

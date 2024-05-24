@@ -68,7 +68,7 @@ interface CompProp {
 }
 
 const RecipeCard = (props: CompProp) => {
-    let { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false, recipe_type, page_reload_on_unsave=false } = props;
+    const { recipe_id, rfeb_URI, recipe_featured_image, categories, recipe_title, recipe_summary, recipe_author_id, recipe_author_name, actions=false, recipe_type, page_reload_on_unsave=false } = props;
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const AuthUser = useSelector((state: RootState) => state.user_login.isAuthenticated);
     const navigate = useNavigate();
@@ -83,9 +83,9 @@ const RecipeCard = (props: CompProp) => {
         variables: { id: authUserID_g },
         onCompleted: fdata => {
             // console.log(fdata.getUserByID.saved_recipes);
-            let extdt = fdata.getUserByID.saved_recipes;
-            let arrids = extdt.map((item: any) => item.id);
-            let chsr = arrids.includes(recipe_id);
+            const extdt = fdata.getUserByID.saved_recipes;
+            const arrids = extdt.map((item: any) => item.id);
+            const chsr = arrids.includes(recipe_id);
             if(chsr) {
                 setRecSaved(true);
             }
@@ -93,7 +93,7 @@ const RecipeCard = (props: CompProp) => {
     });
 
     // Delete Recipe
-    let [delRec] = useMutation(DELETE_RECIPE, {
+    const [delRec] = useMutation(DELETE_RECIPE, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -104,7 +104,7 @@ const RecipeCard = (props: CompProp) => {
             if(fdata.deleteRecipe.success) {
                 toast.success(fdata.deleteRecipe.message, toastDefOpts);
                 if(recipe_featured_image == 'default') {
-                    let suctmr = setTimeout(function(){
+                    const suctmr = setTimeout(function(){
                         window.location.reload();
                         clearTimeout(suctmr);
                     }, 1500);
@@ -116,7 +116,7 @@ const RecipeCard = (props: CompProp) => {
     });
 
     // Save Recipe.
-    let [savRec] = useMutation(SAVE_RECIPE_USER, {
+    const [savRec] = useMutation(SAVE_RECIPE_USER, {
         onCompleted: fdata => {
             // console.log(fdata);
             // const toastDefOpts = {
@@ -134,7 +134,7 @@ const RecipeCard = (props: CompProp) => {
     });
 
     // Unsave Recipe.
-    let [unSavRec] = useMutation(UNSAVE_RECIPE_USER, {
+    const [unSavRec] = useMutation(UNSAVE_RECIPE_USER, {
         onCompleted: fdata => {
             // console.log(fdata);
             // const toastDefOpts = {
@@ -152,7 +152,7 @@ const RecipeCard = (props: CompProp) => {
     });
     
     const handleDeleteRecipe = () => {
-        let conf = confirm("Are you sure want to delete this recipe ?");
+        const conf = confirm("Are you sure want to delete this recipe ?");
         if(conf) {
             // if(recipe_featured_image !== 'default') {
             //     axios.post(`${import.meta.env.VITE_BACKEND_URI_BASE}/delete-uploads/recipe-featured-images`, {fileName: recipe_featured_image})
@@ -185,15 +185,15 @@ const RecipeCard = (props: CompProp) => {
                     user_id: recipe_author_id
                 }
             });
-            let suctmr = setTimeout(function(){
+            const suctmr = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(suctmr);
             }, 1500);
         }
     }
 
-    let handleSaveChk = (e: any) => {
-        let checked = e.target.checked;
+    const handleSaveChk = (e: any) => {
+        const checked = e.target.checked;
         // console.log(AuthUser);
         if(AuthUser) {
             if(checked) {
@@ -206,7 +206,7 @@ const RecipeCard = (props: CompProp) => {
                 setRecSaved(true);
             } else {
                 if(page_reload_on_unsave) {
-                    let conf = confirm("Are you sure want to remove this recipe from saved collection ?");
+                    const conf = confirm("Are you sure want to remove this recipe from saved collection ?");
                     if(conf) {
                         unSavRec({
                             variables: {
@@ -245,6 +245,7 @@ const RecipeCard = (props: CompProp) => {
                 setCompU(false);
             }
         }
+    //eslint-disable-next-line
     }, []);
 
     return (

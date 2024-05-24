@@ -104,7 +104,7 @@ const CREATE_NEW_RECIPE = gql`
 
 // Main Component
 const CreateRecipe = () => {
-    let { id } = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
@@ -149,9 +149,9 @@ const CreateRecipe = () => {
     useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id },
         onCompleted: fdata => {
-            let ctdata = fdata.getAllRecipeCategories;
+            const ctdata = fdata.getAllRecipeCategories;
             // Set Option to category dropdown.
-            let arr:CategoryType[] = [];
+            const arr:CategoryType[] = [];
             ctdata.map((ctdata:any) => {
                 return arr.push({value: ctdata.id, label: ctdata.recipe_category_name});
             });
@@ -172,7 +172,7 @@ const CreateRecipe = () => {
         }
     });
 
-    let [crtNewRec, {error}] = useMutation(CREATE_NEW_RECIPE, {
+    const [crtNewRec, {error}] = useMutation(CREATE_NEW_RECIPE, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -220,8 +220,8 @@ const CreateRecipe = () => {
         },
     });
 
-    const  handleTMInputsCh = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let { name, value } = e.target;
+    const handleTMInputsCh = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
         setTmMat((prev) => {
             return {
                 ...prev,
@@ -240,8 +240,8 @@ const CreateRecipe = () => {
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index:number) => {
-        let value = event.target.value;
-        let onChangeValue = [...recins];
+        const value = event.target.value;
+        const onChangeValue = [...recins];
         onChangeValue[index].recipe_ingredient = value;
         setRecins(onChangeValue);
     };
@@ -256,8 +256,8 @@ const CreateRecipe = () => {
         const file = e.target.files[0];
         if(!file) return
 
-        let gfnext = file.name;
-		let fext = gfnext.split('.').pop();
+        const gfnext = file.name;
+		const fext = gfnext.split('.').pop();
         // setImgFile(file);
 		setFileExt(fext);
         setFeaturedImage(URL.createObjectURL(file));
@@ -275,7 +275,7 @@ const CreateRecipe = () => {
         const objectURL = URL.createObjectURL(file);
         img.src = objectURL;
         img.onload = function handleLoad() {
-            let {width, height} = img;
+            const {width, height} = img;
             if(width <= 700 && height <= 467) {
                 setFileDimensions(true);
             } else {
@@ -393,7 +393,7 @@ const CreateRecipe = () => {
             recipe_total_time: '',
             recipe_created_at: ''
         };
-        let ingradients: string[] = [];
+        const ingradients: string[] = [];
         // recins.map((item) => ingradients.push(item.recipe_ingredient));
         recins.map((item) => {
             if(item.recipe_ingredient !== '') {
@@ -485,7 +485,7 @@ const CreateRecipe = () => {
         if(id !== authUserID) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 200);
@@ -494,11 +494,12 @@ const CreateRecipe = () => {
         if(authUserID !== id) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 200);
         }
+    //eslint-disable-next-line
     }, []);
 
     const rest_pages = [

@@ -17,6 +17,7 @@ import RecipeCategories from "./RecipeCategories";
 function convertToSlug( str:string ) {
     
     //replace all special characters | symbols with a space
+    //eslint-disable-next-line
     str = str.replace(/[`~!@#$%^&*()_\-+=\[\]{};:'"\\|\/,.<>?\s]/g, ' ')
              .toLowerCase();
       
@@ -49,7 +50,7 @@ const CREATE_RECIPE_CATEGORY = gql`
 `;
 
 const UserProfileCat = () => {
-    let { id } = useParams();
+    const { id } = useParams();
     // const sideBarLinks = [
     //     {
     //         id: 1,
@@ -83,7 +84,7 @@ const UserProfileCat = () => {
         variables: { id: authUserID },
         onCompleted: fdata => {
             // Set Profile Photo.
-            let upp = fdata.getUserPhotoAndName.user_photo;
+            const upp = fdata.getUserPhotoAndName.user_photo;
             if(upp !== '') {
                 setProfilePhoto(upp);
             } else {
@@ -94,34 +95,34 @@ const UserProfileCat = () => {
             setCatCount(fdata.getUserPhotoAndName.cipp);
 
             // Set User Name.
-            let unm = fdata.getUserPhotoAndName.user_name;
+            const unm = fdata.getUserPhotoAndName.user_name;
             setUname(unm);
 
-            let spltar = unm.split(" ");
+            const spltar = unm.split(" ");
             if(spltar.length === 1) {
-                let slcnam = spltar[0].split();
+                const slcnam = spltar[0].split();
                 if(slcnam.length === 1) {
-                    let ch1 = slcnam[0].charAt(0);
-                    let gch2 = slcnam[0].charAt(1);
-                    let ch2 = gch2 ? gch2 : '';
+                    const ch1 = slcnam[0].charAt(0);
+                    const gch2 = slcnam[0].charAt(1);
+                    const ch2 = gch2 ? gch2 : '';
                     setUserName(ch1+ch2);
                 } else {
                     if(slcnam < 3) {
-                        let c1 = slcnam.charAt(0);
-                        let c2 = slcnam.charAt(1);
+                        const c1 = slcnam.charAt(0);
+                        const c2 = slcnam.charAt(1);
                         setUserName(c1 + c2);
                     }
                 }
             } else {
                 if(spltar.length < 3) {
-                    let w1 = spltar[0];
-                    let w2 = spltar[1];
-                    let fwc1 = w1.charAt(0);
-                    let fwc2 = w2.charAt(0);
+                    const w1 = spltar[0];
+                    const w2 = spltar[1];
+                    const fwc1 = w1.charAt(0);
+                    const fwc2 = w2.charAt(0);
                     setUserName(fwc1+fwc2);
                 } else {
-                    let w1 = spltar[0];
-                    let w2 = spltar[1];
+                    const w1 = spltar[0];
+                    const w2 = spltar[1];
                     let sp1 = '';
                     let sp2 = '';
                     if(w1.length === 1) {
@@ -142,7 +143,7 @@ const UserProfileCat = () => {
     });
 
     // Create Categories.
-    let [crtCats] = useMutation(CREATE_RECIPE_CATEGORY, {
+    const [crtCats] = useMutation(CREATE_RECIPE_CATEGORY, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -155,7 +156,7 @@ const UserProfileCat = () => {
                 if (!toast.isActive('ssToast1', "ccat")) {
                     toast.success(fdata.createRecipeCategories.message, toastDefOpts);
                 }
-                let suctmr = setTimeout(function(){
+                const suctmr = setTimeout(function(){
                     window.location.reload();
                     clearTimeout(suctmr);
                 }, 1000);
@@ -229,7 +230,7 @@ const UserProfileCat = () => {
         if(id !== authUserID) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
@@ -238,11 +239,12 @@ const UserProfileCat = () => {
         if(authUserID !== id) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
         }
+    //eslint-disable-next-line
     }, []);
 
     return (

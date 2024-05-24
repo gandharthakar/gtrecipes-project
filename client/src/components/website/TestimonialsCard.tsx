@@ -8,7 +8,7 @@ interface CompProp {
 }
 
 const TestimonialsCard = (props: CompProp) => {
-    let { photo, testimonial_content, testimonial_person_name, testimonial_person_designation } = props;
+    const { photo, testimonial_content, testimonial_person_name, testimonial_person_designation } = props;
     return (
         <>
             <div className="twgtr-bg-white">

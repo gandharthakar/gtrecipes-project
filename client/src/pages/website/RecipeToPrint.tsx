@@ -20,7 +20,7 @@ interface CompProp {
 }
 
 const RecipeToPrint = (props: CompProp) => {
-    let {
+    const {
         recipe_title,
         recipe_type = "veg",
         recipe_summary,

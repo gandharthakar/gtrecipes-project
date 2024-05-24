@@ -106,7 +106,7 @@ const UPDATE_RECIPE = gql`
 
 // Main Component
 const EditRecipe = () => {
-    let { uid, rid } = useParams();
+    const { uid, rid } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
@@ -155,9 +155,9 @@ const EditRecipe = () => {
     useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id: uid },
         onCompleted: fdata => {
-            let ctdata = fdata.getAllRecipeCategories;
+            const ctdata = fdata.getAllRecipeCategories;
             // Set Option to category dropdown.
-            let arr:CategoryType[] = [];
+            const arr:CategoryType[] = [];
             ctdata.map((ctdata:any) => {
                 return arr.push({value: ctdata.id, label: ctdata.recipe_category_name});
             });
@@ -178,28 +178,28 @@ const EditRecipe = () => {
         },
         onCompleted: fdata => {
             // console.log(fdata);
-            let mdata = fdata.getSingleRecipe;
+            const mdata = fdata.getSingleRecipe;
             // console.log(mdata[0]);
 
             // Set Recipe Title.
-            let Allrt = mdata[0].recipe_title;
+            const Allrt = mdata[0].recipe_title;
             setRecipeTitle(Allrt);
             setBrdRcName(Allrt);
 
             // Set Recipe Type.
-            let Allrtyp = mdata[0].recipe_type;
+            const Allrtyp = mdata[0].recipe_type;
             setRecType(Allrtyp);
 
             // Set Recipe Summary.
-            let Allrcsum = mdata[0].recipe_summary;
+            const Allrcsum = mdata[0].recipe_summary;
             setRecipeSummary(Allrcsum);
 
             // Set Recipe Content.
-            let allrcnt = mdata[0].recipe_content;
+            const allrcnt = mdata[0].recipe_content;
             setEContent(allrcnt);
             
             // Set Recipe Ingradients.
-            let allins = mdata[0].recipe_ingradients;
+            const allins = mdata[0].recipe_ingradients;
             let inarr:Recing[] = [];
             if(allins.length > 0) {
                 allins.map((item:string) => inarr.push({recipe_ingredient: item}));
@@ -209,7 +209,7 @@ const EditRecipe = () => {
             setRecins(inarr);
 
             // Set Featured Image.
-            let allfeimg = mdata[0].recipe_featured_image;
+            const allfeimg = mdata[0].recipe_featured_image;
             if(allfeimg == 'default') {
                 setFeaturedImage('default');
             } else {
@@ -218,34 +218,34 @@ const EditRecipe = () => {
                 setFeaturedImage(allfeimg);
                 setDumpImg(allfeimg);
                 setImgFile(allfeimg);
-                let fe = allfeimg.split('.');
+                const fe = allfeimg.split('.');
                 setFileExt(fe[1]);
             }
 
             // Set Makes (Servings)
-            let Allrsrv = mdata[0].recipe_makes_servings;
+            const Allrsrv = mdata[0].recipe_makes_servings;
             setRecSer(Allrsrv);
 
             // Set Prep Time.
-            let Allrptm = mdata[0].recipe_prep_time;
+            const Allrptm = mdata[0].recipe_prep_time;
             setTmMat((prev) => {
                 return {...prev, prep_time: Allrptm}
             });
 
             // Set Cook Time.
-            let Allrctm = mdata[0].recipe_cook_time;
+            const Allrctm = mdata[0].recipe_cook_time;
             setTmMat((prev) => {
                 return {...prev, cook_time: Allrctm}
             });
 
             // Set Total Time.
-            let Allrtttm = mdata[0].recipe_total_time;
+            const Allrtttm = mdata[0].recipe_total_time;
             setTmMat((prev) => {
                 return {...prev, total_time: Allrtttm}
             });
 
             // Set Recipe Categories.
-            let allcts = mdata[0].recipe_categories;
+            const allcts = mdata[0].recipe_categories;
             let ctarr:CategoryType[] = [];
             if(allcts.length > 0) {
                 allcts.map((item:any) => ctarr.push({ value: item.id, label: item.recipe_category_name}));
@@ -256,7 +256,7 @@ const EditRecipe = () => {
         }
     })
 
-    let [updRec] = useMutation(UPDATE_RECIPE, {
+    const [updRec] = useMutation(UPDATE_RECIPE, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -278,6 +278,7 @@ const EditRecipe = () => {
                 } 
                 // console.log(featuredImage);
                 if(imgFIle !== '') {
+                    //eslint-disable-next-line
                     if(!allowedFileTypes.includes(fileExt) || !filSize || !fileDimensions) {
 
                     } else {
@@ -297,7 +298,7 @@ const EditRecipe = () => {
     });
 
     const  handleTMInputsCh = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let { name, value } = e.target;
+        const { name, value } = e.target;
         setTmMat((prev) => {
             return {
                 ...prev,
@@ -313,7 +314,7 @@ const EditRecipe = () => {
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
         if(featuredImage !== 'default') {
-            let conf = confirm("If you remove this image then it will also gets removed from server. Are you sure you want remove ?");
+            const conf = confirm("If you remove this image then it will also gets removed from server. Are you sure you want remove ?");
             if(conf) {
                 setHasFeImage(false);
                 setFeaturedImage('default');
@@ -338,8 +339,8 @@ const EditRecipe = () => {
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index:number) => {
-        let value = event.target.value;
-        let onChangeValue = [...recins];
+        const value = event.target.value;
+        const onChangeValue = [...recins];
         onChangeValue[index].recipe_ingredient = value;
         setRecins(onChangeValue);
     };
@@ -354,8 +355,8 @@ const EditRecipe = () => {
         const file = e.target.files[0];
         if(!file) return
 
-        let gfnext = file.name;
-		let fext = gfnext.split('.').pop();
+        const gfnext = file.name;
+		const fext = gfnext.split('.').pop();
         // setImgFile(file);
 		setFileExt(fext);
         setFeaturedImage(URL.createObjectURL(file));
@@ -373,7 +374,7 @@ const EditRecipe = () => {
         const objectURL = URL.createObjectURL(file);
         img.src = objectURL;
         img.onload = function handleLoad() {
-            let {width, height} = img;
+            const {width, height} = img;
             if(width <= 700 && height <= 467) {
                 setFileDimensions(true);
             } else {
@@ -486,7 +487,7 @@ const EditRecipe = () => {
             recipe_cook_time: '',
             recipe_total_time: ''
         };
-        let ingradients: string[] = [];
+        const ingradients: string[] = [];
         recins.map((item) => {
             if(item.recipe_ingredient !== '') {
                 return ingradients.push(item.recipe_ingredient)
@@ -580,7 +581,7 @@ const EditRecipe = () => {
         if(uid !== authUserID) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 200);
@@ -589,11 +590,12 @@ const EditRecipe = () => {
         if(authUserID !== uid) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 200);
         }
+    //eslint-disable-next-line
     }, []);
 
     const rest_pages = [

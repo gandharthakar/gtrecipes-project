@@ -41,7 +41,7 @@ function Home() {
 		}
 	}
 
-	let defRec1_data = {
+	const defRec1_data = {
 		id: "home_rec_1",
 		recipe_title: "How to Make Garlic Bread",
 		recipe_featured_image: "/images/featured-rpost.jpg",
@@ -51,31 +51,31 @@ function Home() {
 		}
 	}
 
-	let defRec2_data = {
+	const defRec2_data = {
 		id: "home_rec_2",
 		recipe_title: "Coconut Chicken Curry – Kuku Paka",
 		recipe_featured_image: "/images/latest-five/1.jpg"
 	}
 
-	let defRec3_data = {
+	const defRec3_data = {
 		id: "home_rec_3",
 		recipe_title: "Garlic Noodles",
 		recipe_featured_image: "/images/latest-five/2.jpg"
 	}
 
-	let defRec4_data = {
+	const defRec4_data = {
 		id: "home_rec_4",
 		recipe_title: "Crunchy Baked Prawns / Shrimp in Garlic Butter Sauce",
 		recipe_featured_image: "/images/latest-five/3.jpg"
 	}
 
-	let defRec5_data = {
+	const defRec5_data = {
 		id: "home_rec_5",
 		recipe_title: "Acqua Pazza – Italian Fish",
 		recipe_featured_image: "/images/latest-five/4.jpg"
 	}
 
-	let defRec6_data = {
+	const defRec6_data = {
 		id: "home_rec_6",
 		recipe_title: "Thai Cashew Chicken",
 		recipe_featured_image: "/images/latest-five/5.jpg"
@@ -88,19 +88,19 @@ function Home() {
 	const [rec5, setRec5] = useState<RecType>(defRec5_data);
 	const [rec6, setRec6] = useState<RecType>(defRec6_data);
 
-	let {loading, error} = useQuery(GET_HOME_RECIPES, {
+	const {loading, error} = useQuery(GET_HOME_RECIPES, {
 		onCompleted: fdata => {
 			// console.log(fdata.getAggrRecipes);
 
 			// Set Recipe 1
-			let r1 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 1];
+			const r1 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 1];
 			let obj:RecType = {
 				id: '',
 				recipe_title: '',
 				recipe_featured_image: '',
 			};
-			let cl = r1.recipe_featured_image;
-			let feimg_1 = cl == 'default' ? defaultFeImgPath : cl;
+			const cl = r1.recipe_featured_image;
+			const feimg_1 = cl == 'default' ? defaultFeImgPath : cl;
 			obj = {
 				id: r1.id,
 				recipe_title: r1.recipe_title,
@@ -113,14 +113,14 @@ function Home() {
 			setRec1(obj);
 
 			// Set Recipe 2
-			let r2 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 2];
+			const r2 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 2];
 			let obj_0:RecType = {
 				id: '',
 				recipe_title: '',
 				recipe_featured_image: '',
 			};
-			let cl_0 = r2.recipe_featured_image;
-			let feimg_2 = cl_0 == 'default' ? defaultFeImgPath : cl_0;
+			const cl_0 = r2.recipe_featured_image;
+			const feimg_2 = cl_0 == 'default' ? defaultFeImgPath : cl_0;
 			obj_0 = {
 				id: r2.id,
 				recipe_title: r2.recipe_title,
@@ -129,14 +129,14 @@ function Home() {
 			setRec2(obj_0);
 
 			// Set Recipe 3
-			let r3 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 3];
+			const r3 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 3];
 			let obj_1:RecType = {
 				id: '',
 				recipe_title: '',
 				recipe_featured_image: '',
 			};
-			let cl_1 = r3.recipe_featured_image;
-			let feimg_3 = cl_1 == 'default' ? defaultFeImgPath : cl_1;
+			const cl_1 = r3.recipe_featured_image;
+			const feimg_3 = cl_1 == 'default' ? defaultFeImgPath : cl_1;
 			obj_1 = {
 				id: r3.id,
 				recipe_title: r3.recipe_title,
@@ -145,14 +145,14 @@ function Home() {
 			setRec3(obj_1);
 
 			// Set Recipe 4
-			let r4 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 4];
+			const r4 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 4];
 			let obj_2:RecType = {
 				id: '',
 				recipe_title: '',
 				recipe_featured_image: '',
 			};
-			let cl_2 = r4.recipe_featured_image;
-			let feimg_4 = cl_2 == 'default' ? defaultFeImgPath : cl_2;
+			const cl_2 = r4.recipe_featured_image;
+			const feimg_4 = cl_2 == 'default' ? defaultFeImgPath : cl_2;
 			obj_2 = {
 				id: r4.id,
 				recipe_title: r4.recipe_title,
@@ -161,14 +161,14 @@ function Home() {
 			setRec4(obj_2);
 
 			// Set Recipe 5
-			let r5 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 5];
+			const r5 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 5];
 			let obj_3:RecType = {
 				id: '',
 				recipe_title: '',
 				recipe_featured_image: '',
 			};
-			let cl_3 = r5.recipe_featured_image;
-			let feimg_5 = cl_3 == 'default' ? defaultFeImgPath : cl_3;
+			const cl_3 = r5.recipe_featured_image;
+			const feimg_5 = cl_3 == 'default' ? defaultFeImgPath : cl_3;
 			obj_3 = {
 				id: r5.id,
 				recipe_title: r5.recipe_title,
@@ -177,14 +177,14 @@ function Home() {
 			setRec5(obj_3);
 
 			// Set Recipe 6
-			let r6 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 6];
+			const r6 = fdata.getAggrRecipes[fdata.getAggrRecipes.length - 6];
 			let obj_4:RecType = {
 				id: '',
 				recipe_title: '',
 				recipe_featured_image: '',
 			};
-			let cl_4 = r6.recipe_featured_image;
-			let feimg_6 = cl_4 == 'default' ? defaultFeImgPath : cl_4;
+			const cl_4 = r6.recipe_featured_image;
+			const feimg_6 = cl_4 == 'default' ? defaultFeImgPath : cl_4;
 			obj_4 = {
 				id: r6.id,
 				recipe_title: r6.recipe_title,

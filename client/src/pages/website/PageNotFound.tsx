@@ -10,7 +10,7 @@ interface CompProp {
 
 const PageNotFound = (props: CompProp) => {
 
-    let { page_message } = props;
+    const { page_message } = props;
 
     const dispatch = useDispatch();
 
@@ -19,13 +19,14 @@ const PageNotFound = (props: CompProp) => {
         // const detectMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
         // Manually Toggle and Save Dark Mode.
-        let glsi = localStorage.getItem('site-dark-mode');
+        const glsi = localStorage.getItem('site-dark-mode');
         const checkDM = glsi ? JSON.parse(glsi) : '';
         if(checkDM) {
             dispatch(set_dark_mode());
         } else {
             dispatch(unset_dark_mode());
         }
+    //eslint-disable-next-line
     }, []);
 
     return (

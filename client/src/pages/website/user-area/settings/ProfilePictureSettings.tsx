@@ -43,7 +43,7 @@ const UPDATE_USER_PROFILE_PHOTO = gql`
 `;
 
 const ProfilePictureSettings = () => {
-    let { id } = useParams();
+    const { id } = useParams();
     
     const sideBarLinks = [
         {
@@ -111,7 +111,7 @@ const ProfilePictureSettings = () => {
 		},
     });
 
-    let [updProPic] = useMutation(UPDATE_USER_PROFILE_PHOTO, {
+    const [updProPic] = useMutation(UPDATE_USER_PROFILE_PHOTO, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -157,12 +157,12 @@ const ProfilePictureSettings = () => {
     }
 
     const handleFileChange = async (e:any) => {
-        let file = e.target.files[0];
+        const file = e.target.files[0];
         if(!file) {
             setProfile('');
         } else {
-            let gfnext = file.name;
-            let fext = gfnext.split('.').pop();
+            const gfnext = file.name;
+            const fext = gfnext.split('.').pop();
             setFileExt(fext);
             // setProfile(file);
             setImage(URL.createObjectURL(file));
@@ -177,7 +177,7 @@ const ProfilePictureSettings = () => {
             const objectURL = URL.createObjectURL(file);
             img.src = objectURL;
             img.onload = function handleLoad() {
-                let {width, height} = img;
+                const {width, height} = img;
                 if(width <= 500 && height <= 500) {
                     setFileDimensions(true);
                 } else {
@@ -204,7 +204,7 @@ const ProfilePictureSettings = () => {
                 user_photo: ''
             }
         });
-        let ss = setTimeout(function(){
+        const ss = setTimeout(function(){
             window.location.reload();
             clearTimeout(ss);
         }, 300);
@@ -264,7 +264,7 @@ const ProfilePictureSettings = () => {
                             }
                         });
 
-                        let ss = setTimeout(function(){
+                        const ss = setTimeout(function(){
                             window.location.reload();
                             clearTimeout(ss);
                         }, 300);
@@ -298,7 +298,7 @@ const ProfilePictureSettings = () => {
         if(id !== authUserID) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
@@ -307,11 +307,12 @@ const ProfilePictureSettings = () => {
         if(authUserID !== id) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
         }
+    //eslint-disable-next-line
     }, []);
 
     return (

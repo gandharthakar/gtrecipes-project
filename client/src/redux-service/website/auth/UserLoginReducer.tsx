@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
 
-let initialState = {
+const initialState = {
     isAuthenticated: false
 }
 
@@ -15,7 +15,7 @@ const userLoginReducer = createSlice({
             // let date = new Date();
             // date.setTime(date.getTime() + expDays * 24 * 60 * 60 * 1000);
 
-            let ndate = new Date();
+            const ndate = new Date();
             ndate.setDate(ndate.getDate() + 30);
             
             // const days = 30;
@@ -38,7 +38,7 @@ const userLoginReducer = createSlice({
         do_logout: (state) => {
             state.isAuthenticated = false;
             const cookies = new Cookies();
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 cookies.remove("gjtrewcipets_auth_user", { path: '/' });
                 cookies.remove("gjtrewcipets_auth_user_id", { path: '/' });
                 clearTimeout(ss);

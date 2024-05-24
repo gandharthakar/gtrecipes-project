@@ -12,6 +12,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useMutation, gql } from "@apollo/client";
 import { set_dark_mode, unset_dark_mode } from "../../redux-service/website/SiteThemeModeReducer";
+import Cookies from "universal-cookie";
 
 const REGISTER_USER = gql`
 	mutation registerNewUser($full_name: String!, $email: String!, $password: String!, $confirm_password: String!) {
@@ -39,7 +40,7 @@ const Register = () => {
 			}
 			if(data.registerNewUser.success) {
 				toast.success("Registered Successfully.", toastDefOpts);
-				let ss = setTimeout(function(){
+				const ss = setTimeout(function(){
 					navigate("/login");
 					clearTimeout(ss);
 				}, 2000);
@@ -113,13 +114,20 @@ const Register = () => {
         // const detectMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
         // Manually Toggle and Save Dark Mode.
-        let glsi = localStorage.getItem('site-dark-mode');
+        const glsi = localStorage.getItem('site-dark-mode');
         const checkDM = glsi ? JSON.parse(glsi) : '';
         if(checkDM) {
             dispatch(set_dark_mode());
         } else {
             dispatch(unset_dark_mode());
         }
+
+		const cookies = new Cookies();
+		const authUserID = cookies.get("gjtrewcipets_auth_user_id");
+		if(authUserID) {
+			navigate(`/user-area/profile/${authUserID}`);
+		}
+	//eslint-disable-next-line
     }, []);
 
 	return (

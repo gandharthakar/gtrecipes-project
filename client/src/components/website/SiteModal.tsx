@@ -13,19 +13,20 @@ interface CompProp {
 }
 
 const SiteModal = (props: CompProp) => {
-    let { open_modal_on_page_load=false, openState, setOpenState, modal_heading, backdrop=true, hide_modal_on_backdrop_click, modal_max_width=600, children } = props;
+    const { open_modal_on_page_load=false, openState, setOpenState, modal_heading, backdrop=true, hide_modal_on_backdrop_click, modal_max_width=600, children } = props;
 
     const handleBackDropClick = () => {
         if(hide_modal_on_backdrop_click) {
             setOpenState(false);
         }
     }
-    let calcmaxw = `calc(100% - 40px)`;
+    const calcmaxw = `calc(100% - 40px)`;
 
     useEffect(() => {
         if(open_modal_on_page_load) {
             setOpenState(true);
         }
+    //eslint-disable-next-line
     }, [open_modal_on_page_load]);
 
     return (

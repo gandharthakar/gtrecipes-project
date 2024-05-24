@@ -26,7 +26,7 @@ const DELETE_USER = gql`
 `;
 
 const DeleteAccountSettings = () => {
-    let { id } = useParams();
+    const { id } = useParams();
     const sideBarLinks = [
         {
             id: "1",
@@ -58,7 +58,7 @@ const DeleteAccountSettings = () => {
     const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
     const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
-    let [delAcc] = useMutation(DELETE_USER, {
+    const [delAcc] = useMutation(DELETE_USER, {
         onCompleted: fdata => {
             // console.log(fdata);
             // let feimgs = fdata.deleteAccount.recipe_featured_image;
@@ -96,7 +96,7 @@ const DeleteAccountSettings = () => {
                 //         }).catch(err => console.log(err));
                 //     }
                 // }
-                let st = setTimeout(function(){
+                const st = setTimeout(function(){
                     dispatch(do_logout());
                     navigate("/");
                     clearTimeout(st);
@@ -140,7 +140,7 @@ const DeleteAccountSettings = () => {
         if(id !== authUserID) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
@@ -149,11 +149,12 @@ const DeleteAccountSettings = () => {
         if(authUserID !== id) {
             dispatch(do_logout());
             navigate("/");
-            let ss = setTimeout(function(){
+            const ss = setTimeout(function(){
                 window.location.reload();
                 clearTimeout(ss);
             }, 10);
         }
+    //eslint-disable-next-line
     }, []);
 
     return (

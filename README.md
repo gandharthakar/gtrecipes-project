@@ -71,6 +71,6 @@ On client side I am using Vite + React + TypeScript Bundler to build client side
     </a>
     &nbsp;
     <a href="https://www.linkedin.com/in/gandhar-thakar-1b9650148/" title="Follow me on Linkedin" target="_blank">
-        <img src="https://lh3.googleusercontent.com/drive-viewer/AKGpihaBkrH7UTY9GTtmP9XG_HGktZsHO0S-o9N6z9QtKaH9Jn1tNdHdUoIQnJjDcBVlOm3boBds4pUCXKKPqvmFoWd0-H4oLg=w1920-h953" width="50px" height="50px" alt="Linkedin" />
+        <img src="https://lh3.googleusercontent.com/u/0/d/1PhmhEc47lub4fPQy7DFOEjq-gRQVd5QU=w1920-h653-iv1" width="50px" height="50px" alt="Linkedin" />
     </a>
 </p>

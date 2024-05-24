@@ -55,7 +55,7 @@ const Recipes = () => {
 
 	const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
 	const [allRecipes, setAllRecipes] = useState<AllRecipesType[]>([]);
-	let itemsPerPage:number = 9;
+	const itemsPerPage:number = 9;
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const menuRef = useRef<HTMLDivElement>(null);
     const [showFilterMenu, setShowFilterMenu] = useState<boolean>(false);
@@ -63,7 +63,7 @@ const Recipes = () => {
 	const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
     const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
-	let {data, loading} = useQuery(GET_RECIPES, {
+	const {data, loading} = useQuery(GET_RECIPES, {
 		onCompleted: fdata => {
 			// console.log(fdata.getAggrRecipes);
 			setAllRecipes(fdata.getAggrRecipes);
@@ -105,7 +105,7 @@ const Recipes = () => {
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
         if(allRecipes.length > 0) {
-            let res = allRecipes.filter((item) => {
+            const res = allRecipes.filter((item) => {
                 const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 
@@ -146,7 +146,7 @@ const Recipes = () => {
         };
 		if(recType !== '') {
 			if(data.getAggrRecipes.length > 0) {
-				let res = data.getAggrRecipes.filter((item: AllRecipesType) => {
+				const res = data.getAggrRecipes.filter((item: AllRecipesType) => {
 					const srch_res = item.recipe_type.toLowerCase() == recType;
 					return srch_res;
 				});
@@ -166,7 +166,7 @@ const Recipes = () => {
 	}
 
 	useEffect(() => {
-		let menuHandler = (e:any) => {
+		const menuHandler = (e:any) => {
             if(menuRef.current !== null) {
                 if(!menuRef.current.contains(e.target)) {
                     setShowFilterMenu(false);

@@ -52,7 +52,7 @@ const DELETE_ALL_RECIPES = gql`
 `;
 
 const UserRecipes = (props:any) => {
-    let { uid } = props;
+    const { uid } = props;
 
     interface Cats {
         id: string,
@@ -91,7 +91,7 @@ const UserRecipes = (props:any) => {
     });
 
     // Get All Recipes.
-    let {data, loading} = useQuery(GET_ALL_RECIPES, {
+    const {data, loading} = useQuery(GET_ALL_RECIPES, {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata);
@@ -112,7 +112,7 @@ const UserRecipes = (props:any) => {
 		},
     });
 
-    let [delAlRec] = useMutation(DELETE_ALL_RECIPES, {
+    const [delAlRec] = useMutation(DELETE_ALL_RECIPES, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -153,7 +153,7 @@ const UserRecipes = (props:any) => {
                 //     }
                 // }
                 toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
-                let suctmr = setTimeout(function(){
+                const suctmr = setTimeout(function(){
                     window.location.reload();
                     clearTimeout(suctmr);
                 }, 1000);
@@ -175,7 +175,7 @@ const UserRecipes = (props:any) => {
     });
 
     const handleDeleteAll = () => {
-        let conf = confirm("Are you sure want to delete all recipes ?");
+        const conf = confirm("Are you sure want to delete all recipes ?");
         if(conf) {
             delAlRec({
                 variables: {
@@ -207,7 +207,7 @@ const UserRecipes = (props:any) => {
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
         if(allRecipes.length > 0) {
-            let res = allRecipes.filter((item) => {
+            const res = allRecipes.filter((item) => {
                 const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 

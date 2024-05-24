@@ -17,7 +17,7 @@ const SiteHeader = () => {
 	}
 
 	useEffect(() => {
-		let menuHandler = (e:any) => {
+		const menuHandler = (e:any) => {
             if(menuRef.current !== null) {
                 if(!menuRef.current.contains(e.target)) {
                     setToggleMenu(false);
@@ -32,6 +32,7 @@ const SiteHeader = () => {
         } else {
             setHomeActive("");
         }
+	//eslint-disable-next-line
 	}, []);
 
 	return (
@@ -90,8 +91,8 @@ const SiteHeader = () => {
 								</li>
 								<li className="twgtr-px-3 lg:twgtr-px-0 twgtr-w-full lg:twgtr-w-auto twgtr-py-3 lg:twgtr-py-0 twgtr-border-b-[1px] twgtr-border-slate-300 lg:twgtr-border-0 dark:twgtr-bg-slate-900 dark:twgtr-border-slate-700 lg:twgtr-hidden">
 									<NavLink to="/register" title="Register" className="twgtr-transition-all twgtr-inline-block twgtr-border-2 twgtr-font-open_sans twgtr-font-bold twgtr-text-sm twgtr-border-theme-color-2 twgtr-py-[7px] twgtr-px-3 twgtr-text-theme-color-2 hover:twgtr-bg-theme-color-2 hover:twgtr-text-slate-200 md:twgtr-text-base md:twgtr-px-5 dark:twgtr-border-theme-color-4 dark:twgtr-text-theme-color-4 dark:hover:twgtr-bg-theme-color-4 dark:hover:twgtr-text-slate-200">
-                                		Register
-                            		</NavLink>
+										Register
+									</NavLink>
 								</li>
 							</ul>
 						</nav>

@@ -23,7 +23,7 @@ const RESET_PASSWORD = gql`
 `;
 
 const ResetPassowrd = () => {
-	let { id, token } = useParams();
+	const { id, token } = useParams();
 
 	const navigate = useNavigate();
 	const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
@@ -41,7 +41,7 @@ const ResetPassowrd = () => {
 			}
 			if(data.resetUserPassword.success) {
 				toast.success(data.resetUserPassword.message, toastDefOpts);
-				let ss = setTimeout(function(){
+				const ss = setTimeout(function(){
 					navigate("/");
 					clearTimeout(ss);
 				}, 2000);
@@ -103,13 +103,14 @@ const ResetPassowrd = () => {
         // const detectMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
         // Manually Toggle and Save Dark Mode.
-        let glsi = localStorage.getItem('site-dark-mode');
+        const glsi = localStorage.getItem('site-dark-mode');
         const checkDM = glsi ? JSON.parse(glsi) : '';
         if(checkDM) {
             dispatch(set_dark_mode());
         } else {
             dispatch(unset_dark_mode());
         }
+	//eslint-disable-next-line
     }, []);
 
 	return (

@@ -4,7 +4,7 @@ import ReactPaginate from "react-paginate";
 
 const RCSpage = (props:any) => {
 
-    let { cdata, itemsPerPage=5 } = props;
+    const { cdata, itemsPerPage=5 } = props;
 
     const [itemOffset, setItemOffset] = useState<number>(0);
     const endOffset = itemOffset + itemsPerPage;

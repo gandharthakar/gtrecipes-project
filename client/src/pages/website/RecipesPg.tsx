@@ -4,7 +4,7 @@ import RecipeCard from "../../components/website/RecipeCard";
 
 const RecipesPg = (props:any) => {
 
-    let { cdata, itemsPerPage=5 } = props;
+    const { cdata, itemsPerPage=5 } = props;
 
     const [itemOffset, setItemOffset] = useState<number>(0);
     const endOffset = itemOffset + itemsPerPage;

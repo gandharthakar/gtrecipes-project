@@ -43,7 +43,7 @@ const DELETE_ALL_CATEGORIES = gql`
 
 const RecipeCategories = (props:any) => {
 
-    let { uid, showModal, setShowModal } = props;
+    const { uid, showModal, setShowModal } = props;
 
     interface RecCats {
         id: string,
@@ -63,7 +63,7 @@ const RecipeCategories = (props:any) => {
     const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
     // Get All Categories.
-    let {data, loading} = useQuery(GET_RECIPE_CATEGORIES, {
+    const {data, loading} = useQuery(GET_RECIPE_CATEGORIES, {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata);
@@ -97,7 +97,7 @@ const RecipeCategories = (props:any) => {
         },
     });
 
-    let [delAlCts] = useMutation(DELETE_ALL_CATEGORIES, {
+    const [delAlCts] = useMutation(DELETE_ALL_CATEGORIES, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -108,7 +108,7 @@ const RecipeCategories = (props:any) => {
             if(fdata.deleteAllRecipeCategory.success) {
                 toast.success(fdata.deleteAllRecipeCategory.message, toastDefOpts);
                 if(fdata.deleteAllRecipeCategory.message !== "No Categories Found.") {
-                    let suctmr = setTimeout(function(){
+                    const suctmr = setTimeout(function(){
                         window.location.reload();
                         clearTimeout(suctmr);
                     }, 1000);
@@ -131,7 +131,7 @@ const RecipeCategories = (props:any) => {
     })
 
     const handleDeleteAll = () => {
-        let conf = confirm("Are you sure want to delete all categories ?");
+        const conf = confirm("Are you sure want to delete all categories ?");
         if(conf) {
             delAlCts({
                 variables: {
@@ -163,7 +163,7 @@ const RecipeCategories = (props:any) => {
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
         if(recipeCats.length > 0) {
-            let res = recipeCats.filter((item) => {
+            const res = recipeCats.filter((item) => {
                 const srch_res = item.recipe_category_name.toLowerCase().includes(searchTerm.toLowerCase()) || item.recipe_category_slug.toLowerCase().includes(searchTerm.toLowerCase());
                 return srch_res;
             });

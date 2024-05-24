@@ -20,7 +20,7 @@ interface CompProp {
 
 const NotifyBar = (props: CompProp) => {
 
-    let { notify_title, message, notify_type="default", view_notify_icon=false, notify_closable=false, show_bar=false, set_show_bar, open_on_page_load=false } = props;
+    const { notify_title, message, notify_type="default", view_notify_icon=false, notify_closable=false, show_bar=false, set_show_bar, open_on_page_load=false } = props;
     const AllowedTypes: string[] = ["info", "error", "warning", "success", "default"];
 
     const handleCloseClick = () => {
@@ -33,6 +33,7 @@ const NotifyBar = (props: CompProp) => {
                 set_show_bar(true);
             }
         }
+    //eslint-disable-next-line
     }, []);
 
     return (

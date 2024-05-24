@@ -42,7 +42,7 @@ const GET_ALL_RECIPES = gql`
 `;
 
 const UserSavedRecipes = (props:any) => {
-    let { uid } = props;
+    const { uid } = props;
 
     interface Cats {
         id: string,
@@ -85,7 +85,7 @@ const UserSavedRecipes = (props:any) => {
     });
 
     // Get All Recipes.
-    let {data, loading} = useQuery(GET_ALL_RECIPES, {
+    const {data, loading} = useQuery(GET_ALL_RECIPES, {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata?.getUserByID.saved_recipes);
@@ -128,7 +128,7 @@ const UserSavedRecipes = (props:any) => {
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
         if(allRecipes.length > 0) {
-            let res = allRecipes.filter((item) => {
+            const res = allRecipes.filter((item) => {
                 const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 

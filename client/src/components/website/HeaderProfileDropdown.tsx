@@ -36,11 +36,12 @@ const HeaderProfileDropdown = () => {
     const authUser = cookies.get("gjtrewcipets_auth_user");
     const authUserID = cookies.get("gjtrewcipets_auth_user_id");
     if(authUser) {
+        //eslint-disable-next-line
         useQuery(GET_USER_DETAILS, {
             variables: { id: authUserID },
             onCompleted: data => {
                 // Set Profile Photo.
-                let upp = data.getUserPhotoAndName.user_photo;
+                const upp = data.getUserPhotoAndName.user_photo;
                 if(upp !== '') {
                     setProfilePhoto(upp);
                 } else {
@@ -48,32 +49,32 @@ const HeaderProfileDropdown = () => {
                 }
 
                 // Set User Name.
-                let unm = data.getUserPhotoAndName.user_name;
-                let spltar = unm?.split(" ") || [];
+                const unm = data.getUserPhotoAndName.user_name;
+                const spltar = unm?.split(" ") || [];
                 if(spltar?.length === 1) {
-                    let slcnam = spltar[0].split();
+                    const slcnam = spltar[0].split();
                     if(slcnam?.length === 1) {
-                        let ch1 = slcnam[0].charAt(0);
-                        let gch2 = slcnam[0].charAt(1);
-                        let ch2 = gch2 ? gch2 : '';
+                        const ch1 = slcnam[0].charAt(0);
+                        const gch2 = slcnam[0].charAt(1);
+                        const ch2 = gch2 ? gch2 : '';
                         setUserName(ch1+ch2);
                     } else {
                         if(slcnam < 3) {
-                            let c1 = slcnam.charAt(0);
-                            let c2 = slcnam.charAt(1);
+                            const c1 = slcnam.charAt(0);
+                            const c2 = slcnam.charAt(1);
                             setUserName(c1 + c2);
                         }
                     }
                 } else {
                     if(spltar?.length < 3) {
-                        let w1 = spltar[0];
-                        let w2 = spltar[1];
-                        let fwc1 = w1.charAt(0);
-                        let fwc2 = w2.charAt(0);
+                        const w1 = spltar[0];
+                        const w2 = spltar[1];
+                        const fwc1 = w1.charAt(0);
+                        const fwc2 = w2.charAt(0);
                         setUserName(fwc1+fwc2);
                     } else {
-                        let w1 = spltar[0];
-                        let w2 = spltar[1];
+                        const w1 = spltar[0];
+                        const w2 = spltar[1];
                         let sp1 = '';
                         let sp2 = '';
                         if(w1.length === 1) {
@@ -117,7 +118,7 @@ const HeaderProfileDropdown = () => {
             });
         }
 
-        let menuHandler = (e:any) => {
+        const menuHandler = (e:any) => {
             if(menuRef.current !== null) {
                 if(!menuRef.current.contains(e.target)) {
                     setShowProfileMenu(false);
@@ -126,6 +127,7 @@ const HeaderProfileDropdown = () => {
         };
 
         document.addEventListener('mousedown', menuHandler);
+    //eslint-disable-next-line
     }, []);
 
     const handleClick = () => {
@@ -135,7 +137,7 @@ const HeaderProfileDropdown = () => {
     const makeLogoutUser = () => {
         dispatch(do_logout());
         navigate("/");
-        let ss = setTimeout(function(){
+        const ss = setTimeout(function(){
             window.location.reload();
             clearTimeout(ss);
         }, 300);
