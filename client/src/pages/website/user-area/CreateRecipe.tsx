@@ -22,17 +22,17 @@ import { do_logout } from "../../../redux-service/website/auth/UserLoginReducer"
 import NotifyBar from '../NotifyBar';
 
 const config: Jodit['options'] = { ...Jodit.defaultOptions, height: 400 }
-function makeid(length:any) {
-	let result = '';
-	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	const charactersLength = characters.length;
-	let counter = 0;
-	while (counter < length) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		counter += 1;
-	}
-	return result;
-}
+// function makeid(length:any) {
+// 	let result = '';
+// 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// 	const charactersLength = characters.length;
+// 	let counter = 0;
+// 	while (counter < length) {
+// 		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+// 		counter += 1;
+// 	}
+// 	return result;
+// }
 function getDateTimeString() {
     const now = new Date();
     const day = now.getDate().toString().padStart(2, '0'); // Zero pad day
@@ -310,13 +310,13 @@ const CreateRecipe = () => {
             theme: `${ThemeMode ? 'dark' : 'light'}`
         }
 
-        const fnam = featuredImage;
-        let newFileName = '';
-        if(fnam == defaultFeImgPath) {
-            newFileName = 'default';
-        } else {
-            newFileName = `${makeid(12)}_${Date.now()}.${fileExt}`;
-        }
+        // const fnam = featuredImage;
+        // let newFileName = '';
+        // if(fnam == defaultFeImgPath) {
+        //     newFileName = 'default';
+        // } else {
+        //     newFileName = `${makeid(12)}_${Date.now()}.${fileExt}`;
+        // }
         
         // Get file extention.
         const allowedFileTypes = ["jpg", "png"];

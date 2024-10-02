@@ -89,8 +89,7 @@ const UserSavedRecipes = (props:any) => {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata?.getUserByID.saved_recipes);
-            let rev_rec = [...grcdata?.getUserByID.saved_recipes].reverse();
-            setAllRecipes(rev_rec);
+            setAllRecipes(grcdata?.getUserByID.saved_recipes);
             setShowNotifyBar(false);
             setNotifyBarMsg('');
         },
@@ -110,8 +109,7 @@ const UserSavedRecipes = (props:any) => {
     const handleSearchInputChange = (e:any) => {
         setSearchTerm(e.target.value);
         if(searchTerm.length === 1) {
-            let rev_rec = [...data.getUserByID.saved_recipes].reverse();
-            setAllRecipes(rev_rec);
+            setAllRecipes(data.getUserByID.saved_recipes);
         }
     }
 
@@ -119,8 +117,7 @@ const UserSavedRecipes = (props:any) => {
         setSearchTerm(e.target.value);
         if(e.target.value !== '') {
             if(e.key === "Backspace") {
-                let rev_rec = [...data.getUserByID.saved_recipes].reverse();
-                setAllRecipes(rev_rec);
+                setAllRecipes(data.getUserByID.saved_recipes);
             }
         }
     }

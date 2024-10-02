@@ -23,17 +23,17 @@ import NotifyBar from '../NotifyBar';
 
 const config: Jodit['options'] = { ...Jodit.defaultOptions, height: 400 }
 
-function makeid(length:any) {
-	let result = '';
-	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	const charactersLength = characters.length;
-	let counter = 0;
-	while (counter < length) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		counter += 1;
-	}
-	return result;
-}
+// function makeid(length:any) {
+// 	let result = '';
+// 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// 	const charactersLength = characters.length;
+// 	let counter = 0;
+// 	while (counter < length) {
+// 		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+// 		counter += 1;
+// 	}
+// 	return result;
+// }
 
 const GET_RECIPE_CATEGORIES = gql`
     query getAllRecipeCategories($id: ID!) {
@@ -112,7 +112,7 @@ const EditRecipe = () => {
     const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
     const defaultFeImgPath = 'https://placehold.co/600x400?text=Featured+Image.';
     // const feImgBasePath = `${import.meta.env.VITE_BACKEND_URI_BASE}/uploads/recipe-featured-images`;
-    const fallBackFeImg = 'images/default-feimg.svg';
+    // const fallBackFeImg = 'images/default-feimg.svg';
 
     const [recipeTitle, setRecipeTitle] = useState<string>('');
     const [recipeSummary, setRecipeSummary] = useState<string>('');
@@ -598,6 +598,7 @@ const EditRecipe = () => {
                 show_bar={showNotifyBar}
                 set_show_bar={setShowNotifyBar}
             />
+            <div className='twgtr-hidden'>{dumpImg}</div>
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
