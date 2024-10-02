@@ -67,7 +67,8 @@ const RecipeCategories = (props:any) => {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata);
-            setRecipeCats(grcdata?.getAllRecipeCategories);
+            let rev_cats = [...grcdata?.getAllRecipeCategories].reverse();
+            setRecipeCats(rev_cats);
             setShowNotifyBar(false);
             setNotifyBarMsg('');
         },
@@ -144,14 +145,18 @@ const RecipeCategories = (props:any) => {
     const handleSearchInputChange = (e:any) => {
         setSearchTerm(e.target.value);
         if(searchTerm.length === 1) {
-            setRecipeCats(data.getAllRecipeCategories);
+            let rev_rec = [...data.getAllRecipeCategories].reverse();
+            setRecipeCats(rev_rec);
         }
     }
 
     const handleSearchInputKeyDown = (e:any) => {
         setSearchTerm(e.target.value);
-        if(e.key === "Backspace") {
-            setRecipeCats(data.getAllRecipeCategories);
+        if(e.target.value !== '') {
+            if(e.key === "Backspace") {
+                let rev_rec = [...data.getAllRecipeCategories].reverse();
+                setRecipeCats(rev_rec);
+            }
         }
     }
 
@@ -162,29 +167,33 @@ const RecipeCategories = (props:any) => {
             closeOnClick: true,
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
-        if(recipeCats.length > 0) {
-            const res = recipeCats.filter((item) => {
-                const srch_res = item.recipe_category_name.toLowerCase().includes(searchTerm.toLowerCase()) || item.recipe_category_slug.toLowerCase().includes(searchTerm.toLowerCase());
-                return srch_res;
-            });
+        if(searchTerm !== '') {
+            if(recipeCats.length > 0) {
+                const res = recipeCats.filter((item) => {
+                    const srch_res = item.recipe_category_name.toLowerCase().includes(searchTerm.toLowerCase()) || item.recipe_category_slug.toLowerCase().includes(searchTerm.toLowerCase());
+                    return srch_res;
+                });
 
-            if(res.length > 0) {
-                setRecipeCats(res);
-                if(searchTerm == '') {
-                    // setRecipeCats(data.getAllRecipeCategories);
-                    setRecipeCats([]);
-                    toast.warn("No Recipes Found", toastDefOpts);
+                if(res.length > 0) {
+                    setRecipeCats(res);
+                    if(searchTerm == '') {
+                        // setRecipeCats(data.getAllRecipeCategories);
+                        setRecipeCats([]);
+                        toast.warn("No Recipes Found", toastDefOpts);
+                    }
+                } else {
+                    if(searchTerm == '') {
+                        // setRecipeCats(data.getAllRecipeCategories);
+                        setRecipeCats([]);
+                        toast.warn("No Recipes Found", toastDefOpts);
+                    }
+                    setRecipeCats(res);
                 }
             } else {
-                if(searchTerm == '') {
-                    // setRecipeCats(data.getAllRecipeCategories);
-                    setRecipeCats([]);
-                    toast.warn("No Recipes Found", toastDefOpts);
-                }
-                setRecipeCats(res);
+                toast.info("No Categories Found", toastDefOpts);
             }
         } else {
-            toast.info("No Categories Found", toastDefOpts);
+            toast.error("Please enter some value.", toastDefOpts);
         }
     }
 

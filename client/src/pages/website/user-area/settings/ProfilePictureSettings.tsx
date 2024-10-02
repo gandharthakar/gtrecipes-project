@@ -146,6 +146,7 @@ const ProfilePictureSettings = () => {
             const fileReader = new FileReader();
             fileReader.readAsDataURL(file)
             fileReader.onload = () => {
+                // eslint-disable-next-line
                 typeof fileReader.result === "string" ?
                 resolve(fileReader.result)
                 : reject("Unexpected type received from FileReader");

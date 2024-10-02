@@ -129,7 +129,7 @@ const CreateRecipe = () => {
     const [hasFeImage, setHasFeImage] = useState<boolean>(false);
     const [imgFIle, setImgFile] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [recType, setRecType] = useState<string>('veg');
+    const [recType, setRecType] = useState<string>('');
     interface timeMatricks {
         cook_time: string,
         prep_time: string,
@@ -172,7 +172,7 @@ const CreateRecipe = () => {
         }
     });
 
-    const [crtNewRec, {error}] = useMutation(CREATE_NEW_RECIPE, {
+    const [crtNewRec] = useMutation(CREATE_NEW_RECIPE, {
         onCompleted: fdata => {
             // console.log(fdata);
             const toastDefOpts = {
@@ -181,34 +181,12 @@ const CreateRecipe = () => {
                 theme: `${ThemeMode ? 'dark' : 'light'}`
             };
             if(fdata.createNewRecipe.success) {
-                const allowedFileTypes = ["jpg", "png"];
-                if(featuredImage == defaultFeImgPath) {
-                    if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
-                        if(!error) {
-                            toast.success(fdata.createNewRecipe.message, toastDefOpts);
-                            setTimeout(function(){
-                                // navigate(`/user-area/profile/${id}`);
-                                window.location.href = `/user-area/profile/${id}`;
-                            }, 1500);
-                        } else {
-                            setShowNotifyBar(true);
-                            setNotifyBarMsg(error.message);
-                            setIsLoading(false);
-                        }
-                    }
-
-                    if(imgFIle !== '') {
-                        if(!allowedFileTypes.includes(fileExt) || !filSize || !fileDimensions) {
-                            setIsLoading(false);
-                        } else {
-                            toast.success(fdata.updateRecipe.message, toastDefOpts);
-                            setTimeout(function(){
-                                // navigate(`/user-area/profile/${id}`);
-                                window.location.href = `/user-area/profile/${id}`;
-                            }, 1500);
-                        }
-                    }
-                }
+                toast.success(fdata.createNewRecipe.message, toastDefOpts);
+                setIsLoading(false);
+                let st = setTimeout(() => {
+                    window.location.href = `/user-area/profile/${id}`;
+                    clearTimeout(st);
+                }, 1500);
             } else {
                 toast.error(fdata.createNewRecipe.message, toastDefOpts);
                 setIsLoading(false);
@@ -303,6 +281,7 @@ const CreateRecipe = () => {
             const fileReader = new FileReader();
             fileReader.readAsDataURL(file)
             fileReader.onload = () => {
+                // eslint-disable-next-line
                 typeof fileReader.result === "string" ?
                 resolve(fileReader.result)
                 : reject("Unexpected type received from FileReader");
@@ -338,7 +317,7 @@ const CreateRecipe = () => {
         } else {
             newFileName = `${makeid(12)}_${Date.now()}.${fileExt}`;
         }
-
+        
         // Get file extention.
         const allowedFileTypes = ["jpg", "png"];
         let isValidImg = false;
@@ -357,8 +336,6 @@ const CreateRecipe = () => {
                 }
             }
         }
-
-        // console.log(imgFIle);
 
         type RecData = {
             recipe_title: string,
@@ -393,6 +370,7 @@ const CreateRecipe = () => {
             recipe_total_time: '',
             recipe_created_at: ''
         };
+
         const ingradients: string[] = [];
         // recins.map((item) => ingradients.push(item.recipe_ingredient));
         recins.map((item) => {
@@ -403,8 +381,11 @@ const CreateRecipe = () => {
             }
         });
 
-        if(recipeTitle == '' && editorContent == '' && recipeSummary == '') {
-            toast.error("Required fields is empty.", toastDefOpts);
+        let arr = [recipeTitle, recType, editorContent, recipeSummary];
+        let respo = arr.every(item => item !== '');
+
+        if(!respo) {
+            toast.error("Missing Required Fields.", toastDefOpts);
             data = {
                 recipe_title: '',
                 recipe_type: '',
@@ -423,13 +404,23 @@ const CreateRecipe = () => {
             };
             setIsLoading(false);
         } else {
+            let finImg = '';
+            if(imgFIle == '') {
+                finImg = 'default'
+            } else {
+                if(isValidImg) {
+                    finImg = imgFIle
+                } else {
+                    finImg = 'default'
+                }
+            }
             data = {
                 recipe_title: recipeTitle,
                 recipe_type: recType,
                 recipe_summary: recipeSummary,
                 recipe_content: editorContent,
                 recipe_ingradients: ingradients ? ingradients : [],
-                recipe_featured_image: imgFIle == '' ? 'default' : isValidImg ? imgFIle : '',
+                recipe_featured_image: finImg,
                 recipe_categories: category && category.length > 0 ? category.map(item => item.value) : [],
                 recipe_author: authorName,
                 recipe_author_id: id ? id: '',
@@ -439,44 +430,17 @@ const CreateRecipe = () => {
                 recipe_total_time: tmMat.total_time,
                 recipe_created_at: getDateTimeString()
             }
-            if(isValidImg) {
+            
+            if(finImg !== 'default' && isValidImg) {
+                crtNewRec({
+                    variables: {...data}
+                });
+            } else {
                 crtNewRec({
                     variables: {...data}
                 });
             }
         }
-
-        if(recipeTitle !== '' && editorContent !== '' && recipeSummary !== '') {
-            if(newFileName !== "Default") {
-                if(isValidImg) {
-                    setTimeout(function(){
-                        // navigate(`/user-area/profile/${id}`);
-                        window.location.href = `/user-area/profile/${id}`;
-                    }, 1500);
-                } else {
-                    setIsLoading(false);
-                }
-            }
-        }
-
-        // if(fnam !== defaultFeImgPath) {
-        //     const file = new File([imgFIle], newFileName);
-        //     const fData = new FormData();
-        //     fData.append('file', file);
-        //     axios.post('http://localhost:48256/site-uploads/recipe-featured-images', fData)
-        //     .then((res) => {
-        //         // console.log(res);
-        //         if(res.status === 200) {
-        //             setTimeout(function(){
-        //                 // navigate(`/user-area/profile/${id}`);
-        //                 window.location.href = `/user-area/profile/${id}`;
-        //             }, 1500);
-        //         }  else {
-        //             toast.error("Something Is Wrong!", toastDefOpts);
-        //         }
-        //     })
-        //     .catch(err => toast.error(err.message, toastDefOpts));
-        // }
     }
 
     useEffect(() => {
@@ -525,7 +489,7 @@ const CreateRecipe = () => {
             />
             <div className="twgtr-transition-all twgtr-bg-slate-100 twgtr-py-10 twgtr-px-4 dark:twgtr-bg-slate-800">
                 <div className="site-container">
-                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                    <form onSubmit={handleSubmit}>
                         <div className="twgtr-flex twgtr-gap-[20px] twgtr-items-start twgtr-flex-col lg:twgtr-flex-row">
                             <div className="twgtr-transition-all twgtr-w-full lg:twgtr-w-[70%] twgtr-bg-white twgtr-border twgtr-border-solid twgtr-border-slate-200 twgtr-px-4 twgtr-py-6 dark:twgtr-bg-slate-700 dark:twgtr-border-slate-600">
                                 <div className="twgtr-pb-4">
@@ -554,6 +518,7 @@ const CreateRecipe = () => {
                                         onChange={(e) => setRecType(e.target.value)}
                                         value={recType} 
                                     >
+                                        <option value="">-- Select --</option>
                                         <option value="veg">Veg</option>
                                         <option value="nonveg">NonVeg</option>
                                     </select>

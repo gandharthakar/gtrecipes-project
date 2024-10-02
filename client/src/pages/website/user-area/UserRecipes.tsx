@@ -95,7 +95,8 @@ const UserRecipes = (props:any) => {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata);
-            setAllRecipes(grcdata?.getAllRecipes);
+            let rev_rec = [...grcdata?.getAllRecipes].reverse();
+            setAllRecipes(rev_rec);
             setShowNotifyBar(false);
             setNotifyBarMsg('');
         },
@@ -188,14 +189,18 @@ const UserRecipes = (props:any) => {
     const handleSearchInputChange = (e:any) => {
         setSearchTerm(e.target.value);
         if(searchTerm.length === 1) {
-            setAllRecipes(data.getAllRecipes);
+            let rev_rec = [...data.getAllRecipes].reverse();
+            setAllRecipes(rev_rec);
         }
     }
 
     const handleSearchInputKeyDown = (e:any) => {
         setSearchTerm(e.target.value);
-        if(e.key === "Backspace") {
-            setAllRecipes(data.getAllRecipes);
+        if(e.target.value !== '') {
+            if(e.key === "Backspace") {
+                let rev_rec = [...data.getAllRecipes].reverse();
+                setAllRecipes(rev_rec);
+            }
         }
     }
 
@@ -206,36 +211,40 @@ const UserRecipes = (props:any) => {
             closeOnClick: true,
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
-        if(allRecipes.length > 0) {
-            const res = allRecipes.filter((item) => {
-                const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 
-                item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) || 
-				item.recipe_type.toLowerCase().startsWith(searchTerm.toLowerCase());
-                return srch_res;
-            });
+        if(searchTerm !== '') {
+            if(allRecipes.length > 0) {
+                const res = allRecipes.filter((item) => {
+                    const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 
+                    item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) || 
+                    item.recipe_type.toLowerCase().startsWith(searchTerm.toLowerCase());
+                    return srch_res;
+                });
 
-            if(res.length > 0) {
-                setAllRecipes(res);
-                if(searchTerm == '') {
-                    // setAllRecipes(data.getAllRecipes);
-                    setAllRecipes([]);
-                    toast.warn("No Recipes Found", toastDefOpts);
+                if(res.length > 0) {
+                    setAllRecipes(res);
+                    if(searchTerm == '') {
+                        // setAllRecipes(data.getAllRecipes);
+                        setAllRecipes([]);
+                        toast.warn("No Recipes Found", toastDefOpts);
+                    }
+                } else {
+                    if(searchTerm == '') {
+                        // setAllRecipes(data.getAllRecipes);
+                        setAllRecipes([]);
+                        toast.warn("No Recipes Found", toastDefOpts);
+                    }
+                    setAllRecipes(res);
                 }
+                // console.log(res);
             } else {
-                if(searchTerm == '') {
-                    // setAllRecipes(data.getAllRecipes);
-                    setAllRecipes([]);
-                    toast.warn("No Recipes Found", toastDefOpts);
-                }
-                setAllRecipes(res);
+                toast.info("No Recipes Found", toastDefOpts);
+                // setAllRecipes(data.getAllRecipes);
             }
-            // console.log(res);
         } else {
-            toast.info("No Recipes Found", toastDefOpts);
-            // setAllRecipes(data.getAllRecipes);
+            toast.error("Please enter some value.", toastDefOpts);
         }
     }
 

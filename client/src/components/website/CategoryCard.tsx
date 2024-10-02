@@ -107,13 +107,13 @@ const CategoryCard = (props: CompProps) => {
         }
     });
 
-    const handleCreateCatModalInputChange = (e:any) => {
+    const handleCreateCatModalInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setCreateCat(value);
         setCreateCatSlug(convertToSlug(value));
     }
 
-    const handleSubmit = (e:any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const toastDefOpts = {

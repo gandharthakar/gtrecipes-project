@@ -66,7 +66,8 @@ const Recipes = () => {
 	const {data, loading} = useQuery(GET_RECIPES, {
 		onCompleted: fdata => {
 			// console.log(fdata.getAggrRecipes);
-			setAllRecipes(fdata.getAggrRecipes);
+			let rev_rec = [...fdata.getAggrRecipes].reverse();
+			setAllRecipes(rev_rec);
 			setShowNotifyBar(false);
 			setNotifyBarMsg('');
 		},
@@ -86,15 +87,19 @@ const Recipes = () => {
 	const handleSearchInputChange = (e:any) => {
         setSearchTerm(e.target.value);
         if(searchTerm.length === 1) {
-            setAllRecipes(data.getAggrRecipes);
+			let rev_rec = [...data.getAggrRecipes].reverse();
+            setAllRecipes(rev_rec);
         }
     }
 
     const handleSearchInputKeyDown = (e:any) => {
         setSearchTerm(e.target.value);
-        if(e.key === "Backspace") {
-            setAllRecipes(data.getAggrRecipes);
-        }
+		if(e.target.value !== '') {
+			if(e.key === "Backspace") {
+				let rev_rec = [...data.getAggrRecipes].reverse();
+            	setAllRecipes(rev_rec);
+			}
+		}
     }
 
 	const handleSearchSubmit = (e:any) => {
@@ -104,37 +109,41 @@ const Recipes = () => {
             closeOnClick: true,
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
-        if(allRecipes.length > 0) {
-            const res = allRecipes.filter((item) => {
-                const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 
-                item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) || 
-				item.recipe_type.toLowerCase().startsWith(searchTerm.toLowerCase());
-                return srch_res;
-            });
+		if(searchTerm !== '') {
+			if(allRecipes.length > 0) {
+				const res = allRecipes.filter((item) => {
+					const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+					item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
+					item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 
+					item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) || 
+					item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) || 
+					item.recipe_type.toLowerCase().startsWith(searchTerm.toLowerCase());
+					return srch_res;
+				});
 
-            if(res.length > 0) {
-                setAllRecipes(res);
-                if(searchTerm == '') {
-                    // setAllRecipes(data.getAllRecipes);
-                    setAllRecipes([]);
-                    toast.warn("No Recipes Found", toastDefOpts);
-                }
-            } else {
-                if(searchTerm == '') {
-                    // setAllRecipes(data.getAllRecipes);
-                    setAllRecipes([]);
-                    toast.warn("No Recipes Found", toastDefOpts);
-                }
-                setAllRecipes(res);
-            }
-            // console.log(res);
-        } else {
-            toast.info("No Recipes Found", toastDefOpts);
-            // setAllRecipes(data.getAllRecipes);
-        }
+				if(res.length > 0) {
+					setAllRecipes(res);
+					if(searchTerm == '') {
+						// setAllRecipes(data.getAllRecipes);
+						setAllRecipes([]);
+						toast.warn("No Recipes Found", toastDefOpts);
+					}
+				} else {
+					if(searchTerm == '') {
+						// setAllRecipes(data.getAllRecipes);
+						setAllRecipes([]);
+						toast.warn("No Recipes Found", toastDefOpts);
+					}
+					setAllRecipes(res);
+				}
+				// console.log(res);
+			} else {
+				toast.info("No Recipes Found", toastDefOpts);
+				// setAllRecipes(data.getAllRecipes);
+			}
+		} else {
+			toast.error("Please enter some value.", toastDefOpts);
+		}
     }
 
 	const handleFilterSubmit = (e:any) => {

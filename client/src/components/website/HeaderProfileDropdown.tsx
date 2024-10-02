@@ -118,7 +118,7 @@ const HeaderProfileDropdown = () => {
             });
         }
 
-        const menuHandler = (e:any) => {
+        const menuHandler = (e: any) => {
             if(menuRef.current !== null) {
                 if(!menuRef.current.contains(e.target)) {
                     setShowProfileMenu(false);
