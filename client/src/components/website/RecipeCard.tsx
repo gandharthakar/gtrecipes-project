@@ -148,6 +148,10 @@ const RecipeCard = (props: CompProp) => {
             //     toast.error(fdata.unsaveRecipe.message, toastDefOpts);
             // }
             alert(fdata.unsaveRecipe.message);
+            let st = setTimeout(() => {
+                window.location.reload();
+                clearTimeout(st);
+            }, 1000);
         }
     });
     
@@ -215,7 +219,6 @@ const RecipeCard = (props: CompProp) => {
                             }
                         });
                         setRecSaved(false);
-                        window.location.reload();
                     }
                 } else {
                     unSavRec({
