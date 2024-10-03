@@ -170,7 +170,8 @@ const Recipes = () => {
 
 	const handleClearClick = () => {
 		setRecType("");
-		setAllRecipes(data.getAggrRecipes);
+		let rev_rec = [...data.getAggrRecipes].reverse();
+        setAllRecipes(rev_rec);
 		setShowFilterMenu(false);
 	}
 
