@@ -14,7 +14,7 @@ function uploadFileWithDest(dest) {
     const multStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             // console.log(dest);
-            cb(null, 'public/uploads/'+ dest);
+            cb(null, 'public/uploads/' + dest);
         },
         filename: (req, file, cb) => {
             // cb(null, file.originalname + path.extname(file.originalname));
@@ -34,30 +34,32 @@ function uploadFileWithDest(dest) {
     return fileUpload;
 }
 
-async function startApolloServer(typeDefs, resolvers){
-    
+async function startApolloServer(typeDefs, resolvers) {
+
     gtrecipes_mdb();
 
     // const server = new ApolloServer({typeDefs, resolvers, csrfPrevention: true})
     const server = new ApolloServer({
-        typeDefs, 
+        typeDefs,
         resolvers,
         introspection: false,
         playground: false,
         persistedQueries: false,
     })
     const app = express();
-    app.use(cors());
+    app.use(cors({
+        origin: ["http://localhost:5173", "https://gtrecipes.netlify.app", "http://localhost:48256", "https://studio.apollographql.com", "https://gtrecipes-project.onrender.com"]
+    }));
     app.use(express.json({ limit: '10mb' }));
     // app.use(express.json({ limit: '10mb', extended: false }));
     // app.use(express.urlencoded({ limit: '10mb', extended: false }));
     app.use('/uploads', express.static(path.join(__dirname, './public/uploads')));
     await server.start();
     server.applyMiddleware({
-        app, 
+        app,
         path: '/graphql',
         bodyParserConfig: {
-            limit:"10mb"
+            limit: "10mb"
         }
     });
 
@@ -65,12 +67,12 @@ async function startApolloServer(typeDefs, resolvers){
         // console.log(req.file);
         // console.log(req.params.dest);
         let currUpload = uploadFileWithDest(req.params.dest);
-        currUpload(req,res,function(err){
-            if(err){
-                 res.json({error_code:1,err_desc:err});
-                 return;
+        currUpload(req, res, function (err) {
+            if (err) {
+                res.json({ error_code: 1, err_desc: err });
+                return;
             }
-            res.json({error_code:0,err_desc:null});
+            res.json({ error_code: 0, err_desc: null });
         });
         console.log("Requested File has been uploaded!");
     });
@@ -80,7 +82,7 @@ async function startApolloServer(typeDefs, resolvers){
         // console.log(req.body.fileName);
         const filename = req.body.fileName;
         const dest = req.params.dest;
-        const filePath = path.join(__dirname, './public/uploads/'+dest, filename);
+        const filePath = path.join(__dirname, './public/uploads/' + dest, filename);
 
         // Check if file exists before deletion
         fs.access(filePath, fs.constants.F_OK, (err) => {
@@ -97,8 +99,8 @@ async function startApolloServer(typeDefs, resolvers){
             });
         });
     });
-    
-    app.listen(port, () => { 
+
+    app.listen(port, () => {
         console.log(`Server is listening on port ${port}${server.graphqlPath}`);
     })
 }
