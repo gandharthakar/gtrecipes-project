@@ -34,39 +34,39 @@ const GET_RECIPES = gql`
 const Recipes = () => {
 
 	interface Cats {
-        id: string,
-        recipe_category_name: string
-    }
+		id: string,
+		recipe_category_name: string
+	}
 
-    interface AllRecipesType {
-        id: string,
-        recipe_title: string,
-        recipe_type: string,
-        recipe_featured_image: string,
-        recipe_summary: string,
-        recipe_content: string,
-        author: {
-            author_id: string,
-            author_name: string
-        },
-        recipe_categories: [Cats],
-        recipe_ingradients: [string]
-    }
+	interface AllRecipesType {
+		id: string,
+		recipe_title: string,
+		recipe_type: string,
+		recipe_featured_image: string,
+		recipe_summary: string,
+		recipe_content: string,
+		author: {
+			author_id: string,
+			author_name: string
+		},
+		recipe_categories: [Cats],
+		recipe_ingradients: [string]
+	}
 
 	const ThemeMode = useSelector((state: RootState) => state.site_theme_mode.dark_theme_mode);
 	const [allRecipes, setAllRecipes] = useState<AllRecipesType[]>([]);
-	const itemsPerPage:number = 9;
+	const itemsPerPage: number = 9;
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const menuRef = useRef<HTMLDivElement>(null);
-    const [showFilterMenu, setShowFilterMenu] = useState<boolean>(false);
+	const [showFilterMenu, setShowFilterMenu] = useState<boolean>(false);
 	const [recType, setRecType] = useState<string>('');
 	const [showNotifyBar, setShowNotifyBar] = useState<boolean>(false);
-    const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
+	const [notifyBarMsg, setNotifyBarMsg] = useState<string>("");
 
-	const {data, loading} = useQuery(GET_RECIPES, {
+	const { data, loading } = useQuery(GET_RECIPES, {
 		onCompleted: fdata => {
 			// console.log(fdata.getAggrRecipes);
-			let rev_rec = [...fdata.getAggrRecipes].reverse();
+			const rev_rec = [...fdata.getAggrRecipes].reverse();
 			setAllRecipes(rev_rec);
 			setShowNotifyBar(false);
 			setNotifyBarMsg('');
@@ -84,52 +84,52 @@ const Recipes = () => {
 		},
 	});
 
-	const handleSearchInputChange = (e:any) => {
-        setSearchTerm(e.target.value);
-        if(searchTerm.length === 1) {
-			let rev_rec = [...data.getAggrRecipes].reverse();
-            setAllRecipes(rev_rec);
-        }
-    }
+	const handleSearchInputChange = (e: any) => {
+		setSearchTerm(e.target.value);
+		if (searchTerm.length === 1) {
+			const rev_rec = [...data.getAggrRecipes].reverse();
+			setAllRecipes(rev_rec);
+		}
+	}
 
-    const handleSearchInputKeyDown = (e:any) => {
-        setSearchTerm(e.target.value);
-		if(e.target.value !== '') {
-			if(e.key === "Backspace") {
-				let rev_rec = [...data.getAggrRecipes].reverse();
-            	setAllRecipes(rev_rec);
+	const handleSearchInputKeyDown = (e: any) => {
+		setSearchTerm(e.target.value);
+		if (e.target.value !== '') {
+			if (e.key === "Backspace") {
+				const rev_rec = [...data.getAggrRecipes].reverse();
+				setAllRecipes(rev_rec);
 			}
 		}
-    }
+	}
 
-	const handleSearchSubmit = (e:any) => {
-        e.preventDefault();
-        const toastDefOpts = {
-            autoClose: 1000,
-            closeOnClick: true,
-            theme: `${ThemeMode ? 'dark' : 'light'}`
-        };
-		if(searchTerm !== '') {
-			if(allRecipes.length > 0) {
+	const handleSearchSubmit = (e: any) => {
+		e.preventDefault();
+		const toastDefOpts = {
+			autoClose: 1000,
+			closeOnClick: true,
+			theme: `${ThemeMode ? 'dark' : 'light'}`
+		};
+		if (searchTerm !== '') {
+			if (allRecipes.length > 0) {
 				const res = allRecipes.filter((item) => {
-					const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-					item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
-					item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 
-					item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) || 
-					item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) || 
-					item.recipe_type.toLowerCase().startsWith(searchTerm.toLowerCase());
+					const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+						item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+						item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) ||
+						item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+						item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) ||
+						item.recipe_type.toLowerCase().startsWith(searchTerm.toLowerCase());
 					return srch_res;
 				});
 
-				if(res.length > 0) {
+				if (res.length > 0) {
 					setAllRecipes(res);
-					if(searchTerm == '') {
+					if (searchTerm == '') {
 						// setAllRecipes(data.getAllRecipes);
 						setAllRecipes([]);
 						toast.warn("No Recipes Found", toastDefOpts);
 					}
 				} else {
-					if(searchTerm == '') {
+					if (searchTerm == '') {
 						// setAllRecipes(data.getAllRecipes);
 						setAllRecipes([]);
 						toast.warn("No Recipes Found", toastDefOpts);
@@ -144,25 +144,25 @@ const Recipes = () => {
 		} else {
 			toast.error("Please enter some value.", toastDefOpts);
 		}
-    }
+	}
 
-	const handleFilterSubmit = (e:any) => {
+	const handleFilterSubmit = (e: any) => {
 		e.preventDefault();
 		const toastDefOpts = {
-            autoClose: 1000,
-            closeOnClick: true,
-            theme: `${ThemeMode ? 'dark' : 'light'}`
-        };
-		if(recType !== '') {
-			if(data.getAggrRecipes.length > 0) {
+			autoClose: 1000,
+			closeOnClick: true,
+			theme: `${ThemeMode ? 'dark' : 'light'}`
+		};
+		if (recType !== '') {
+			if (data.getAggrRecipes.length > 0) {
 				const res = data.getAggrRecipes.filter((item: AllRecipesType) => {
 					const srch_res = item.recipe_type.toLowerCase() == recType;
 					return srch_res;
 				});
-				if(res.length > 0) {
+				if (res.length > 0) {
 					setAllRecipes(res);
 				}
-			}  else {
+			} else {
 				toast.info("No Recipes Found", toastDefOpts);
 			}
 		}
@@ -170,32 +170,32 @@ const Recipes = () => {
 
 	const handleClearClick = () => {
 		setRecType("");
-		let rev_rec = [...data.getAggrRecipes].reverse();
-        setAllRecipes(rev_rec);
+		const rev_rec = [...data.getAggrRecipes].reverse();
+		setAllRecipes(rev_rec);
 		setShowFilterMenu(false);
 	}
 
 	useEffect(() => {
-		const menuHandler = (e:any) => {
-            if(menuRef.current !== null) {
-                if(!menuRef.current.contains(e.target)) {
-                    setShowFilterMenu(false);
-                }
-            }
-        };
-        document.addEventListener('mousedown', menuHandler);
+		const menuHandler = (e: any) => {
+			if (menuRef.current !== null) {
+				if (!menuRef.current.contains(e.target)) {
+					setShowFilterMenu(false);
+				}
+			}
+		};
+		document.addEventListener('mousedown', menuHandler);
 	}, []);
 
 	return (
 		<>
 			<ToastContainer />
 			<SiteBreadcrumb page_name="Recipes" page_title="All Recipes" />
-			<NotifyBar 
-				notify_title="Server Error" 
-				view_notify_icon={true} 
-				message={notifyBarMsg} 
-				notify_type="error" 
-				notify_closable={true} 
+			<NotifyBar
+				notify_title="Server Error"
+				view_notify_icon={true}
+				message={notifyBarMsg}
+				notify_type="error"
+				notify_closable={true}
 				show_bar={showNotifyBar}
 				set_show_bar={setShowNotifyBar}
 			/>
@@ -207,12 +207,12 @@ const Recipes = () => {
 							<div className="md:twgtr-max-w-[300px]">
 								<form onSubmit={handleSearchSubmit}>
 									<div className="twgtr-relative">
-										<input 
-											type="text" 
+										<input
+											type="text"
 											id="unmfrm"
-											className="twgtr-transition-all twgtr-w-full twgtr-pl-2 md:twgtr-pl-3 twgtr-pr-[35px] md:twgtr-pr-[45px] twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
-											placeholder="Search..." 
-											autoComplete="off" 
+											className="twgtr-transition-all twgtr-w-full twgtr-pl-2 md:twgtr-pl-3 twgtr-pr-[35px] md:twgtr-pr-[45px] twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4"
+											placeholder="Search..."
+											autoComplete="off"
 											value={searchTerm}
 											onChange={handleSearchInputChange}
 											onKeyDown={handleSearchInputKeyDown}
@@ -276,29 +276,29 @@ const Recipes = () => {
 
 					<div className="twgtr-pb-[50px]">
 						{
-							loading ? 
-							(
-								<h6 className="twgtr-transition-all twgtr-font-bold twgtr-font-ubuntu twgtr-text-[]">
-									Loading ...
-								</h6>
-							) 
-							: 
-							(
-								<>
-									{
-										allRecipes.length > 0 ? 
-										(
-											<RecipesPg cdata={allRecipes} itemsPerPage={itemsPerPage} />
-										) 
-										: 
-										(
-											<h6>No Recipes Found.</h6>
-										)
-									}
-								</>
-							)
+							loading ?
+								(
+									<h6 className="twgtr-transition-all twgtr-font-bold twgtr-font-ubuntu twgtr-text-[]">
+										Loading ...
+									</h6>
+								)
+								:
+								(
+									<>
+										{
+											allRecipes.length > 0 ?
+												(
+													<RecipesPg cdata={allRecipes} itemsPerPage={itemsPerPage} />
+												)
+												:
+												(
+													<h6>No Recipes Found.</h6>
+												)
+										}
+									</>
+								)
 						}
-						
+
 					</div>
 				</div>
 			</div>

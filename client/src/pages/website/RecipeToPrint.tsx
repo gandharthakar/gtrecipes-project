@@ -24,7 +24,7 @@ const RecipeToPrint = (props: CompProp) => {
         recipe_title,
         recipe_type = "veg",
         recipe_summary,
-        recipe_content, 
+        recipe_content,
         recipe_serving,
         recipe_prep_time,
         recipe_cook_time,
@@ -38,22 +38,34 @@ const RecipeToPrint = (props: CompProp) => {
     return (
         <>
             <div className="twgtr-p-[0px]">
-                <div className="twgtr-bg-slate-200 twgtr-text-center twgtr-p-[20px]">
+                <div className="twgtr-flex twgtr-justify-between twgtr-items-center gap-x-[20px] twgtr-bg-slate-200 twgtr-text-center twgtr-p-[20px]">
                     <img src="/logo.svg" width={180} alt="logo" className="twgtr-inline-block twgtr-w-[180px]" />
-                </div>
-                <div className="twgtr-pt-[15px] twgtr-pb-[20px]">
-                    <div className="twgtr-pb-[5px]">
+                    <div>
                         {
-                            recipe_type == "veg" ? 
-                            (
-                                <img src="/veg-icon.svg" width="30px" height="30px" alt="Recipe Type" />
-                            ) 
-                            : 
-                            (
-                                <img src="/nonveg-icon.svg" width="30px" height="30px" alt="Recipe Type" />
-                            )
+                            recipe_type == "veg" ?
+                                (
+                                    <img src="/veg-icon.svg" width="30px" height="30px" alt="Recipe Type" />
+                                )
+                                :
+                                (
+                                    <img src="/nonveg-icon.svg" width="30px" height="30px" alt="Recipe Type" />
+                                )
                         }
                     </div>
+                </div>
+                <div className="twgtr-pt-[15px] twgtr-pb-[20px]">
+                    {/* <div className="twgtr-pb-[5px]">
+                        {
+                            recipe_type == "veg" ?
+                                (
+                                    <img src="/veg-icon.svg" width="30px" height="30px" alt="Recipe Type" />
+                                )
+                                :
+                                (
+                                    <img src="/nonveg-icon.svg" width="30px" height="30px" alt="Recipe Type" />
+                                )
+                        }
+                    </div> */}
                     <h1 className="twgtr-font-ubuntu twgtr-text-slate-700 twgtr-text-[26px] twgtr-font-bold">
                         {recipe_title}
                     </h1>
@@ -99,9 +111,9 @@ const RecipeToPrint = (props: CompProp) => {
                 </div>
                 <div className="twgtr-pb-[20px] twgtr-text-center">
                     <img src={recipe_featured_image == 'default' ? defaultFeImgPath : recipe_featured_image} className="twgtr-inline-block twgtr-w-auto twgtr-max-h-[400px]" alt="photo" onError={({ currentTarget }) => {
-                                currentTarget.onerror = null; // prevents looping
-                                currentTarget.src=fallBackFeImg;
-                            }} />
+                        currentTarget.onerror = null; // prevents looping
+                        currentTarget.src = fallBackFeImg;
+                    }} />
                 </div>
                 <div className="twgtr-pb-[20px]">
                     <div className="twgtr-p-[20px] twgtr-bg-slate-100">
@@ -111,26 +123,26 @@ const RecipeToPrint = (props: CompProp) => {
                         </div>
                         <div className="twgtr-pt-[10px]">
                             {
-                                recipe_ingredients.length > 0 ? 
-                                (
-                                    <ul className="twgtr-list-disc twgtr-font-open_sans twgtr-pl-[25px]">
-                                        {
-                                            recipe_ingredients.map((item: IngType) => (
-                                                <li key={item.id} className="twgtr-transition-all last:twgtr-mb-0 twgtr-mb-2 twgtr-font-open_sans twgtr-text-[16px] twgtr-text-slate-700">
-                                                    {item.ingredient_item}
-                                                </li>
-                                            ))
-                                        }
-                                    </ul>
-                                ) 
-                                : 
-                                (
-                                    <div className="twgtr-text-left">
-                                        <h6>
-                                            No Ingradients Available.
-                                        </h6>
-                                    </div>
-                                )
+                                recipe_ingredients.length > 0 ?
+                                    (
+                                        <ul className="twgtr-list-disc twgtr-font-open_sans twgtr-pl-[25px]">
+                                            {
+                                                recipe_ingredients.map((item: IngType) => (
+                                                    <li key={item.id} className="twgtr-transition-all last:twgtr-mb-0 twgtr-mb-2 twgtr-font-open_sans twgtr-text-[16px] twgtr-text-slate-700">
+                                                        {item.ingredient_item}
+                                                    </li>
+                                                ))
+                                            }
+                                        </ul>
+                                    )
+                                    :
+                                    (
+                                        <div className="twgtr-text-left">
+                                            <h6>
+                                                No Ingradients Available.
+                                            </h6>
+                                        </div>
+                                    )
                             }
                         </div>
                     </div>

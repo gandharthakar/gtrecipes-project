@@ -51,7 +51,7 @@ const DELETE_ALL_RECIPES = gql`
     }
 `;
 
-const UserRecipes = (props:any) => {
+const UserRecipes = (props: any) => {
     const { uid } = props;
 
     interface Cats {
@@ -91,26 +91,27 @@ const UserRecipes = (props:any) => {
     });
 
     // Get All Recipes.
-    const {data, loading} = useQuery(GET_ALL_RECIPES, {
+    const { data, loading } = useQuery(GET_ALL_RECIPES, {
         variables: { id: uid },
         onCompleted: grcdata => {
             // console.log(grcdata);
-            let rev_rec = [...grcdata?.getAllRecipes].reverse();
+            /* eslint-disable-next-line no-unsafe-optional-chaining */
+            const rev_rec = [...grcdata?.getAllRecipes].reverse();
             setAllRecipes(rev_rec);
             setShowNotifyBar(false);
             setNotifyBarMsg('');
         },
         onError(error) {
-			// console.log(error.message);
-			// const toastDefOpts = {
-			// 	autoClose: 2000,
-			// 	closeOnClick: true,
-			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
-			// }
-			// toast.error(error.message, toastDefOpts);
+            // console.log(error.message);
+            // const toastDefOpts = {
+            // 	autoClose: 2000,
+            // 	closeOnClick: true,
+            // 	theme: `${ThemeMode ? 'dark' : 'light'}`
+            // }
+            // toast.error(error.message, toastDefOpts);
             setShowNotifyBar(true);
             setNotifyBarMsg(error.message);
-		},
+        },
     });
 
     const [delAlRec] = useMutation(DELETE_ALL_RECIPES, {
@@ -123,7 +124,7 @@ const UserRecipes = (props:any) => {
             };
             // let allimgs = fdata.deleteAllRecipes.recipe_featured_image;
 
-            if(fdata.deleteAllRecipes.success) {
+            if (fdata.deleteAllRecipes.success) {
                 // toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
                 // if(allimgs.length > 0) {
 
@@ -154,7 +155,7 @@ const UserRecipes = (props:any) => {
                 //     }
                 // }
                 toast.success(fdata.deleteAllRecipes.message, toastDefOpts);
-                const suctmr = setTimeout(function(){
+                const suctmr = setTimeout(function () {
                     window.location.reload();
                     clearTimeout(suctmr);
                 }, 1000);
@@ -163,21 +164,21 @@ const UserRecipes = (props:any) => {
             }
         },
         onError(error) {
-			// console.log(error.message);
-			// const toastDefOpts = {
-			// 	autoClose: 2000,
-			// 	closeOnClick: true,
-			// 	theme: `${ThemeMode ? 'dark' : 'light'}`
-			// }
-			// toast.error(error.message, toastDefOpts);
+            // console.log(error.message);
+            // const toastDefOpts = {
+            // 	autoClose: 2000,
+            // 	closeOnClick: true,
+            // 	theme: `${ThemeMode ? 'dark' : 'light'}`
+            // }
+            // toast.error(error.message, toastDefOpts);
             setShowNotifyBar(true);
             setNotifyBarMsg(error.message);
-		},
+        },
     });
 
     const handleDeleteAll = () => {
         const conf = confirm("Are you sure want to delete all recipes ?");
-        if(conf) {
+        if (conf) {
             delAlRec({
                 variables: {
                     user_id: uid
@@ -186,52 +187,52 @@ const UserRecipes = (props:any) => {
         }
     }
 
-    const handleSearchInputChange = (e:any) => {
+    const handleSearchInputChange = (e: any) => {
         setSearchTerm(e.target.value);
-        if(searchTerm.length === 1) {
-            let rev_rec = [...data.getAllRecipes].reverse();
+        if (searchTerm.length === 1) {
+            const rev_rec = [...data.getAllRecipes].reverse();
             setAllRecipes(rev_rec);
         }
     }
 
-    const handleSearchInputKeyDown = (e:any) => {
+    const handleSearchInputKeyDown = (e: any) => {
         setSearchTerm(e.target.value);
-        if(e.target.value !== '') {
-            if(e.key === "Backspace") {
-                let rev_rec = [...data.getAllRecipes].reverse();
+        if (e.target.value !== '') {
+            if (e.key === "Backspace") {
+                const rev_rec = [...data.getAllRecipes].reverse();
                 setAllRecipes(rev_rec);
             }
         }
     }
 
-    const handleSearchSubmit = (e:any) => {
+    const handleSearchSubmit = (e: any) => {
         e.preventDefault();
         const toastDefOpts = {
             autoClose: 1000,
             closeOnClick: true,
             theme: `${ThemeMode ? 'dark' : 'light'}`
         };
-        if(searchTerm !== '') {
-            if(allRecipes.length > 0) {
+        if (searchTerm !== '') {
+            if (allRecipes.length > 0) {
                 const res = allRecipes.filter((item) => {
-                    const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                    item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                    item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) || 
-                    item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                    item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) || 
-                    item.recipe_type.toLowerCase().startsWith(searchTerm.toLowerCase());
+                    const srch_res = item.recipe_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        item.recipe_summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        item.recipe_ingradients.map((itm) => itm.toLowerCase()).includes(searchTerm.toLowerCase()) ||
+                        item.recipe_content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        item.recipe_categories.map((itm) => itm.recipe_category_name.toLowerCase()).includes(searchTerm.toLowerCase()) ||
+                        item.recipe_type.toLowerCase().startsWith(searchTerm.toLowerCase());
                     return srch_res;
                 });
 
-                if(res.length > 0) {
+                if (res.length > 0) {
                     setAllRecipes(res);
-                    if(searchTerm == '') {
+                    if (searchTerm == '') {
                         // setAllRecipes(data.getAllRecipes);
                         setAllRecipes([]);
                         toast.warn("No Recipes Found", toastDefOpts);
                     }
                 } else {
-                    if(searchTerm == '') {
+                    if (searchTerm == '') {
                         // setAllRecipes(data.getAllRecipes);
                         setAllRecipes([]);
                         toast.warn("No Recipes Found", toastDefOpts);
@@ -254,12 +255,12 @@ const UserRecipes = (props:any) => {
             <div className="twgtr-transition-all twgtr-border-slate-300 twgtr-w-full lg:twgtr-w-[calc(100%-250px)] 2xl:twgtr-w-[calc(100%-300px)] twgtr-border twgtr-border-solid twgtr-px-[20px] twgtr-py-[30px] lg:twgtr-px-10 lg:twgtr-py-8 twgtr-bg-white dark:twgtr-bg-slate-700 dark:twgtr-border-slate-500">
                 <div className="twgtr-pb-[30px]">
                     <div className="twgtr-pb-[20px]">
-                        <NotifyBar 
-                            notify_title="Server Error" 
-                            view_notify_icon={true} 
-                            message={notifyBarMsg} 
-                            notify_type="error" 
-                            notify_closable={true} 
+                        <NotifyBar
+                            notify_title="Server Error"
+                            view_notify_icon={true}
+                            message={notifyBarMsg}
+                            notify_type="error"
+                            notify_closable={true}
                             show_bar={showNotifyBar}
                             set_show_bar={setShowNotifyBar}
                         />
@@ -268,11 +269,11 @@ const UserRecipes = (props:any) => {
                         <div className="md:twgtr-max-w-[300px] twgtr-w-full md:twgtr-w-auto">
                             <form onSubmit={handleSearchSubmit}>
                                 <div className="twgtr-relative">
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         id="unmfrm"
-                                        className="twgtr-transition-all twgtr-w-full twgtr-pl-2 md:twgtr-pl-3 twgtr-pr-[35px] md:twgtr-pr-[45px] twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4" 
-                                        placeholder="Search..." 
+                                        className="twgtr-transition-all twgtr-w-full twgtr-pl-2 md:twgtr-pl-3 twgtr-pr-[35px] md:twgtr-pr-[45px] twgtr-py-2 twgtr-border twgtr-border-solid twgtr-border-slate-400 twgtr-bg-white twgtr-font-ubuntu twgtr-font-semibold twgtr-text-[14px] md:twgtr-text-[16px] focus:twgtr-outline-0 focus:twgtr-ring-0 focus:twgtr-border-theme-color-4 dark:twgtr-border-slate-500 dark:twgtr-bg-slate-600 dark:twgtr-text-slate-200 dark:focus:twgtr-border-theme-color-4"
+                                        placeholder="Search..."
                                         autoComplete="off"
                                         value={searchTerm}
                                         onChange={handleSearchInputChange}
@@ -296,43 +297,43 @@ const UserRecipes = (props:any) => {
                 </div>
 
                 {
-                    loading ? 
-                    (
-                        <h6 className="twgtr-transition-all twgtr-font-bold twgtr-font-ubuntu twgtr-text-[]">
-                            Loading ...
-                        </h6>
-                    ) 
-                    : 
-                    (
-                        <>
-                            {
-                                allRecipes.length > 0 ? 
-                                (
-                                    <div>
-                                        <URSpage cdata={allRecipes} itemsPerPage={itemsPerPage} />
-                                    </div>
-                                ) 
-                                : 
-                                (
-                                    <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
-                                        <PiCookingPot size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
-                                        <div className="twgtr-pt-2 md:twgtr-pt-4">
-                                            <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
-                                                No Recipes Found
-                                            </h6>
-                                        </div>
-                                        <div className="twgtr-pt-1">
-                                            <NavLink to={`/create-recipe/${uid}`} title="+ Add New" className="twgtr-transition-all twgtr-font-open_sans twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-4">
-                                                + Add New
-                                            </NavLink>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                        </>
-                    )
+                    loading ?
+                        (
+                            <h6 className="twgtr-transition-all twgtr-font-bold twgtr-font-ubuntu twgtr-text-[]">
+                                Loading ...
+                            </h6>
+                        )
+                        :
+                        (
+                            <>
+                                {
+                                    allRecipes.length > 0 ?
+                                        (
+                                            <div>
+                                                <URSpage cdata={allRecipes} itemsPerPage={itemsPerPage} />
+                                            </div>
+                                        )
+                                        :
+                                        (
+                                            <div className="twgtr-text-center twgtr-py-2 md:twgtr-py-0">
+                                                <PiCookingPot size={100} className="twgtr-transition-all twgtr-inline-block twgtr-w-[50px] twgtr-h-[50px] md:twgtr-w-[100px] md:twgtr-h-[100px] twgtr-text-slate-300 dark:twgtr-text-slate-500" />
+                                                <div className="twgtr-pt-2 md:twgtr-pt-4">
+                                                    <h6 className="twgtr-transition-all twgtr-font-open_sans twgtr-font-bold twgtr-text-[20px] md:twgtr-text-[30px] twgtr-text-slate-400">
+                                                        No Recipes Found
+                                                    </h6>
+                                                </div>
+                                                <div className="twgtr-pt-1">
+                                                    <NavLink to={`/create-recipe/${uid}`} title="+ Add New" className="twgtr-transition-all twgtr-font-open_sans twgtr-font-medium twgtr-text-[14px] md:twgtr-text-[16px] twgtr-text-theme-color-4">
+                                                        + Add New
+                                                    </NavLink>
+                                                </div>
+                                            </div>
+                                        )
+                                }
+                            </>
+                        )
                 }
-                
+
             </div>
         </>
     );

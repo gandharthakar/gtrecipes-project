@@ -18,10 +18,10 @@ const resolvers = {
                 cipp: 0
             };
             try {
-                const user = await SiteUserModel.findOne({_id: args.id});
-                if(user) {
-                    let cipp_c = await recipeCategoriesModel.find({'author.author_id': args.id})
-                    let rcp = await RecipeModel.find({'author.author_id': args.id});
+                const user = await SiteUserModel.findOne({ _id: args.id });
+                if (user) {
+                    let cipp_c = await recipeCategoriesModel.find({ 'author.author_id': args.id })
+                    let rcp = await RecipeModel.find({ 'author.author_id': args.id });
                     respdata = {
                         user_name: user.user_full_name,
                         user_photo: user.user_profile_photo,
@@ -43,8 +43,8 @@ const resolvers = {
                 sripp: 0,
             };
             try {
-                const user = await SiteUserModel.findOne({_id: args.id});
-                if(user) {
+                const user = await SiteUserModel.findOne({ _id: args.id });
+                if (user) {
                     respdata = {
                         user_name: user.user_full_name,
                         user_email: user.user_email,
@@ -63,8 +63,8 @@ const resolvers = {
                 user_photo: ''
             };
             try {
-                const user = await SiteUserModel.findOne({_id: args.id});
-                if(user) {
+                const user = await SiteUserModel.findOne({ _id: args.id });
+                if (user) {
                     respdata = {
                         user_photo: user.user_profile_photo
                     }
@@ -79,11 +79,11 @@ const resolvers = {
             let { id } = args;
             let data = [];
             try {
-                const user = await SiteUserModel.find({_id: id});
-                if(user) {
-                    const cats = await recipeCategoriesModel.find({'author.author_id': id});
-                    if(cats.length > 0) {
-                        cats.forEach( async (usr, idx) => {
+                const user = await SiteUserModel.find({ _id: id });
+                if (user) {
+                    const cats = await recipeCategoriesModel.find({ 'author.author_id': id });
+                    if (cats.length > 0) {
+                        cats.forEach(async (usr, idx) => {
                             let obj = {
                                 id: usr._id.toString(),
                                 recipe_category_name: usr.recipe_category_name,
@@ -115,8 +115,8 @@ const resolvers = {
                 recipes_per_page: 0,
                 saved_recipes_per_page: 0
             }
-            const user = await SiteUserModel.findOne({_id: id});
-            if(user) {
+            const user = await SiteUserModel.findOne({ _id: id });
+            if (user) {
                 respdata = {
                     category_per_page: user.user_categories_items_per_page,
                     recipes_per_page: user.user_recipe_items_per_page,
@@ -130,8 +130,8 @@ const resolvers = {
             let respdata = {
                 user_name: ''
             };
-            const user = await SiteUserModel.findOne({_id: id});
-            if(user) {
+            const user = await SiteUserModel.findOne({ _id: id });
+            if (user) {
                 respdata = {
                     user_name: user.user_full_name
                 }
@@ -142,11 +142,11 @@ const resolvers = {
             // console.log(args);
             let response_data = [];
             try {
-                const user = await SiteUserModel.find({_id: args.id});
-                if(user) {
-                    const recipes = await RecipeModel.find({'author.author_id': args.id});
-                    if(recipes.length > 0) {
-                        recipes.forEach( async (rec, idx) => {
+                const user = await SiteUserModel.find({ _id: args.id });
+                if (user) {
+                    const recipes = await RecipeModel.find({ 'author.author_id': args.id });
+                    if (recipes.length > 0) {
+                        recipes.forEach(async (rec, idx) => {
                             let obj = {
                                 id: rec._id.toString(),
                                 recipe_title: rec.recipe_title,
@@ -185,11 +185,11 @@ const resolvers = {
             // console.log(args);
             let response_data = [];
             try {
-                const user = await SiteUserModel.find({_id: args.user_id});
-                if(user) {
-                    let reci = await RecipeModel.find({_id: args.id});
+                const user = await SiteUserModel.find({ _id: args.user_id });
+                if (user) {
+                    let reci = await RecipeModel.find({ _id: args.id });
                     // console.log(reci);
-                    reci.forEach( async (rec, idx) => {
+                    reci.forEach(async (rec, idx) => {
                         let obj = {
                             id: rec._id.toString(),
                             recipe_title: rec.recipe_title,
@@ -235,11 +235,11 @@ const resolvers = {
             }
 
             let { id } = args;
-            let user = await SiteUserModel.find({_id: id});
-            if(user.length > 0) {
+            let user = await SiteUserModel.find({ _id: id });
+            if (user.length > 0) {
                 let gsr = user[0].saved_recipes;
                 let arr = [];
-                if(gsr.length > 0) {
+                if (gsr.length > 0) {
                     let rps = await RecipeModel.find({ '_id': { $in: gsr } });
                     arr = rps;
                 }
@@ -280,8 +280,8 @@ const resolvers = {
                 recipe_created_at: ''
             };
 
-            let grcp = await RecipeModel.find({_id: args.id});
-            if(grcp.length > 0) {
+            let grcp = await RecipeModel.find({ _id: args.id });
+            if (grcp.length > 0) {
                 let dt = grcp[0];
                 response_data = {
                     id: dt._id.toString(),
@@ -307,14 +307,14 @@ const resolvers = {
         },
         getAggrRecipes: async () => {
             let recips = await RecipeModel.find({});
-            if(recips.length > 0) {
+            if (recips.length > 0) {
                 return recips;
             }
         },
         getAggrRec3: async (parent, args) => {
             let resp = await RecipeModel.find({});
             let resarr = [];
-            if(resp.length > 0) {
+            if (resp.length > 0) {
                 const filter = resp.filter(itm => itm.id !== args.exc_id);
                 // console.log(filter.length);
                 let spltarr = filter.sort(() => Math.random() - Math.random()).slice(0, 3)
@@ -351,23 +351,23 @@ const resolvers = {
             }
             let { full_name, email, password, confirm_password } = args;
 
-            const user = await SiteUserModel.findOne({user_email: email})
-            if(user) {
+            const user = await SiteUserModel.findOne({ user_email: email })
+            if (user) {
                 frm_status = {
                     message: "User Already Exist",
                     success: false
                 }
             } else {
-                if(full_name && email && password && confirm_password) {
-                    if(password === confirm_password) {
+                if (full_name && email && password && confirm_password) {
+                    if (password === confirm_password) {
                         try {
                             const salt = await bcrypt.genSalt(10);
                             const hashPwd = await bcrypt.hash(password, salt);
                             // console.log(hashPwd);
                             const doc = new SiteUserModel({
-                                user_full_name: full_name, 
-                                user_email: email, 
-                                user_profile_photo: '', 
+                                user_full_name: full_name,
+                                user_email: email,
+                                user_profile_photo: '',
                                 user_password: hashPwd,
                                 user_recipe_items_per_page: 4,
                                 user_categories_items_per_page: 6,
@@ -407,14 +407,14 @@ const resolvers = {
                 user_name: '',
             }
             let { email, password } = args;
-            const user = await SiteUserModel.findOne({user_email: email})
-            if(user) {
-                if(email && password) {
+            const user = await SiteUserModel.findOne({ user_email: email })
+            if (user) {
+                if (email && password) {
                     try {
                         const isMatch = await bcrypt.compare(password, user.user_password);
-                        if((user.user_email === email) && isMatch) {
-                            const saved_user = await SiteUserModel.findOne({user_email: email});
-                            const token_l = jwt.sign({userID: saved_user._id}, process.env.JWT_SEC, { expiresIn: '30d' });
+                        if ((user.user_email === email) && isMatch) {
+                            const saved_user = await SiteUserModel.findOne({ user_email: email });
+                            const token_l = jwt.sign({ userID: saved_user._id }, process.env.JWT_SEC, { expiresIn: '30m' });
                             frm_status = {
                                 message: "Login Successfully.",
                                 success: true,
@@ -468,12 +468,12 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let {id, user_name, user_email, ripp, cipp, sripp} = args;
-            const user = await SiteUserModel.findOne({_id: id});
-            if(user) {
-                if(user_name && user_email && ripp && cipp) {
+            let { id, user_name, user_email, ripp, cipp, sripp } = args;
+            const user = await SiteUserModel.findOne({ _id: id });
+            if (user) {
+                if (user_name && user_email && ripp && cipp) {
                     try {
-                        await SiteUserModel.findOneAndUpdate({_id: id}, {
+                        await SiteUserModel.findOneAndUpdate({ _id: id }, {
                             user_full_name: user_name,
                             user_email,
                             user_recipe_items_per_page: ripp,
@@ -488,10 +488,10 @@ const resolvers = {
                         }
 
                         // Update Categories Author Name.
-                        let cats = await recipeCategoriesModel.find({'author.author_id': id})
+                        let cats = await recipeCategoriesModel.find({ 'author.author_id': id })
                         // console.log(cats);
-                        if(cats.length > 0) {
-                            await recipeCategoriesModel.updateMany({'author.author_id': id}, {
+                        if (cats.length > 0) {
+                            await recipeCategoriesModel.updateMany({ 'author.author_id': id }, {
                                 author: {
                                     author_id: id,
                                     author_name: user_name
@@ -500,10 +500,10 @@ const resolvers = {
                         }
 
                         // Update Recipe Author Name.
-                        let reci = await RecipeModel.find({'author.author_id': id});
+                        let reci = await RecipeModel.find({ 'author.author_id': id });
                         // console.log(reci);
-                        if(reci.length > 0) {
-                            await RecipeModel.updateMany({'author.author_id': id}, {
+                        if (reci.length > 0) {
+                            await RecipeModel.updateMany({ 'author.author_id': id }, {
                                 author: {
                                     author_id: id,
                                     author_name: user_name
@@ -537,15 +537,15 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let {id, password, confirm_password} = args;
-            const user = await SiteUserModel.findOne({_id: id});
-            if(user) {
-                if(password && confirm_password) {
-                    if(password === confirm_password) {
+            let { id, password, confirm_password } = args;
+            const user = await SiteUserModel.findOne({ _id: id });
+            if (user) {
+                if (password && confirm_password) {
+                    if (password === confirm_password) {
                         try {
                             const salt = await bcrypt.genSalt(10);
                             const hashPwd = await bcrypt.hash(password, salt);
-                            await SiteUserModel.findOneAndUpdate({_id: id}, {
+                            await SiteUserModel.findOneAndUpdate({ _id: id }, {
                                 user_password: hashPwd
                             }, {
                                 new: true
@@ -588,11 +588,11 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let {id, user_photo} = args;
-            const user = await SiteUserModel.findOne({_id: id});
-            if(user) {
+            let { id, user_photo } = args;
+            const user = await SiteUserModel.findOne({ _id: id });
+            if (user) {
                 try {
-                    await SiteUserModel.findOneAndUpdate({_id: id}, {
+                    await SiteUserModel.findOneAndUpdate({ _id: id }, {
                         user_profile_photo: user_photo
                     }, {
                         new: true
@@ -627,36 +627,36 @@ const resolvers = {
             let { id } = args;
 
             // Get & Delete Categories.
-            let rc_cats = await recipeCategoriesModel.find({'author.author_id': id});
-            if(rc_cats.length > 0) {
-                await recipeCategoriesModel.deleteMany({'author.author_id': id});
+            let rc_cats = await recipeCategoriesModel.find({ 'author.author_id': id });
+            if (rc_cats.length > 0) {
+                await recipeCategoriesModel.deleteMany({ 'author.author_id': id });
             }
 
             // Get & Delete Recipes.
-            let cr_main = await RecipeModel.find({'author.author_id': id});
+            let cr_main = await RecipeModel.find({ 'author.author_id': id });
             let arr = [];
-            if(cr_main.length > 0) {
-                let res = await RecipeModel.find({'author.author_id': id});
-                if(res.length > 0) {
-                    let imgs = await RecipeModel.find({'author.author_id': id}).select('recipe_featured_image');
+            if (cr_main.length > 0) {
+                let res = await RecipeModel.find({ 'author.author_id': id });
+                if (res.length > 0) {
+                    let imgs = await RecipeModel.find({ 'author.author_id': id }).select('recipe_featured_image');
                     imgs.forEach((dt, idx) => {
                         let feimg = dt.recipe_featured_image;
-                        if(feimg !== 'default') {
+                        if (feimg !== 'default') {
                             // console.log(feimg);
                             arr.push(feimg);
                         }
                     });
-                    await RecipeModel.deleteMany({'author.author_id': id});
+                    await RecipeModel.deleteMany({ 'author.author_id': id });
                 }
             }
             // console.log(arr);
-            
+
             // Finally Delete User.
-            let mn_usr = await SiteUserModel.find({_id: id});
+            let mn_usr = await SiteUserModel.find({ _id: id });
             // console.log(mn_usr);
             let pp = mn_usr[0].user_profile_photo;
-            if(mn_usr.length > 0) {
-                await SiteUserModel.findByIdAndDelete({_id: id});
+            if (mn_usr.length > 0) {
+                await SiteUserModel.findByIdAndDelete({ _id: id });
             }
             frm_status = {
                 message: 'Account Deleted Successfully!',
@@ -674,15 +674,15 @@ const resolvers = {
                 success: true
             }
             let { recipe_category_name, recipe_category_slug, recipe_category_author_id, recipe_category_author_name } = args;
-            const user = await SiteUserModel.find({_id: recipe_category_author_id});
+            const user = await SiteUserModel.find({ _id: recipe_category_author_id });
             // console.log(user);
-            if(user) {
-                const cats = await recipeCategoriesModel.find({'author.author_id': recipe_category_author_id}).select("recipe_category_name");
+            if (user) {
+                const cats = await recipeCategoriesModel.find({ 'author.author_id': recipe_category_author_id }).select("recipe_category_name");
                 // console.log(cats);
-                if(cats.length > 0) {
+                if (cats.length > 0) {
                     let ctar = cats.map((itm) => itm.recipe_category_name);
                     // console.log(ctar);
-                    if(recipe_category_name.includes(ctar)) {
+                    if (recipe_category_name.includes(ctar)) {
                         console.log("hey");
                         frm_status = {
                             message: 'Category Already Exist.',
@@ -700,7 +700,7 @@ const resolvers = {
                         });
                         await doc.save();
                     }
-                        
+
                 } else {
                     try {
                         const doc = new recipeCategoriesModel({
@@ -735,20 +735,20 @@ const resolvers = {
                 success: false
             }
             let { cat_id, recipe_category_name, category_name_old, recipe_category_slug, recipe_category_author_id } = args;
-            const user = await SiteUserModel.find({_id: recipe_category_author_id});
+            const user = await SiteUserModel.find({ _id: recipe_category_author_id });
             // console.log(user);
-            if(user) {
-                const cats = await recipeCategoriesModel.find({recipe_category_name: category_name_old});
+            if (user) {
+                const cats = await recipeCategoriesModel.find({ recipe_category_name: category_name_old });
                 // console.log(cats);
-                if(cats.length > 0) {
-                    if(recipe_category_name == category_name_old) {
+                if (cats.length > 0) {
+                    if (recipe_category_name == category_name_old) {
                         frm_status = {
                             message: 'Category Already Exist!',
                             success: false
                         }
                     } else {
                         try {
-                            await recipeCategoriesModel.findOneAndUpdate({_id: cat_id}, {
+                            await recipeCategoriesModel.findOneAndUpdate({ _id: cat_id }, {
                                 recipe_category_name,
                                 recipe_category_slug,
                             }, {
@@ -782,16 +782,16 @@ const resolvers = {
                 success: false
             }
             let { id, user_id } = args;
-            const user = await SiteUserModel.find({_id: user_id});
-            if(user) {
+            const user = await SiteUserModel.find({ _id: user_id });
+            if (user) {
                 try {
-                    await recipeCategoriesModel.findByIdAndDelete({_id: id});
+                    await recipeCategoriesModel.findByIdAndDelete({ _id: id });
                     frm_status = {
                         message: 'Category Deleted Successfully!',
                         success: true
                     }
-                    let reci = await RecipeModel.find({'author.author_id': user_id});
-                    if(reci.length > 0) {
+                    let reci = await RecipeModel.find({ 'author.author_id': user_id });
+                    if (reci.length > 0) {
                         reci.forEach((item) => {
                             const index = item.recipe_categories.indexOf(id);
                             const arr = item.recipe_categories;
@@ -822,30 +822,30 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let { 
-                recipe_title, 
+            let {
+                recipe_title,
                 recipe_type,
-                recipe_featured_image, 
-                recipe_categories, 
-                recipe_summary, 
-                recipe_content, 
+                recipe_featured_image,
+                recipe_categories,
+                recipe_summary,
+                recipe_content,
                 recipe_ingradients,
-                recipe_author, 
-                recipe_author_id, 
-                recipe_makes_servings, 
-                recipe_prep_time, 
-                recipe_cook_time, 
-                recipe_total_time, 
-                recipe_created_at, 
+                recipe_author,
+                recipe_author_id,
+                recipe_makes_servings,
+                recipe_prep_time,
+                recipe_cook_time,
+                recipe_total_time,
+                recipe_created_at,
             } = args;
 
-            const user = await SiteUserModel.find({_id: recipe_author_id});
-            if(user) {
-                if(recipe_title && recipe_type && recipe_summary && recipe_content) {
+            const user = await SiteUserModel.find({ _id: recipe_author_id });
+            if (user) {
+                if (recipe_title && recipe_type && recipe_summary && recipe_content) {
                     try {
                         let doc = new RecipeModel({
                             recipe_title,
-                            recipe_type, 
+                            recipe_type,
                             recipe_featured_image,
                             recipe_categories,
                             recipe_summary,
@@ -855,10 +855,10 @@ const resolvers = {
                                 author_name: recipe_author,
                                 author_id: recipe_author_id
                             },
-                            recipe_makes_servings, 
-                            recipe_prep_time, 
-                            recipe_cook_time, 
-                            recipe_total_time, 
+                            recipe_makes_servings,
+                            recipe_prep_time,
+                            recipe_cook_time,
+                            recipe_total_time,
                             recipe_created_at
                         });
                         await doc.save();
@@ -893,40 +893,40 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let { 
-                id, 
-                user_id, 
-                recipe_title, 
-                recipe_type, 
-                recipe_featured_image, 
-                recipe_categories, 
-                recipe_summary, 
-                recipe_content, 
-                recipe_ingradients, 
-                recipe_makes_servings, 
-                recipe_prep_time, 
-                recipe_cook_time, 
-                recipe_total_time 
+            let {
+                id,
+                user_id,
+                recipe_title,
+                recipe_type,
+                recipe_featured_image,
+                recipe_categories,
+                recipe_summary,
+                recipe_content,
+                recipe_ingradients,
+                recipe_makes_servings,
+                recipe_prep_time,
+                recipe_cook_time,
+                recipe_total_time
             } = args;
-            let user = await SiteUserModel.findOne({_id: user_id});
-            if(user) {
-                let recipe = await RecipeModel.find({_id: id});
+            let user = await SiteUserModel.findOne({ _id: user_id });
+            if (user) {
+                let recipe = await RecipeModel.find({ _id: id });
                 // console.log(recipe);
-                if(recipe.length > 0) {
-                    if(id && user_id && recipe_title && recipe_type && recipe_summary && recipe_content) {
+                if (recipe.length > 0) {
+                    if (id && user_id && recipe_title && recipe_type && recipe_summary && recipe_content) {
                         try {
-                            await RecipeModel.findByIdAndUpdate({_id: id}, {
+                            await RecipeModel.findByIdAndUpdate({ _id: id }, {
                                 recipe_title,
                                 recipe_type,
                                 recipe_featured_image,
                                 recipe_categories,
                                 recipe_summary,
                                 recipe_content,
-                                recipe_ingradients, 
-                                recipe_makes_servings, 
-                                recipe_prep_time, 
-                                recipe_cook_time, 
-                                recipe_total_time, 
+                                recipe_ingradients,
+                                recipe_makes_servings,
+                                recipe_prep_time,
+                                recipe_cook_time,
+                                recipe_total_time,
                             }, { new: true });
                             frm_status = {
                                 message: 'Recipe Updated Successfully!',
@@ -957,7 +957,7 @@ const resolvers = {
                     success: false
                 }
             }
-        
+
             return frm_status;
         },
         deleteRecipe: async (parent, args) => {
@@ -967,21 +967,21 @@ const resolvers = {
                 success: false
             }
             let { id, user_id } = args;
-            const user = await SiteUserModel.find({_id: user_id});
-            if(user) {
+            const user = await SiteUserModel.find({ _id: user_id });
+            if (user) {
                 try {
-                    let rcf = await RecipeModel.find({_id: id});
-                    if(rcf.length > 0) {
-                        let usr = await SiteUserModel.find({"saved_recipes": { $in: id }});
-                        if(usr.length > 0) {
+                    let rcf = await RecipeModel.find({ _id: id });
+                    if (rcf.length > 0) {
+                        let usr = await SiteUserModel.find({ "saved_recipes": { $in: id } });
+                        if (usr.length > 0) {
                             // console.log(usr);
-                            await SiteUserModel.updateMany({"saved_recipes": { $in: id }}, {
+                            await SiteUserModel.updateMany({ "saved_recipes": { $in: id } }, {
                                 $pull: {
                                     saved_recipes: id
                                 }
-                            });  
+                            });
                         }
-                        await RecipeModel.findByIdAndDelete({_id: id});
+                        await RecipeModel.findByIdAndDelete({ _id: id });
                         frm_status = {
                             message: 'Recipe Deleted Successfully!',
                             success: true
@@ -1016,32 +1016,32 @@ const resolvers = {
             }
 
             let { user_id } = args;
-            let user = await SiteUserModel.find({_id: user_id});
+            let user = await SiteUserModel.find({ _id: user_id });
             let arr = [];
-            if(user.length > 0) {
-                let recps = await RecipeModel.find({'author.author_id': user_id});
-                if(recps.length > 0) {
-                    let imgs = await RecipeModel.find({'author.author_id': user_id}).select('recipe_featured_image');
+            if (user.length > 0) {
+                let recps = await RecipeModel.find({ 'author.author_id': user_id });
+                if (recps.length > 0) {
+                    let imgs = await RecipeModel.find({ 'author.author_id': user_id }).select('recipe_featured_image');
                     imgs.forEach((dt, idx) => {
                         let feimg = dt.recipe_featured_image;
-                        if(feimg !== 'default') {
+                        if (feimg !== 'default') {
                             // console.log(feimg);
                             arr.push(feimg);
                         }
                     });
-                    let yy = await RecipeModel.find({'author.author_id': user_id}).select('_id');
+                    let yy = await RecipeModel.find({ 'author.author_id': user_id }).select('_id');
                     let idarr = yy.length > 0 ? yy.map((itm) => itm._id.toString()) : [];
-                    let usr = idarr.length > 0 ? await SiteUserModel.find({"saved_recipes": { $in: idarr }}) : [];
-                    if(usr.length > 0) {
+                    let usr = idarr.length > 0 ? await SiteUserModel.find({ "saved_recipes": { $in: idarr } }) : [];
+                    if (usr.length > 0) {
                         // console.log(usr);
                         // console.log(idarr);
-                        await SiteUserModel.updateMany({"saved_recipes": { $in: idarr }}, {
+                        await SiteUserModel.updateMany({ "saved_recipes": { $in: idarr } }, {
                             $pull: {
                                 "saved_recipes": { $in: idarr }
                             }
                         });
                     }
-                    await RecipeModel.deleteMany({'author.author_id': user_id});
+                    await RecipeModel.deleteMany({ 'author.author_id': user_id });
                     frm_status = {
                         message: 'All Recipes Deleted Successfully!',
                         success: true,
@@ -1071,11 +1071,11 @@ const resolvers = {
             }
 
             let { user_id } = args;
-            let user = await SiteUserModel.find({_id: user_id});
-            if(user.length > 0) {
-                let allcts = await recipeCategoriesModel.find({'author.author_id': user_id})
-                if(allcts.length > 0) {
-                    await recipeCategoriesModel.deleteMany({'author.author_id': user_id});
+            let user = await SiteUserModel.find({ _id: user_id });
+            if (user.length > 0) {
+                let allcts = await recipeCategoriesModel.find({ 'author.author_id': user_id })
+                if (allcts.length > 0) {
+                    await recipeCategoriesModel.deleteMany({ 'author.author_id': user_id });
                     frm_status = {
                         message: 'All Categories Deleted Successfully!',
                         success: true
@@ -1101,15 +1101,15 @@ const resolvers = {
                 success: false
             }
             let { user_id, recipe_id } = args;
-            let user = await SiteUserModel.find({_id: user_id});
-            if(user.length > 0) {
-                let chkrc = await RecipeModel.find({_id: recipe_id});
-                if(chkrc.length > 0) {
-                    await SiteUserModel.findOneAndUpdate({_id: user_id}, {
+            let user = await SiteUserModel.find({ _id: user_id });
+            if (user.length > 0) {
+                let chkrc = await RecipeModel.find({ _id: recipe_id });
+                if (chkrc.length > 0) {
+                    await SiteUserModel.findOneAndUpdate({ _id: user_id }, {
                         $push: {
                             saved_recipes: recipe_id
                         }
-                    });                
+                    });
                     frm_status = {
                         message: 'Recipe Saved Successfully!',
                         success: true
@@ -1135,15 +1135,15 @@ const resolvers = {
                 success: false
             }
             let { user_id, recipe_id } = args;
-            let user = await SiteUserModel.find({_id: user_id});
-            if(user.length > 0) {
-                let chkrc = await RecipeModel.find({_id: recipe_id});
-                if(chkrc.length > 0) {
-                    await SiteUserModel.findOneAndUpdate({_id: user_id}, {
+            let user = await SiteUserModel.find({ _id: user_id });
+            if (user.length > 0) {
+                let chkrc = await RecipeModel.find({ _id: recipe_id });
+                if (chkrc.length > 0) {
+                    await SiteUserModel.findOneAndUpdate({ _id: user_id }, {
                         $pull: {
                             saved_recipes: recipe_id
                         }
-                    });                
+                    });
                     frm_status = {
                         message: 'Recipe Removed From Save Successfully!',
                         success: true
@@ -1168,8 +1168,8 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let rp = await RecipeModel.find({_id: args.rid});
-            if(rp.length > 0) {
+            let rp = await RecipeModel.find({ _id: args.rid });
+            if (rp.length > 0) {
                 frm_status = {
                     message: 'Recipe Found!',
                     success: true
@@ -1189,12 +1189,12 @@ const resolvers = {
                 success: false
             }
             let { email } = args;
-            if(email) {
-                let user = await SiteUserModel.find({user_email: email});
-                if(user.length > 0) {
+            if (email) {
+                let user = await SiteUserModel.find({ user_email: email });
+                if (user.length > 0) {
                     let id = user[0]._id.toString();
                     const sec = id + process.env.JWT_SEC;
-                    const token = jwt.sign({userID: id}, sec, { expiresIn: '10m' })
+                    const token = jwt.sign({ userID: id }, sec, { expiresIn: '10m' })
                     const link = `${process.env.FRONTEND_CLIENT_URI}/reset-password/${id}/${token}`;
                     // console.log(link);
                     // Send Email
@@ -1202,7 +1202,7 @@ const resolvers = {
                         from: process.env.EMAIL_FROM,
                         to: user[0].user_email, // list of receivers
                         subject: "GTRecipes - Password Reset Link.", // Subject line
-                        html:`<h4 style="font-family: 'Arial'; font-size: 20px; color: #575757; margin: 0px; padding: 0px; padding-bottom: 10px;">Dear User</h4><h5 style="font-family: 'Arial'; font-size: 16px; font-weight: 400; color: #575757; margin: 0px; padding: 0px; padding-bottom: 10px;">Below is your password reset link. This link is valid for 10 Mins.</h5><h5 style="font-family: 'Arial'; font-size: 16px; font-weight: 400; color: #575757; margin: 0px; padding: 0px;"><b>Password Reset Link :- </b> <a href="${link}" title="Click Here" target="_blank">Click Here</a></h5>`
+                        html: `<h4 style="font-family: 'Arial'; font-size: 20px; color: #575757; margin: 0px; padding: 0px; padding-bottom: 10px;">Dear User</h4><h5 style="font-family: 'Arial'; font-size: 16px; font-weight: 400; color: #575757; margin: 0px; padding: 0px; padding-bottom: 10px;">Below is your password reset link. This link is valid for 10 Mins.</h5><h5 style="font-family: 'Arial'; font-size: 16px; font-weight: 400; color: #575757; margin: 0px; padding: 0px;"><b>Password Reset Link :- </b> <a href="${link}" title="Click Here" target="_blank">Click Here</a></h5>`
                     });
                     // console.log(info);
                     frm_status = {
@@ -1229,18 +1229,18 @@ const resolvers = {
                 message: '',
                 success: false
             }
-            let {password, confirm_password, user_id, token} = args;
-            if(password && confirm_password && user_id && token) {
-                if(password === confirm_password) {
+            let { password, confirm_password, user_id, token } = args;
+            if (password && confirm_password && user_id && token) {
+                if (password === confirm_password) {
                     const user = await SiteUserModel.findById(user_id);
                     // console.log(user);
-                    if(user) {
+                    if (user) {
                         const new_token = user.id.toString() + process.env.JWT_SEC;
                         try {
                             jwt.verify(token, new_token);
                             const salt = await bcrypt.genSalt(10);
                             const hashPwd = await bcrypt.hash(password, salt);
-                            await SiteUserModel.findOneAndUpdate({_id: user_id}, {
+                            await SiteUserModel.findOneAndUpdate({ _id: user_id }, {
                                 user_password: hashPwd
                             }, {
                                 new: true
@@ -1262,7 +1262,7 @@ const resolvers = {
                             success: false
                         }
                     }
-                    
+
                 } else {
                     frm_status = {
                         message: "Password & Confirm Password Doesn't Match.",
@@ -1282,8 +1282,8 @@ const resolvers = {
         recipe_categories: async (data) => {
             // console.log(data);
             let cats = data.recipe_categories;
-            if(cats.length > 0) {
-                let resp = await recipeCategoriesModel.find({_id: cats});
+            if (cats.length > 0) {
+                let resp = await recipeCategoriesModel.find({ _id: cats });
                 // console.log(resp);
                 return resp;
             } else {
