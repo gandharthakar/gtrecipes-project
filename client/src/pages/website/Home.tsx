@@ -388,7 +388,7 @@ function Home() {
 								<Swiper
 									slidesPerView={1}
 									spaceBetween={20}
-									navigation={true}
+									navigation={false}
 									breakpoints={{
 										640: {
 											slidesPerView: 1,
